@@ -2,10 +2,6 @@ package view;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
-import java.util.HashMap;
-import java.util.Map;
 
 public class App extends JFrame {
 
@@ -13,8 +9,6 @@ public class App extends JFrame {
     private JPanel panelEmployee;
     private JPanel panelBooks;
     private JPanel panelCustomer;
-    private CardLayout cardLayout;
-    private Map<String, JPanel> viewMap;
 
     public App() {
         setTitle("Shops Management System");
@@ -70,22 +64,6 @@ public class App extends JFrame {
         gbc.weighty = 1; // Khoảng trống sẽ mở rộng để đẩy nội dung lên trên, chiem het khong gian ben duoi
         panelMenu.add(Box.createVerticalGlue(), gbc);//thanh phan tang hinh co kha nang gian no
 
-        panelBooks.addMouseListener(new MouseAdapter() {
-            @Override
-            public void mouseClicked(MouseEvent e) {
-                new BookViewManagement().setVisible(true);
-                dispose();//giai phong tai nguyen cu
-            }
-//            @Override
-//            public void mouseEntered(MouseEvent e) {
-//                panelBooks.setBackground(new Color(180, 220, 16));
-//            }
-            @Override
-            public void mouseExited(MouseEvent e) {
-                panelBooks.setBackground(new Color(27, 53, 68));
-            }
-
-        });
 
         panelSidebar.add(panelMenu, BorderLayout.CENTER);
 
@@ -117,23 +95,6 @@ public class App extends JFrame {
             return null;
         }
     }
-    private void initContentPanel() {
-        cardLayout = new CardLayout();
-        JPanel panelContent = new JPanel(cardLayout);
-        viewMap = new HashMap<>();
-
-        // Thêm các View vào CardLayout
-//        viewMap.put("BookView", new BookViewManagement()); // Thay vì mở JFrame mới
-        viewMap.put("CustomerView", new JPanel()); // Sau này thay thế bằng CustomerView
-        viewMap.put("EmployeeView", new JPanel()); // Sau này thay thế bằng EmployeeView
-        viewMap.put("SaleView", new JPanel()); // Sau này thay thế bằng SaleView
-
-        for (Map.Entry<String, JPanel> entry : viewMap.entrySet()) {
-            panelContent.add(entry.getValue(), entry.getKey());
-        }
-
-        add(panelContent, BorderLayout.CENTER);
-    }
 
     public JPanel getPanelSale() {
         return panelSale;
@@ -155,6 +116,5 @@ public class App extends JFrame {
     public static void main(String[] args) {
         new App();
     }
-
 
 }

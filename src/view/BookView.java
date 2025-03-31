@@ -7,147 +7,277 @@ import javax.swing.table.JTableHeader;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 
-public class BookView extends JFrame {
-    private JTextField textFieldBookId, textFieldCategory, textFieldBookName, textFieldAuthor, textFieldYearPublished, textFieldQuantity, textFieldPrice;
-    private JButton btnAdd, btnChange, btnDelete, btnReset, btnSaveFile, btnSearch;
-    private JTable table;
-    private DefaultTableModel tableModel;
+public class BookView extends JPanel {
 
-    public BookView() {
-        setLayout(new BorderLayout());
-        setBackground(new Color(157, 239, 227));
-
-        add(initTitlePanel(), BorderLayout.NORTH);
-        add(initFormPanel(), BorderLayout.WEST);
-        add(initButtonPanel(), BorderLayout.CENTER);
-        add(initSearchPanel(), BorderLayout.SOUTH);
-        add(initTablePanel(), BorderLayout.EAST);
-
-        setVisible(true);
-    }
-
-    /**
-     * Tạo tiêu đề
-     */
-    private JPanel initTitlePanel() {
-        JPanel panel = new JPanel();
-        JLabel labelTitle = new JLabel("QUẢN LÍ SÁCH");
-        labelTitle.setFont(new Font("Tahoma", Font.BOLD, 20));
-        panel.add(labelTitle);
-        return panel;
-    }
-
-    /**
-     * Form nhập dữ liệu
-     */
-    private JPanel initFormPanel() {
-        JPanel panel = new JPanel();
-        panel.setLayout(new GridLayout(7, 2, 5, 5));
-
+    public JPanel initBookView() {
         Font font = new Font("Tahoma", Font.BOLD, 15);
+        JPanel panelContent = new JPanel();
+        panelContent.setLayout(null);
+        panelContent.setBackground(new Color(157, 239, 227));
+
+        JLabel labeltitle = new JLabel("QUẢN LÍ SÁCH");
+        labeltitle.setBounds(600, 10, 250, 30);
+        labeltitle.setFont(new Font("Tahoma", Font.BOLD, 20));
+        panelContent.add(labeltitle);
+
+        JLabel labelBookId = new JLabel("Mã sách");
+        labelBookId.setFont(font);
+        labelBookId.setBounds(50, 50, 100, 20);
+        panelContent.add(labelBookId);
+
         Font font1 = new Font("Tahoma", Font.PLAIN, 15);
+        JTextField textFieldBookId = new JTextField();
+        textFieldBookId.setFont(font1);
+        textFieldBookId.setBounds(170, 50, 180, 20);
+        panelContent.add(textFieldBookId);
 
-        panel.add(createLabel("Mã sách", font));
-        textFieldBookId = createTextField(font1);
-        panel.add(textFieldBookId);
+        JLabel labelCategogy = new JLabel("Thể loại");
+        labelCategogy.setFont(font);
+        labelCategogy.setBounds(50, 90, 100, 20);
+        panelContent.add(labelCategogy);
 
-        panel.add(createLabel("Thể loại", font));
-        textFieldCategory = createTextField(font1);
-        panel.add(textFieldCategory);
+        JTextField textFieldCategory = new JTextField();
+        textFieldCategory.setFont(font1);
+        textFieldCategory.setBounds(170, 90, 180, 20);
+        panelContent.add(textFieldCategory);
 
-        panel.add(createLabel("Tên sách", font));
-        textFieldBookName = createTextField(font1);
-        panel.add(textFieldBookName);
+        JLabel labelBookName = new JLabel("Tên sách");
+        labelBookName.setFont(font);
+        labelBookName.setBounds(50, 130, 100, 20);
+        panelContent.add(labelBookName);
 
-        panel.add(createLabel("Tác giả", font));
-        textFieldAuthor = createTextField(font1);
-        panel.add(textFieldAuthor);
+        JTextField textFieldBookName = new JTextField();
+        textFieldBookName.setFont(font1);
+        textFieldBookName.setBounds(170, 130, 180, 20);
+        panelContent.add(textFieldBookName);
 
-        panel.add(createLabel("Năm xuất bản", font));
-        textFieldYearPublished = createTextField(font1);
-        panel.add(textFieldYearPublished);
+        JLabel labelAuthor = new JLabel("Tác giả");
+        labelAuthor.setFont(font);
+        labelAuthor.setBounds(50, 170, 100, 20);
+        panelContent.add(labelAuthor);
 
-        panel.add(createLabel("Số lượng", font));
-        textFieldQuantity = createTextField(font1);
-        panel.add(textFieldQuantity);
+        JTextField textFieldAuthor = new JTextField();
+        textFieldAuthor.setFont(font1);
+        textFieldAuthor.setBounds(170, 170, 180, 20);
+        panelContent.add(textFieldAuthor);
 
-        panel.add(createLabel("Giá", font));
-        textFieldPrice = createTextField(font1);
-        panel.add(textFieldPrice);
+        JLabel labelYearPublished = new JLabel("Năm xuất bản");
+        labelYearPublished.setFont(font);
+        labelYearPublished.setBounds(50, 210, 130, 20);
+        panelContent.add(labelYearPublished);
 
-        return panel;
-    }
+        JTextField textFieldYearPublished = new JTextField();
+        textFieldYearPublished.setFont(font1);
+        textFieldYearPublished.setBounds(170, 210, 180, 20);
+        panelContent.add(textFieldYearPublished);
 
-    /**
-     * Tạo panel chứa các button chức năng
-     */
-    private JPanel initButtonPanel() {
-        JPanel panel = new JPanel();
-        panel.setLayout(new GridLayout(2, 3, 5, 5));
+        JLabel labelQuantity = new JLabel("Số lượng");
+        labelQuantity.setFont(font);
+        labelQuantity.setBounds(50, 250, 100, 20);
+        panelContent.add(labelQuantity);
 
-        btnAdd = createButton("Thêm", new Color(14, 110, 166));
-        panel.add(btnAdd);
+        JTextField textFieldQuantity = new JTextField();
+        textFieldQuantity.setFont(font1);
+        textFieldQuantity.setBounds(170, 250, 180, 20);
+        panelContent.add(textFieldQuantity);
 
-        btnChange = createButton("Sửa", new Color(147, 32, 204));
-        panel.add(btnChange);
+        JLabel labelPrice = new JLabel("Giá");
+        labelPrice.setFont(font);
+        labelPrice.setBounds(50, 290, 100, 20);
+        panelContent.add(labelPrice);
 
-        btnDelete = createButton("Xóa", new Color(246, 4, 60));
-        panel.add(btnDelete);
+        JTextField textFieldPrice = new JTextField();
+        textFieldPrice.setFont(font1);
+        textFieldPrice.setBounds(170, 290, 180, 20);
+        panelContent.add(textFieldPrice);
 
-        btnReset = createButton("Làm mới", new Color(222, 99, 1));
-        panel.add(btnReset);
 
-        btnSaveFile = createButton("Xuất file", new Color(32, 204, 35));
-        panel.add(btnSaveFile);
+        //cac nut button
+        JButton btnAdd = new JButton("Thêm");
+        btnAdd.setFont(font);
+        btnAdd.setBackground(new Color(14, 110, 166));
+        btnAdd.setForeground(new Color(255, 255, 255));
+        btnAdd.setHorizontalAlignment(JButton.CENTER);
+        btnAdd.setBounds(450, 70, 100, 30);
+        panelContent.add(btnAdd);
 
-        return panel;
-    }
 
-    /**
-     * Tạo panel tìm kiếm
-     */
-    private JPanel initSearchPanel() {
-        JPanel panel = new JPanel();
-        panel.setLayout(new GridLayout(1, 2, 5, 5));
+        JButton btnChange = new JButton("Sửa");
+        btnChange.setFont(font);
+        btnChange.setBackground(new Color(147, 32, 204));
+        btnChange.setForeground(new Color(255, 255, 255));
+        btnChange.setHorizontalAlignment(JButton.CENTER);
+        btnChange.setBounds(450, 120, 100, 30);
+        panelContent.add(btnChange);
 
-        textFieldBookId = createTextField(new Font("Tahoma", Font.PLAIN, 14));
-        panel.add(textFieldBookId);
+        JButton btnDelete = new JButton("Xóa");
+        btnDelete.setFont(font);
+        btnDelete.setBackground(new Color(246, 4, 60));
+        btnDelete.setForeground(new Color(255, 255, 255));
+        btnDelete.setHorizontalAlignment(JButton.CENTER);
+        btnDelete.setBounds(450, 170, 100, 30);
+        panelContent.add(btnDelete);
 
-        btnSearch = createButton("Tìm Kiếm", new Color(38, 55, 114));
-        panel.add(btnSearch);
+        JButton btnReset = new JButton("Làm mới");
+        btnReset.setFont(font);
+        btnReset.setBackground(new Color(222, 99, 1));
+        btnReset.setForeground(new Color(255, 255, 255));
+        btnReset.setHorizontalAlignment(JButton.CENTER);
+        btnReset.setBounds(450, 220, 100, 30);
+        panelContent.add(btnReset);
 
-        return panel;
-    }
+        JButton btnSaveFile = new JButton("Xuất file");
+        btnSaveFile.setFont(font);
+        btnSaveFile.setBackground(new Color(32, 204, 35));
+        btnSaveFile.setForeground(new Color(255, 255, 255));
+        btnSaveFile.setHorizontalAlignment(JButton.CENTER);
+        btnSaveFile.setBounds(450, 270, 100, 30);
+        panelContent.add(btnSaveFile);
 
-    /**
-     * Tạo panel chứa bảng dữ liệu
-     */
-    private JPanel initTablePanel() {
-        JPanel panel = new JPanel(new BorderLayout());
+        ImageIcon icon6 = scaleImage("images/icon6.png", 400, 200);
+        JLabel labelImage6 = new JLabel(icon6);
+        labelImage6.setBounds(700, 30, 500, 250);
+        panelContent.add(labelImage6);
 
+
+        //Phan tim kiem loc san pham
+        JLabel labelSearch = new JLabel("Tìm Kiếm");
+        labelSearch.setFont(new Font("Tahoma", Font.BOLD, 17));
+        labelSearch.setBounds(630, 330, 500, 20);
+        panelContent.add(labelSearch);
+
+        //tao ra 1 panel moi chua tat ca phan tim kiem
+        JPanel searchPanel = new JPanel();
+        searchPanel.setLayout(null);
+        searchPanel.setBackground(new Color(255, 255, 255));
+        searchPanel.setBounds(0, 330, 1500, 800);
+        panelContent.add(searchPanel);
+        JLabel labelBookId1 = new JLabel("Mã sách");
+        labelBookId1.setFont(font);
+        labelBookId1.setBounds(170, 30, 70, 20);
+        searchPanel.add(labelBookId1);
+
+        JTextField textFieldBookId1 = new JTextField();
+        textFieldBookId1.setFont(font1);
+        textFieldBookId1.setBounds(280, 30, 120, 20);
+        searchPanel.add(textFieldBookId1);
+
+        JLabel labelCategogy1 = new JLabel("Thể loại");
+        labelCategogy1.setFont(font);
+        labelCategogy1.setBounds(420, 30, 70, 20);
+        searchPanel.add(labelCategogy1);
+
+        JTextField textFieldCategory1 = new JTextField();
+        textFieldCategory1.setFont(font1);
+        textFieldCategory1.setBounds(500, 30, 120, 20);
+        searchPanel.add(textFieldCategory1);
+
+        JLabel labelBookName1 = new JLabel("Tên sách");
+        labelBookName1.setFont(font);
+        labelBookName1.setBounds(640, 30, 70, 20);
+        searchPanel.add(labelBookName1);
+
+        JTextField textFieldBookName1 = new JTextField();
+        textFieldBookName1.setFont(font1);
+        textFieldBookName1.setBounds(720, 30, 120, 20);
+        searchPanel.add(textFieldBookName1);
+
+        JLabel labelAuthor1 = new JLabel("Tác giả");
+        labelAuthor1.setFont(font);
+        labelAuthor1.setBounds(860, 30, 70, 20);
+        searchPanel.add(labelAuthor1);
+
+        JTextField textFieldAuthor1 = new JTextField();
+        textFieldAuthor1.setFont(font1);
+        textFieldAuthor1.setBounds(940, 30, 120, 20);
+        searchPanel.add(textFieldAuthor1);
+
+        JLabel labelYearPublished1 = new JLabel("Năm xuất bản");
+        labelYearPublished1.setFont(font);
+        labelYearPublished1.setBounds(170, 60, 110, 20);
+        searchPanel.add(labelYearPublished1);
+
+        JTextField textFieldYearPublished1 = new JTextField();
+        textFieldYearPublished1.setFont(font1);
+        textFieldYearPublished1.setBounds(280, 60, 120, 20);
+        searchPanel.add(textFieldYearPublished1);
+
+        JLabel labelQuantity1 = new JLabel("Số lượng");
+        labelQuantity1.setFont(font);
+        labelQuantity1.setBounds(420, 60, 80, 20);
+        searchPanel.add(labelQuantity1);
+
+        JTextField textFieldQuantity1 = new JTextField();
+        textFieldQuantity1.setFont(font1);
+        textFieldQuantity1.setBounds(500, 60, 120, 20);
+        searchPanel.add(textFieldQuantity1);
+
+        JLabel labelPrice1 = new JLabel("Giá");
+        labelPrice1.setFont(font);
+        labelPrice1.setBounds(640, 60, 30, 20);
+        searchPanel.add(labelPrice1);
+
+        JTextField textFieldPrice1 = new JTextField();
+        textFieldPrice1.setFont(font1);
+        textFieldPrice1.setBounds(720, 60, 120, 20);
+        searchPanel.add(textFieldPrice1);
+
+        JButton btnSearch = new JButton("Tìm Kiếm");
+        btnSearch.setFont(font);
+        btnSearch.setBackground(new Color(38, 55, 114));
+        btnSearch.setForeground(new Color(255, 255, 255));
+        btnSearch.setHorizontalAlignment(JButton.CENTER);
+        btnSearch.setBounds(940, 60, 120, 25);
+        searchPanel.add(btnSearch);
+
+        //tao bang du lieu de hien thi ket qua
         String[] columnNames = {"Mã sách", "Thể loại", "Tên sách", "Tác giả", "Năm xuất bản", "Số lượng", "Giá"};
-        tableModel = new DefaultTableModel(columnNames, 0);
-        table = new JTable(tableModel);
 
+        // Tao model cho JTable
+        DefaultTableModel tableModel = new DefaultTableModel(columnNames, 0);
+        JTable table = new JTable(tableModel);
+
+        // Dat font chu va do cao cua dong trong bang
+        table.setFont(new Font("Tahoma", Font.PLAIN, 12));
+        table.setRowHeight(20);
+
+        // Lay phan tieu de cua bang
         JTableHeader header = table.getTableHeader();
-        header.setFont(new Font("Tahoma", Font.BOLD, 14));
-        header.setBackground(Color.LIGHT_GRAY);
-        header.setForeground(Color.BLACK);
 
+        // Dat font chu cho tieu de cot
+        header.setFont(new Font("Tahoma", Font.BOLD, 14)); // Chu dam
+        header.setBackground(Color.LIGHT_GRAY); // Dat mau nen cho tieu de
+        header.setForeground(Color.BLACK); // Dat mau chu cho tieu de
+
+        // Tao doi tuong can giua noi dung
         DefaultTableCellRenderer centerRenderer = new DefaultTableCellRenderer();
         centerRenderer.setHorizontalAlignment(JLabel.CENTER);
+
+        // Duyet qua tung cot de dat can giua noi dung
         for (int i = 0; i < table.getColumnCount(); i++) {
             table.getColumnModel().getColumn(i).setCellRenderer(centerRenderer);
         }
 
+        // Tao JScrollPane de chua JTable
         JScrollPane scrollPane = new JScrollPane(table);
-        panel.add(scrollPane, BorderLayout.CENTER);
 
-        return panel;
+        // Dat vi tri va kich thuoc cho JScrollPane
+        scrollPane.setBounds(50, 100, 1200, 300);
+
+        // Them JScrollPane vao panel chinh
+        panelContent.add(scrollPane);
+
+        // Tao mot dong du lieu va them vao bang
+        Object[] newRow = {"B001", "Van hoc", "Chi Pheo", "Nam Cao", "1941", "10", "50000"};
+        tableModel.addRow(newRow);
+        searchPanel.add(scrollPane);
+
+        return panelContent;
+
     }
 
     /**
-     * Hỗ trợ scale ảnh
+     * Hàm hỗ trợ scale ảnh
      */
     private ImageIcon scaleImage(String path, int width, int height) {
         try {
@@ -156,44 +286,16 @@ public class BookView extends JFrame {
             return new ImageIcon(img);
         } catch (Exception e) {
             System.err.println("No Image: " + path);
-            return new ImageIcon(new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB));
+            return new ImageIcon(new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB)); // Trả về ảnh trống
         }
     }
 
-    /**
-     * Hỗ trợ tạo JLabel
-     */
-    private JLabel createLabel(String text, Font font) {
-        JLabel label = new JLabel(text);
-        label.setFont(font);
-        return label;
-    }
-
-    /**
-     * Hỗ trợ tạo JTextField
-     */
-    private JTextField createTextField(Font font) {
-        JTextField textField = new JTextField();
-        textField.setFont(font);
-        return textField;
-    }
-
-    /**
-     * Hỗ trợ tạo JButton
-     */
-    private JButton createButton(String text, Color color) {
-        JButton button = new JButton(text);
-        button.setFont(new Font("Tahoma", Font.BOLD, 15));
-        button.setBackground(color);
-        button.setForeground(Color.WHITE);
-        return button;
-    }
-
     public static void main(String[] args) {
-        JFrame frame = new JFrame("Book Management");
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setSize(800, 600);
-        frame.add(new BookView());
-        frame.setVisible(true);
+        BookView a = new BookView();
+        JPanel panel = a.initBookView();
+        JFrame app = new App();
+        app.add(panel, BorderLayout.CENTER);
     }
+
+
 }
