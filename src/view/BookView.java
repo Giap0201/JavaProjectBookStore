@@ -98,7 +98,7 @@ public class BookView extends JPanel {
         btnAdd.setBackground(new Color(14, 110, 166));
         btnAdd.setForeground(new Color(255, 255, 255));
         btnAdd.setHorizontalAlignment(JButton.CENTER);
-        btnAdd.setBounds(450, 70, 100, 30);
+        btnAdd.setBounds(450, 100, 100, 30);
         panelContent.add(btnAdd);
 
 
@@ -107,7 +107,7 @@ public class BookView extends JPanel {
         btnChange.setBackground(new Color(147, 32, 204));
         btnChange.setForeground(new Color(255, 255, 255));
         btnChange.setHorizontalAlignment(JButton.CENTER);
-        btnChange.setBounds(450, 120, 100, 30);
+        btnChange.setBounds(450, 160, 100, 30);
         panelContent.add(btnChange);
 
         JButton btnDelete = new JButton("Xóa");
@@ -115,7 +115,7 @@ public class BookView extends JPanel {
         btnDelete.setBackground(new Color(246, 4, 60));
         btnDelete.setForeground(new Color(255, 255, 255));
         btnDelete.setHorizontalAlignment(JButton.CENTER);
-        btnDelete.setBounds(450, 170, 100, 30);
+        btnDelete.setBounds(450, 220, 100, 30);
         panelContent.add(btnDelete);
 
         JButton btnReset = new JButton("Làm mới");
@@ -123,7 +123,7 @@ public class BookView extends JPanel {
         btnReset.setBackground(new Color(222, 99, 1));
         btnReset.setForeground(new Color(255, 255, 255));
         btnReset.setHorizontalAlignment(JButton.CENTER);
-        btnReset.setBounds(450, 220, 100, 30);
+        btnReset.setBounds(600, 100, 100, 30);
         panelContent.add(btnReset);
 
         JButton btnSaveFile = new JButton("Xuất file");
@@ -131,8 +131,16 @@ public class BookView extends JPanel {
         btnSaveFile.setBackground(new Color(32, 204, 35));
         btnSaveFile.setForeground(new Color(255, 255, 255));
         btnSaveFile.setHorizontalAlignment(JButton.CENTER);
-        btnSaveFile.setBounds(450, 270, 100, 30);
+        btnSaveFile.setBounds(600, 160, 100, 30);
         panelContent.add(btnSaveFile);
+
+        JButton btnView = new JButton("Hiển Thị");
+        btnView.setFont(font);
+        btnView.setBackground(new Color(16, 120, 133));
+        btnView.setForeground(new Color(255, 255, 255));
+        btnView.setHorizontalAlignment(JButton.CENTER);
+        btnView.setBounds(600, 220, 100, 30);
+        panelContent.add(btnView);
 
         ImageIcon icon6 = scaleImage("images/icon6.png", 400, 200);
         JLabel labelImage6 = new JLabel(icon6);
