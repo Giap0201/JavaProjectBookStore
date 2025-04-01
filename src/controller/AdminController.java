@@ -1,6 +1,6 @@
 package controller;
 
-import model.User;
+import service.UserService;
 import view.SignInView;
 
 import javax.swing.*;
@@ -9,37 +9,37 @@ import java.awt.event.ActionListener;
 
 public class AdminController implements ActionListener {
     private SignInView signInView;
-    private User user;
+    private UserService userService;
 
-    public  AdminController(SignInView signInView) {
+    public AdminController(SignInView signInView) {
         this.signInView = signInView;
-        this.user = new User();
+        this.userService = new UserService();
+
+//        // Đăng ký sự kiện cho các nút trong SignInView
+//        this.signInView.getBtnSignIn().addActionListener(this);
+//        this.signInView.getBtnCancel().addActionListener(this);
     }
+
     @Override
     public void actionPerformed(ActionEvent e) {
-        if(e.getSource() == signInView.getBtnSignIn()){
-            try {
-                //co the chinh sua them phan database sau
-                String name = signInView.getjTextFieldName().getText();
-                char [] temp = signInView.getjPasswordField().getPassword();//vi getpassword tra ve mang char
-                String pass = new String(temp);
-                this.user.setPassword(pass);
-                this.user.setName(name);
-                if(this.user.getPassword().equals("admin") && this.user.getName().equals("admin")){
-                    JOptionPane.showMessageDialog(null,"Đăng nhập thành công!!");
-//                    new BaseView();
-                    signInView.setVisible(false);
-                }else {
-                    JOptionPane.showMessageDialog(null,"Tài khoản hoặc mật khẩu sai!!");
-                }
-
-            }catch (Exception e1) {
-                e1.printStackTrace();
-            }
+        if (e.getSource() == signInView.getBtnSignIn()) {
+            handleLogin();
+        } else if (e.getSource() == signInView.getBtnCancel()) {
+            signInView.dispose();
         }
-        else if(e.getSource() == signInView.getBtnCancel()){
-            this.signInView.setVisible(false);
+    }
+
+    private void handleLogin() {
+        String username = signInView.getjTextFieldName().getText();
+        String password = new String(signInView.getjPasswordField().getPassword());
+
+        if (userService.authenticateUser(username, password)) {
+            JOptionPane.showMessageDialog(signInView, "Đăng nhập thành công!");
+            signInView.dispose();
+            // Mở màn hình chính
+            new view.App();
+        } else {
+            JOptionPane.showMessageDialog(signInView, "Tài khoản hoặc mật khẩu sai!");
         }
     }
 }
-

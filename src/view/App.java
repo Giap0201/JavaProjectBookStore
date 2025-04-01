@@ -1,5 +1,7 @@
 package view;
 
+import controller.AppController;
+
 import javax.swing.*;
 import java.awt.*;
 
@@ -66,6 +68,9 @@ public class App extends JFrame {
 
 
         panelSidebar.add(panelMenu, BorderLayout.CENTER);
+        AppController appController = new AppController(this);
+//        panelBooks.addMouseListener(appController);
+//        panelEmployee.addMouseListener(appController);
 
         // Thêm sidebar vào frame
         add(panelSidebar, BorderLayout.WEST);
