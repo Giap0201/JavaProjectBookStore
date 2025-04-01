@@ -1,5 +1,7 @@
 package view;
 
+import controller.BookController;
+
 import javax.swing.*;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
@@ -8,6 +10,15 @@ import java.awt.*;
 import java.awt.image.BufferedImage;
 
 public class BookView extends JPanel {
+
+    private JTextField textFieldBookId, textFieldBookId1;
+    private JTextField textFieldCategory, textFieldCategory1;
+    private JTextField textFieldBookName, textFieldBookName1;
+    private JTextField textFieldAuthor, textFieldAuthor1;
+    private JTextField textFieldYearPublished, textFieldYearPublished1;
+    private JTextField textFieldQuantity, textFieldQuantity1;
+    private JTextField textFieldPrice, textFieldPrice1;
+    private JButton btnAdd, btnChange, btnDelete, btnReset, btnSaveFile, btnView, btnSearch;
 
     public JPanel initBookView() {
         Font font = new Font("Tahoma", Font.BOLD, 15);
@@ -26,7 +37,7 @@ public class BookView extends JPanel {
         panelContent.add(labelBookId);
 
         Font font1 = new Font("Tahoma", Font.PLAIN, 15);
-        JTextField textFieldBookId = new JTextField();
+        textFieldBookId = new JTextField();
         textFieldBookId.setFont(font1);
         textFieldBookId.setBounds(170, 50, 180, 20);
         panelContent.add(textFieldBookId);
@@ -36,7 +47,7 @@ public class BookView extends JPanel {
         labelCategogy.setBounds(50, 90, 100, 20);
         panelContent.add(labelCategogy);
 
-        JTextField textFieldCategory = new JTextField();
+        textFieldCategory = new JTextField();
         textFieldCategory.setFont(font1);
         textFieldCategory.setBounds(170, 90, 180, 20);
         panelContent.add(textFieldCategory);
@@ -46,7 +57,7 @@ public class BookView extends JPanel {
         labelBookName.setBounds(50, 130, 100, 20);
         panelContent.add(labelBookName);
 
-        JTextField textFieldBookName = new JTextField();
+        textFieldBookName = new JTextField();
         textFieldBookName.setFont(font1);
         textFieldBookName.setBounds(170, 130, 180, 20);
         panelContent.add(textFieldBookName);
@@ -56,7 +67,7 @@ public class BookView extends JPanel {
         labelAuthor.setBounds(50, 170, 100, 20);
         panelContent.add(labelAuthor);
 
-        JTextField textFieldAuthor = new JTextField();
+        textFieldAuthor = new JTextField();
         textFieldAuthor.setFont(font1);
         textFieldAuthor.setBounds(170, 170, 180, 20);
         panelContent.add(textFieldAuthor);
@@ -66,7 +77,7 @@ public class BookView extends JPanel {
         labelYearPublished.setBounds(50, 210, 130, 20);
         panelContent.add(labelYearPublished);
 
-        JTextField textFieldYearPublished = new JTextField();
+        textFieldYearPublished = new JTextField();
         textFieldYearPublished.setFont(font1);
         textFieldYearPublished.setBounds(170, 210, 180, 20);
         panelContent.add(textFieldYearPublished);
@@ -76,7 +87,7 @@ public class BookView extends JPanel {
         labelQuantity.setBounds(50, 250, 100, 20);
         panelContent.add(labelQuantity);
 
-        JTextField textFieldQuantity = new JTextField();
+        textFieldQuantity = new JTextField();
         textFieldQuantity.setFont(font1);
         textFieldQuantity.setBounds(170, 250, 180, 20);
         panelContent.add(textFieldQuantity);
@@ -86,14 +97,14 @@ public class BookView extends JPanel {
         labelPrice.setBounds(50, 290, 100, 20);
         panelContent.add(labelPrice);
 
-        JTextField textFieldPrice = new JTextField();
+        textFieldPrice = new JTextField();
         textFieldPrice.setFont(font1);
         textFieldPrice.setBounds(170, 290, 180, 20);
         panelContent.add(textFieldPrice);
-
-
+        //Su kien bam vao buttoon
+        BookController bookController = new BookController(this);
         //cac nut button
-        JButton btnAdd = new JButton("Thêm");
+        btnAdd = new JButton("Thêm");
         btnAdd.setFont(font);
         btnAdd.setBackground(new Color(14, 110, 166));
         btnAdd.setForeground(new Color(255, 255, 255));
@@ -101,8 +112,7 @@ public class BookView extends JPanel {
         btnAdd.setBounds(450, 100, 100, 30);
         panelContent.add(btnAdd);
 
-
-        JButton btnChange = new JButton("Sửa");
+        btnChange = new JButton("Sửa");
         btnChange.setFont(font);
         btnChange.setBackground(new Color(147, 32, 204));
         btnChange.setForeground(new Color(255, 255, 255));
@@ -110,7 +120,7 @@ public class BookView extends JPanel {
         btnChange.setBounds(450, 160, 100, 30);
         panelContent.add(btnChange);
 
-        JButton btnDelete = new JButton("Xóa");
+        btnDelete = new JButton("Xóa");
         btnDelete.setFont(font);
         btnDelete.setBackground(new Color(246, 4, 60));
         btnDelete.setForeground(new Color(255, 255, 255));
@@ -118,7 +128,7 @@ public class BookView extends JPanel {
         btnDelete.setBounds(450, 220, 100, 30);
         panelContent.add(btnDelete);
 
-        JButton btnReset = new JButton("Làm mới");
+        btnReset = new JButton("Làm mới");
         btnReset.setFont(font);
         btnReset.setBackground(new Color(222, 99, 1));
         btnReset.setForeground(new Color(255, 255, 255));
@@ -126,7 +136,7 @@ public class BookView extends JPanel {
         btnReset.setBounds(600, 100, 100, 30);
         panelContent.add(btnReset);
 
-        JButton btnSaveFile = new JButton("Xuất file");
+        btnSaveFile = new JButton("Xuất file");
         btnSaveFile.setFont(font);
         btnSaveFile.setBackground(new Color(32, 204, 35));
         btnSaveFile.setForeground(new Color(255, 255, 255));
@@ -134,7 +144,7 @@ public class BookView extends JPanel {
         btnSaveFile.setBounds(600, 160, 100, 30);
         panelContent.add(btnSaveFile);
 
-        JButton btnView = new JButton("Hiển Thị");
+        btnView = new JButton("Lưu");
         btnView.setFont(font);
         btnView.setBackground(new Color(16, 120, 133));
         btnView.setForeground(new Color(255, 255, 255));
@@ -165,7 +175,7 @@ public class BookView extends JPanel {
         labelBookId1.setBounds(170, 30, 70, 20);
         searchPanel.add(labelBookId1);
 
-        JTextField textFieldBookId1 = new JTextField();
+        textFieldBookId1 = new JTextField();
         textFieldBookId1.setFont(font1);
         textFieldBookId1.setBounds(280, 30, 120, 20);
         searchPanel.add(textFieldBookId1);
@@ -175,7 +185,7 @@ public class BookView extends JPanel {
         labelCategogy1.setBounds(420, 30, 70, 20);
         searchPanel.add(labelCategogy1);
 
-        JTextField textFieldCategory1 = new JTextField();
+        textFieldCategory1 = new JTextField();
         textFieldCategory1.setFont(font1);
         textFieldCategory1.setBounds(500, 30, 120, 20);
         searchPanel.add(textFieldCategory1);
@@ -185,7 +195,7 @@ public class BookView extends JPanel {
         labelBookName1.setBounds(640, 30, 70, 20);
         searchPanel.add(labelBookName1);
 
-        JTextField textFieldBookName1 = new JTextField();
+        textFieldBookName1 = new JTextField();
         textFieldBookName1.setFont(font1);
         textFieldBookName1.setBounds(720, 30, 120, 20);
         searchPanel.add(textFieldBookName1);
@@ -195,7 +205,7 @@ public class BookView extends JPanel {
         labelAuthor1.setBounds(860, 30, 70, 20);
         searchPanel.add(labelAuthor1);
 
-        JTextField textFieldAuthor1 = new JTextField();
+        textFieldAuthor1 = new JTextField();
         textFieldAuthor1.setFont(font1);
         textFieldAuthor1.setBounds(940, 30, 120, 20);
         searchPanel.add(textFieldAuthor1);
@@ -205,7 +215,7 @@ public class BookView extends JPanel {
         labelYearPublished1.setBounds(170, 60, 110, 20);
         searchPanel.add(labelYearPublished1);
 
-        JTextField textFieldYearPublished1 = new JTextField();
+        textFieldYearPublished1 = new JTextField();
         textFieldYearPublished1.setFont(font1);
         textFieldYearPublished1.setBounds(280, 60, 120, 20);
         searchPanel.add(textFieldYearPublished1);
@@ -215,7 +225,7 @@ public class BookView extends JPanel {
         labelQuantity1.setBounds(420, 60, 80, 20);
         searchPanel.add(labelQuantity1);
 
-        JTextField textFieldQuantity1 = new JTextField();
+        textFieldQuantity1 = new JTextField();
         textFieldQuantity1.setFont(font1);
         textFieldQuantity1.setBounds(500, 60, 120, 20);
         searchPanel.add(textFieldQuantity1);
@@ -225,12 +235,12 @@ public class BookView extends JPanel {
         labelPrice1.setBounds(640, 60, 30, 20);
         searchPanel.add(labelPrice1);
 
-        JTextField textFieldPrice1 = new JTextField();
+        textFieldPrice1 = new JTextField();
         textFieldPrice1.setFont(font1);
         textFieldPrice1.setBounds(720, 60, 120, 20);
         searchPanel.add(textFieldPrice1);
 
-        JButton btnSearch = new JButton("Tìm Kiếm");
+        btnSearch = new JButton("Tìm Kiếm");
         btnSearch.setFont(font);
         btnSearch.setBackground(new Color(38, 55, 114));
         btnSearch.setForeground(new Color(255, 255, 255));
@@ -279,11 +289,18 @@ public class BookView extends JPanel {
         Object[] newRow = {"B001", "Van hoc", "Chi Pheo", "Nam Cao", "1941", "10", "50000"};
         tableModel.addRow(newRow);
         searchPanel.add(scrollPane);
+        //thao tac them su kien cho cac nut bam
+        btnAdd.addActionListener(bookController);
+        btnChange.addActionListener(bookController);
+        btnView.addActionListener(bookController);
+        btnDelete.addActionListener(bookController);
+        btnReset.addActionListener(bookController);
+        btnSaveFile.addActionListener(bookController);
+        btnSearch.addActionListener(bookController);
 
         return panelContent;
 
     }
-
     /**
      * Hàm hỗ trợ scale ảnh
      */
@@ -305,5 +322,171 @@ public class BookView extends JPanel {
         app.add(panel, BorderLayout.CENTER);
     }
 
+    public JTextField getTextFieldBookId() {
+        return textFieldBookId;
+    }
 
+    public void setTextFieldBookId(JTextField textFieldBookId) {
+        this.textFieldBookId = textFieldBookId;
+    }
+
+    public JTextField getTextFieldBookId1() {
+        return textFieldBookId1;
+    }
+
+    public void setTextFieldBookId1(JTextField textFieldBookId1) {
+        this.textFieldBookId1 = textFieldBookId1;
+    }
+
+    public JTextField getTextFieldCategory() {
+        return textFieldCategory;
+    }
+
+    public void setTextFieldCategory(JTextField textFieldCategory) {
+        this.textFieldCategory = textFieldCategory;
+    }
+
+    public JTextField getTextFieldCategory1() {
+        return textFieldCategory1;
+    }
+
+    public void setTextFieldCategory1(JTextField textFieldCategory1) {
+        this.textFieldCategory1 = textFieldCategory1;
+    }
+
+    public JTextField getTextFieldBookName() {
+        return textFieldBookName;
+    }
+
+    public void setTextFieldBookName(JTextField textFieldBookName) {
+        this.textFieldBookName = textFieldBookName;
+    }
+
+    public JTextField getTextFieldBookName1() {
+        return textFieldBookName1;
+    }
+
+    public void setTextFieldBookName1(JTextField textFieldBookName1) {
+        this.textFieldBookName1 = textFieldBookName1;
+    }
+
+    public JTextField getTextFieldAuthor() {
+        return textFieldAuthor;
+    }
+
+    public void setTextFieldAuthor(JTextField textFieldAuthor) {
+        this.textFieldAuthor = textFieldAuthor;
+    }
+
+    public JTextField getTextFieldAuthor1() {
+        return textFieldAuthor1;
+    }
+
+    public void setTextFieldAuthor1(JTextField textFieldAuthor1) {
+        this.textFieldAuthor1 = textFieldAuthor1;
+    }
+
+    public JTextField getTextFieldYearPublished() {
+        return textFieldYearPublished;
+    }
+
+    public void setTextFieldYearPublished(JTextField textFieldYearPublished) {
+        this.textFieldYearPublished = textFieldYearPublished;
+    }
+
+    public JTextField getTextFieldYearPublished1() {
+        return textFieldYearPublished1;
+    }
+
+    public void setTextFieldYearPublished1(JTextField textFieldYearPublished1) {
+        this.textFieldYearPublished1 = textFieldYearPublished1;
+    }
+
+    public JTextField getTextFieldQuantity() {
+        return textFieldQuantity;
+    }
+
+    public void setTextFieldQuantity(JTextField textFieldQuantity) {
+        this.textFieldQuantity = textFieldQuantity;
+    }
+
+    public JTextField getTextFieldQuantity1() {
+        return textFieldQuantity1;
+    }
+
+    public void setTextFieldQuantity1(JTextField textFieldQuantity1) {
+        this.textFieldQuantity1 = textFieldQuantity1;
+    }
+
+    public JTextField getTextFieldPrice() {
+        return textFieldPrice;
+    }
+
+    public void setTextFieldPrice(JTextField textFieldPrice) {
+        this.textFieldPrice = textFieldPrice;
+    }
+
+    public JTextField getTextFieldPrice1() {
+        return textFieldPrice1;
+    }
+
+    public void setTextFieldPrice1(JTextField textFieldPrice1) {
+        this.textFieldPrice1 = textFieldPrice1;
+    }
+
+    public JButton getBtnAdd() {
+        return btnAdd;
+    }
+
+    public void setBtnAdd(JButton btnAdd) {
+        this.btnAdd = btnAdd;
+    }
+
+    public JButton getBtnChange() {
+        return btnChange;
+    }
+
+    public void setBtnChange(JButton btnChange) {
+        this.btnChange = btnChange;
+    }
+
+    public JButton getBtnDelete() {
+        return btnDelete;
+    }
+
+    public void setBtnDelete(JButton btnDelete) {
+        this.btnDelete = btnDelete;
+    }
+
+    public JButton getBtnReset() {
+        return btnReset;
+    }
+
+    public void setBtnReset(JButton btnReset) {
+        this.btnReset = btnReset;
+    }
+
+    public JButton getBtnSaveFile() {
+        return btnSaveFile;
+    }
+
+    public void setBtnSaveFile(JButton btnSaveFile) {
+        this.btnSaveFile = btnSaveFile;
+    }
+
+    public JButton getBtnView() {
+        return btnView;
+    }
+
+    public void setBtnView(JButton btnView) {
+        this.btnView = btnView;
+    }
+
+    public JButton getBtnSearch() {
+        return btnSearch;
+    }
+
+    public void setBtnSearch(JButton btnSearch) {
+        this.btnSearch = btnSearch;
+    }
 }

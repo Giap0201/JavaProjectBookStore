@@ -10,6 +10,10 @@ public class BookController implements ActionListener {
     private BookView bookView;
     private Books books;
 
+    public BookController(BookView bookView) {
+        this.bookView = bookView;
+    }
+
     @Override
     public void actionPerformed(ActionEvent e) {
 
