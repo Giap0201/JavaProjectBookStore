@@ -11,6 +11,8 @@ public class App extends JFrame {
     private JPanel panelEmployee;
     private JPanel panelBooks;
     private JPanel panelCustomer;
+    private JPanel panelDiscount;
+    private JPanel panelInvoice;
 
     public App() {
         setTitle("Shops Management System");
@@ -21,7 +23,7 @@ public class App extends JFrame {
         int width = (int) screenSize.getWidth();
         int height = (int) screenSize.getHeight();
         setSize(width, height);
-        // Gọi phương thức init để thiết lập sidebar chung
+        // Gọi phương thức initManageInvoiceView để thiết lập sidebar chung
         init();
         setVisible(true);
     }
@@ -62,15 +64,32 @@ public class App extends JFrame {
         gbc.gridy = 3;
         panelMenu.add(panelEmployee, gbc);
 
+        panelInvoice = createSidebarItem("images/icon12.png", "Quản Lí Hoá Đơn", font);
         gbc.gridy = 4;
+        panelMenu.add(panelInvoice, gbc);
+
+        panelDiscount = createSidebarItem("images/icon13.png", "Giảm Giá", font);
+        gbc.gridy = 5;
+        panelMenu.add(panelDiscount, gbc);
+
+        gbc.gridy = 6;
         gbc.weighty = 1; // Khoảng trống sẽ mở rộng để đẩy nội dung lên trên, chiem het khong gian ben duoi
         panelMenu.add(Box.createVerticalGlue(), gbc);//thanh phan tang hinh co kha nang gian no
 
+//        changeBackground(panelBooks);
+
 
         panelSidebar.add(panelMenu, BorderLayout.CENTER);
+
         AppController appController = new AppController(this);
-//        panelBooks.addMouseListener(appController);
-//        panelEmployee.addMouseListener(appController);
+
+        //them su kien vao cac sidebar
+        panelEmployee.addMouseListener(appController);
+        panelBooks.addMouseListener(appController);
+        panelCustomer.addMouseListener(appController);
+        panelSale.addMouseListener(appController);
+        panelDiscount.addMouseListener(appController);
+        panelInvoice.addMouseListener(appController);
 
         // Thêm sidebar vào frame
         add(panelSidebar, BorderLayout.WEST);
@@ -101,6 +120,10 @@ public class App extends JFrame {
         }
     }
 
+    public void changeBackground(JPanel panel) {
+        panel.setBackground(new Color(148, 9, 217));
+    }
+
     public JPanel getPanelSale() {
         return panelSale;
     }
@@ -115,6 +138,14 @@ public class App extends JFrame {
 
     public JPanel getPanelCustomer() {
         return panelCustomer;
+    }
+
+    public JPanel getPanelDiscount() {
+        return panelDiscount;
+    }
+
+    public JPanel getPanelInvoice() {
+        return panelInvoice;
     }
 
 

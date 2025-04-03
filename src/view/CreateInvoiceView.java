@@ -1,4 +1,5 @@
 package view;
+
 import javax.swing.*;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
@@ -6,7 +7,7 @@ import javax.swing.table.JTableHeader;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 
-public class CustomerInvoiceView {
+public class CreateInvoiceView {
     public JPanel initCustomerInvoiceView() {
         JPanel panelContent = new JPanel();
         panelContent.setLayout(null);
@@ -293,8 +294,9 @@ public class CustomerInvoiceView {
             return new ImageIcon(new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB)); // Trả về ảnh trống
         }
     }
+
     public static void main(String[] args) {
-        CustomerInvoiceView a = new CustomerInvoiceView();
+        CreateInvoiceView a = new CreateInvoiceView();
         JPanel panel = a.initCustomerInvoiceView();
         JFrame app = new App();
         app.add(panel, BorderLayout.CENTER);

@@ -5,10 +5,9 @@ import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.JTableHeader;
 import java.awt.*;
-import java.time.chrono.JapaneseDate;
 
-public class ImportInvoiceView extends JPanel {
-    public JPanel init() {
+public class ManageInvoiceView extends JPanel {
+    public JPanel initManageInvoiceView() {
         Font font = new Font("Tahoma", Font.BOLD, 15);
         JPanel panelContent = new JPanel();
         panelContent.setLayout(null);
@@ -251,8 +250,8 @@ public class ImportInvoiceView extends JPanel {
     }
 
     public static void main(String[] args) {
-        ImportInvoiceView a = new ImportInvoiceView();
-        JPanel panel = a.init();
+        ManageInvoiceView a = new ManageInvoiceView();
+        JPanel panel = a.initManageInvoiceView();
         JFrame app = new App();
         app.add(panel, BorderLayout.CENTER);
     }
