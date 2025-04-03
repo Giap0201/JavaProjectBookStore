@@ -26,6 +26,7 @@ public class AdminController implements ActionListener {
             handleLogin();
         } else if (e.getSource() == signInView.getBtnCancel()) {
             signInView.dispose();
+            signInView.setVisible(false);
         }
     }
 

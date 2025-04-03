@@ -1,6 +1,7 @@
 package view;
 
 import controller.BookController;
+import model.Books;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableCellRenderer;
@@ -8,6 +9,7 @@ import javax.swing.table.DefaultTableModel;
 import javax.swing.table.JTableHeader;
 import java.awt.*;
 import java.awt.image.BufferedImage;
+import java.util.ArrayList;
 
 public class BookView extends JPanel {
 
@@ -19,6 +21,8 @@ public class BookView extends JPanel {
     private JTextField textFieldQuantity, textFieldQuantity1;
     private JTextField textFieldPrice, textFieldPrice1;
     private JButton btnAdd, btnChange, btnDelete, btnReset, btnSaveFile, btnView, btnSearch;
+    public DefaultTableModel tableModel;
+    public JTable table;
 
     public JPanel initBookView() {
         Font font = new Font("Tahoma", Font.BOLD, 15);
@@ -252,12 +256,12 @@ public class BookView extends JPanel {
         String[] columnNames = {"Mã sách", "Thể loại", "Tên sách", "Tác giả", "Năm xuất bản", "Số lượng", "Giá"};
 
         // Tao model cho JTable
-        DefaultTableModel tableModel = new DefaultTableModel(columnNames, 0);
-        JTable table = new JTable(tableModel);
+        tableModel = new DefaultTableModel(columnNames, 0);
+        table = new JTable(tableModel);
 
         // Dat font chu va do cao cua dong trong bang
         table.setFont(new Font("Tahoma", Font.PLAIN, 12));
-        table.setRowHeight(20);
+        table.setRowHeight(20);//dat chieu cao moi dong trong bang
 
         // Lay phan tieu de cua bang
         JTableHeader header = table.getTableHeader();
@@ -285,9 +289,6 @@ public class BookView extends JPanel {
         // Them JScrollPane vao panel chinh
         panelContent.add(scrollPane);
 
-        // Tao mot dong du lieu va them vao bang
-        Object[] newRow = {"B001", "Van hoc", "Chi Pheo", "Nam Cao", "1941", "10", "50000"};
-        tableModel.addRow(newRow);
         searchPanel.add(scrollPane);
         //thao tac them su kien cho cac nut bam
         btnAdd.addActionListener(bookController);
@@ -301,6 +302,10 @@ public class BookView extends JPanel {
         return panelContent;
 
     }
+
+//    private void updateTable() {
+//    }
+
     /**
      * Hàm hỗ trợ scale ảnh
      */
@@ -315,12 +320,6 @@ public class BookView extends JPanel {
         }
     }
 
-    public static void main(String[] args) {
-        BookView a = new BookView();
-        JPanel panel = a.initBookView();
-        JFrame app = new App();
-        app.add(panel, BorderLayout.CENTER);
-    }
 
     public JTextField getTextFieldBookId() {
         return textFieldBookId;
@@ -489,4 +488,51 @@ public class BookView extends JPanel {
     public void setBtnSearch(JButton btnSearch) {
         this.btnSearch = btnSearch;
     }
+
+    public DefaultTableModel getTableView() {
+        return this.tableModel;
+    }
+
+    //thuong thuc clear xu li khi them du lieu vao
+    public void clear() {
+        textFieldBookId.setText("");
+        textFieldBookName.setText("");
+        textFieldAuthor.setText("");
+        textFieldYearPublished.setText("");
+        textFieldPrice.setText("");
+        textFieldQuantity.setText("");
+        textFieldCategory.setText("");
+    }
+
+    public void showMessage(String msg) {
+        JOptionPane.showMessageDialog(this, msg);
+    }
+
+    public void updateTable(ArrayList<Books> booksList) {
+        // Clear existing rows
+        tableModel.setRowCount(0);
+
+        // Add each book to the table
+        for (Books book : booksList) {
+            Object[] row = {
+                    book.getBookID(),
+                    book.getCategory(),
+                    book.getBookName(),
+                    book.getAuthor(),
+                    book.getYearPublished(),
+                    book.getQuantity(),
+                    book.getPrice()
+            };
+            tableModel.addRow(row);
+        }
+    }
+
+    public static void main(String[] args) {
+        BookView a = new BookView();
+        JPanel panel = a.initBookView();
+        JFrame app = new App();
+        app.add(panel, BorderLayout.CENTER);
+    }
+
+
 }

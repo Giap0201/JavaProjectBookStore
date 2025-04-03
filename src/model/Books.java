@@ -12,12 +12,12 @@ public class Books {
     public Books() {
     }
 
-    public Books(String bookID, String bookName, String author, String category, double price, int yearPublished, int quantity) {
+    public Books(String bookID, String bookName, String author, int yearPublished, double price, int quantity, String category) {
         this.bookID = bookID;
         this.bookName = bookName;
         this.author = author;
-        this.price = price;
         this.yearPublished = yearPublished;
+        this.price = price;
         this.quantity = quantity;
         this.category = category;
     }
@@ -76,5 +76,18 @@ public class Books {
 
     public void setCategory(String category) {
         this.category = category;
+    }
+
+    @Override
+    public String toString() {
+        return "Books{" +
+                "bookID='" + bookID + '\'' +
+                ", bookName='" + bookName + '\'' +
+                ", author='" + author + '\'' +
+                ", yearPublished=" + yearPublished +
+                ", price=" + price +
+                ", quantity=" + quantity +
+                ", category='" + category + '\'' +
+                '}';
     }
 }

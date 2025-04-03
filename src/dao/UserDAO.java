@@ -18,12 +18,23 @@ public class UserDAO {
             ps.setString(1, username);
             ResultSet rs = ps.executeQuery();
 
-            if (rs.next()) {
-                user = new User(rs.getInt("id"), rs.getString("username"), rs.getString("password"));
+            while (rs.next()) {
+//                user = new User(rs.getInt("id"), rs.getString("username"), rs.getString("password"));
+                int id = rs.getInt("id");
+                String username_rs = rs.getString("username");
+                String password_rs = rs.getString("password");
+                user = new User(id, username_rs, password_rs);
             }
         } catch (SQLException e) {
             e.printStackTrace();
         }
         return user;
     }
+//    public User getUserById(int id){
+//
+//    }
+    public  static UserDAO getInstance() {
+        return new UserDAO();
+    }
+
 }

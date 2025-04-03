@@ -9,5 +9,16 @@
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="library" name="MigLayout" level="project" />
     <orderEntry type="library" name="mysql-connector-java-8.0.28" level="project" />
+    <orderEntry type="module-library">
+      <library>
+        <CLASSES />
+        <JAVADOC>
+          <root url="jar://$MODULE_DIR$/../../Downloads/jcalendar-1.4.zip!/doc/api" />
+        </JAVADOC>
+        <SOURCES>
+          <root url="jar://$MODULE_DIR$/../../Downloads/jcalendar-1.4.zip!/src" />
+        </SOURCES>
+      </library>
+    </orderEntry>
   </component>
 </module>
