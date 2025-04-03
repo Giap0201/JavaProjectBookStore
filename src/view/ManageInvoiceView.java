@@ -21,7 +21,7 @@ public class ManageInvoiceView extends JPanel {
         //phan chua sua xoa xuat lam moi
         JPanel panelContent1  = new JPanel();
         panelContent1.setLayout(null);
-        panelContent1.setBounds(0,50,1500,95);
+        panelContent1.setBounds(0,45,1500,85);
 
         //them vao panel chinh
         panelContent.add(panelContent1);
@@ -115,7 +115,7 @@ public class ManageInvoiceView extends JPanel {
         //content2
         JPanel panelConten2  = new JPanel();
         panelConten2.setLayout(null);
-        panelConten2.setBounds(0,145,1500,320);
+        panelConten2.setBounds(0,130,1500,340);
         panelConten2.setBackground(new Color(245, 248, 214));
 
         JLabel title2 = new JLabel("TÌM KIẾM HOÁ ĐƠN");
@@ -205,10 +205,27 @@ public class ManageInvoiceView extends JPanel {
         for (int i = 0; i<table.getColumnCount(); i++){
             table.getColumnModel().getColumn(i).setCellRenderer(centerRenderer);
         }
+
+
         JScrollPane scrollPane = new JScrollPane(table);
         scrollPane.setBounds(40,95,1200,220);
         panelConten2.add(scrollPane);
 
+        JLabel labeltotal = createLabel("Số lượng hoá đơn: ",font1);
+        labeltotal.setBounds(50,317,150,20);
+        panelConten2.add(labeltotal);
+
+        JLabel textFieldTotal = createLabel("0",font1);
+        textFieldTotal.setBounds(200, 317, 150, 20);
+        panelConten2.add(textFieldTotal);
+
+        JLabel labelmonney = createLabel("Tổng tiền: ",font1);
+        labelmonney.setBounds(400,317,100,20);
+        panelConten2.add(labelmonney);
+
+        JLabel textFieldMonney = createLabel("0 VNĐ",font1);
+        textFieldMonney.setBounds(500, 317, 150, 20);
+        panelConten2.add(textFieldMonney);
 
 
         //content3
@@ -216,16 +233,65 @@ public class ManageInvoiceView extends JPanel {
         panelConten3.setLayout(null);
         panelConten3.setBounds(0,466,1500,320);
 
+        JLabel labeltitle3 = new JLabel("CHI TIẾT HOÁ ĐƠN");
+        labeltitle3.setFont(new Font("Tahoma", Font.BOLD, 16));
+        labeltitle3.setForeground(new Color(2, 62, 150));
+        labeltitle3.setBounds(620, 5, 200, 25);
+        panelConten3.add(labeltitle3);
 
+        String[] columnTabel2 = {"Mã HĐ","Mã Sách","Tên Sách","Số lượng","Đơn Giá","Giảm Giá","Thành tiền"};
+        DefaultTableModel tableModel2 = new DefaultTableModel(columnTabel2, 0);
+        JTable tabel2 = new JTable(tableModel2);
+        tabel2.setFont(new Font("Tahoma", Font.PLAIN, 12));
+        tabel2.setRowHeight(20);
+        JTableHeader tableHeader2 = tabel2.getTableHeader();
+        tableHeader2.setFont(new Font("Tahoma", Font.BOLD, 13));
+        tableHeader2.setBackground(new Color(172, 172, 182));
 
+// Căn giữa nội dung bảng
+        DefaultTableCellRenderer tableCellRenderer2 = new DefaultTableCellRenderer();
+        tableCellRenderer2.setHorizontalAlignment(JLabel.CENTER);
 
+        for (int i = 0; i < tabel2.getColumnCount(); i++) {
+            tabel2.getColumnModel().getColumn(i).setCellRenderer(tableCellRenderer2);
+        }
 
+// Thêm bảng vào JScrollPane
+        JScrollPane scrollPane2 = new JScrollPane(tabel2);
+        scrollPane2.setBounds(40, 40, 1000, 260);
+        panelConten3.add(scrollPane2);
 
+// Nhãn hiển thị tiêu đề tổng số sản phẩm
+        JLabel lblTotalItems = createLabel("Tổng số sản phẩm:", font1);
+        lblTotalItems.setBounds(1060, 30, 150, 25);
+        panelConten3.add(lblTotalItems);
 
+// Nhãn hiển thị giá trị tổng số sản phẩm (mặc định là 0)
+        JLabel lblTotalItemsValue = createLabel("0", font1);
+        lblTotalItemsValue.setBounds(1220, 30, 100, 25);
+        panelConten3.add(lblTotalItemsValue);
 
+// Nhãn hiển thị tiêu đề tổng tiền
+        JLabel lblTotalPrice = createLabel("Tổng tiền:", font1);
+        lblTotalPrice.setBounds(1060, 70, 150, 25);
+        panelConten3.add(lblTotalPrice);
 
+// Nhãn hiển thị giá trị tổng tiền (mặc định là 0 VNĐ)
+        JLabel lblTotalPriceValue = createLabel("0 VNĐ", font1);
+        lblTotalPriceValue.setBounds(1220, 70, 120, 25);
+        panelConten3.add(lblTotalPriceValue);
 
+// Thêm nút "Sửa"
+        JButton btnChange2 = createButton("Sửa", font1);
+        btnChange2.setBackground(new Color(44, 134, 3));
+        btnChange2.setBounds(1110, 110, 120, 30);
+        panelConten3.add(btnChange2);
 
+// Thêm nút "Xoá"
+        JButton btnDelete2 = createButton("Xoá", font1);
+        btnDelete2.setBackground(new Color(203, 13, 13));
+        btnDelete2.setBounds(1110, 150, 120, 30);
+        panelConten3.add(btnDelete2);
 
         panelContent.add(panelConten2);
         panelContent.add(panelConten3);
