@@ -3,7 +3,11 @@
     <CLASSES>
       <root url="jar://$PROJECT_DIR$/../../Downloads/mysql-connector-java-8.0.28.jar!/" />
     </CLASSES>
-    <JAVADOC />
-    <SOURCES />
+    <JAVADOC>
+      <root url="jar://$PROJECT_DIR$/../../Downloads/jcalendar-1.4.zip!/doc/api" />
+    </JAVADOC>
+    <SOURCES>
+      <root url="jar://$PROJECT_DIR$/../../Downloads/jcalendar-1.4.zip!/src" />
+    </SOURCES>
   </library>
 </component>
