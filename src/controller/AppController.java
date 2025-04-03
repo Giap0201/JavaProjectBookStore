@@ -30,7 +30,7 @@ public class AppController {
         appView.getPanelEmployee().addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                replacePanel(new EmployeeView().Employee());
+                replacePanel(new EmployeeView().initEmployeeView());
             }
         });
     }
