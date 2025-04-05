@@ -1,7 +1,9 @@
 package view;
 
-import controller.BookController;
+import controller.CategoryController;
 import model.Books;
+import model.Category;
+import service.CategoryService;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableCellRenderer;
@@ -12,7 +14,7 @@ import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 
 public class BookView extends JPanel {
-
+    private CategoryController categoryController;
     private JTextField textFieldBookId, textFieldBookId1;
     private JComboBox<String> comboBoxCategory;
     private JTextField textFieldCategory, textFieldCategory1;
@@ -24,8 +26,11 @@ public class BookView extends JPanel {
     private JButton btnAdd, btnChange, btnDelete, btnReset, btnSaveFile, btnView, btnSearch;
     public DefaultTableModel tableModel;
     public JTable table;
-
+    public BookView(){
+        this.categoryController = new CategoryController();
+    }
     public JPanel initBookView() {
+//        BookController bookController = new BookController(this);
         Font font = new Font("Tahoma", Font.BOLD, 15);
         JPanel panelContent = new JPanel();
         panelContent.setLayout(null);
@@ -52,7 +57,9 @@ public class BookView extends JPanel {
         labelCategory.setBounds(50, 90, 100, 20);
         panelContent.add(labelCategory);
 
-        comboBoxCategory = new JComboBox<>(new String[] {"Tiểu thuyết", "Kinh tế", "Lịch sử", "Khoa học", "Văn học"});
+        comboBoxCategory = new JComboBox<>();
+        //tai len tu ham duoi
+        loadCategories();
         comboBoxCategory.setFont(font1);
         comboBoxCategory.setBounds(170, 90, 230, 30);
         panelContent.add(comboBoxCategory);
@@ -273,8 +280,6 @@ public class BookView extends JPanel {
         panel3.setBounds(0,670,1500,300);
         panelContent.add(panel3);
 
-
-        // Hàng đầu tiên (2 cột)
         JLabel labelPriceMin = new JLabel("Đơn giá thấp nhất:");
         labelPriceMin.setFont(font);
         labelPriceMin.setBounds(100, 0, 150, 20);
@@ -319,7 +324,7 @@ public class BookView extends JPanel {
         labelTotalBooksValue.setBounds(650, 30, 150, 20);
         panel3.add(labelTotalBooksValue);
 
-        //thao tac them su kien cho cac nut bam
+//        thao tac them su kien cho cac nut bam
 //        btnAdd.addActionListener(bookController);
 //        btnChange.addActionListener(bookController);
 //        btnView.addActionListener(bookController);
@@ -328,7 +333,6 @@ public class BookView extends JPanel {
 //        btnSaveFile.addActionListener(bookController);
 //        btnSearch.addActionListener(bookController);
         return panelContent;
-
     }
 
     public JButton createButton(String title,Color color){
@@ -340,10 +344,6 @@ public class BookView extends JPanel {
         button.setHorizontalAlignment(JButton.CENTER);
         return button;
     }
-
-
-//    private void updateTable() {
-//    }
 
     /**
      * Hàm hỗ trợ scale ảnh
@@ -358,180 +358,6 @@ public class BookView extends JPanel {
             return new ImageIcon(new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB)); // Trả về ảnh trống
         }
     }
-
-
-    public JTextField getTextFieldBookId() {
-        return textFieldBookId;
-    }
-
-    public void setTextFieldBookId(JTextField textFieldBookId) {
-        this.textFieldBookId = textFieldBookId;
-    }
-
-    public JTextField getTextFieldBookId1() {
-        return textFieldBookId1;
-    }
-
-    public void setTextFieldBookId1(JTextField textFieldBookId1) {
-        this.textFieldBookId1 = textFieldBookId1;
-    }
-
-    public JTextField getTextFieldCategory() {
-        return textFieldCategory;
-    }
-
-    public void setTextFieldCategory(JTextField textFieldCategory) {
-        this.textFieldCategory = textFieldCategory;
-    }
-
-    public JTextField getTextFieldCategory1() {
-        return textFieldCategory1;
-    }
-
-    public void setTextFieldCategory1(JTextField textFieldCategory1) {
-        this.textFieldCategory1 = textFieldCategory1;
-    }
-
-    public JTextField getTextFieldBookName() {
-        return textFieldBookName;
-    }
-
-    public void setTextFieldBookName(JTextField textFieldBookName) {
-        this.textFieldBookName = textFieldBookName;
-    }
-
-    public JTextField getTextFieldBookName1() {
-        return textFieldBookName1;
-    }
-
-    public void setTextFieldBookName1(JTextField textFieldBookName1) {
-        this.textFieldBookName1 = textFieldBookName1;
-    }
-
-    public JTextField getTextFieldAuthor() {
-        return textFieldAuthor;
-    }
-
-    public void setTextFieldAuthor(JTextField textFieldAuthor) {
-        this.textFieldAuthor = textFieldAuthor;
-    }
-
-    public JTextField getTextFieldAuthor1() {
-        return textFieldAuthor1;
-    }
-
-    public void setTextFieldAuthor1(JTextField textFieldAuthor1) {
-        this.textFieldAuthor1 = textFieldAuthor1;
-    }
-
-    public JTextField getTextFieldYearPublished() {
-        return textFieldYearPublished;
-    }
-
-    public void setTextFieldYearPublished(JTextField textFieldYearPublished) {
-        this.textFieldYearPublished = textFieldYearPublished;
-    }
-
-    public JTextField getTextFieldYearPublished1() {
-        return textFieldYearPublished1;
-    }
-
-    public void setTextFieldYearPublished1(JTextField textFieldYearPublished1) {
-        this.textFieldYearPublished1 = textFieldYearPublished1;
-    }
-
-    public JTextField getTextFieldQuantity() {
-        return textFieldQuantity;
-    }
-
-    public void setTextFieldQuantity(JTextField textFieldQuantity) {
-        this.textFieldQuantity = textFieldQuantity;
-    }
-
-    public JTextField getTextFieldQuantity1() {
-        return textFieldQuantity1;
-    }
-
-    public void setTextFieldQuantity1(JTextField textFieldQuantity1) {
-        this.textFieldQuantity1 = textFieldQuantity1;
-    }
-
-    public JTextField getTextFieldPrice() {
-        return textFieldPrice;
-    }
-
-    public void setTextFieldPrice(JTextField textFieldPrice) {
-        this.textFieldPrice = textFieldPrice;
-    }
-
-    public JTextField getTextFieldPrice1() {
-        return textFieldPrice1;
-    }
-
-    public void setTextFieldPrice1(JTextField textFieldPrice1) {
-        this.textFieldPrice1 = textFieldPrice1;
-    }
-
-    public JButton getBtnAdd() {
-        return btnAdd;
-    }
-
-    public void setBtnAdd(JButton btnAdd) {
-        this.btnAdd = btnAdd;
-    }
-
-    public JButton getBtnChange() {
-        return btnChange;
-    }
-
-    public void setBtnChange(JButton btnChange) {
-        this.btnChange = btnChange;
-    }
-
-    public JButton getBtnDelete() {
-        return btnDelete;
-    }
-
-    public void setBtnDelete(JButton btnDelete) {
-        this.btnDelete = btnDelete;
-    }
-
-    public JButton getBtnReset() {
-        return btnReset;
-    }
-
-    public void setBtnReset(JButton btnReset) {
-        this.btnReset = btnReset;
-    }
-
-    public JButton getBtnSaveFile() {
-        return btnSaveFile;
-    }
-
-    public void setBtnSaveFile(JButton btnSaveFile) {
-        this.btnSaveFile = btnSaveFile;
-    }
-
-    public JButton getBtnView() {
-        return btnView;
-    }
-
-    public void setBtnView(JButton btnView) {
-        this.btnView = btnView;
-    }
-
-    public JButton getBtnSearch() {
-        return btnSearch;
-    }
-
-    public void setBtnSearch(JButton btnSearch) {
-        this.btnSearch = btnSearch;
-    }
-
-    public DefaultTableModel getTableView() {
-        return this.tableModel;
-    }
-
     //thuong thuc clear xu li khi them du lieu vao
     public void clear() {
         textFieldBookId.setText("");
@@ -541,6 +367,14 @@ public class BookView extends JPanel {
         textFieldPrice.setText("");
         textFieldQuantity.setText("");
         textFieldCategory.setText("");
+    }
+    //ham lay category tu db da thong qua controller them vao combobox
+    private void loadCategories(){
+        ArrayList<Category> categories = categoryController.getCategories();
+        this.comboBoxCategory.addItem("");
+        for(Category category : categories){
+            this.comboBoxCategory.addItem(category.getCategoryName());
+        }
     }
 
     public void showMessage(String msg) {

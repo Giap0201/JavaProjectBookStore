@@ -7,19 +7,19 @@ public class Books {
     private int yearPublished;
     private double price;
     private int quantity;
-    private String category;
+    private String categoryName;
 
     public Books() {
     }
 
-    public Books(String bookID, String bookName, String author, int yearPublished, double price, int quantity, String category) {
+    public Books(String bookID, String bookName, String author, int yearPublished, double price, int quantity, String categoryName) {
         this.bookID = bookID;
         this.bookName = bookName;
         this.author = author;
         this.yearPublished = yearPublished;
         this.price = price;
         this.quantity = quantity;
-        this.category = category;
+        this.categoryName = categoryName;
     }
 
     public String getBookID() {
@@ -70,24 +70,11 @@ public class Books {
         this.quantity = quantity;
     }
 
-    public String getCategory() {
-        return category;
+    public String getCategoryName() {
+        return categoryName;
     }
 
-    public void setCategory(String category) {
-        this.category = category;
-    }
-
-    @Override
-    public String toString() {
-        return "Books{" +
-                "bookID='" + bookID + '\'' +
-                ", bookName='" + bookName + '\'' +
-                ", author='" + author + '\'' +
-                ", yearPublished=" + yearPublished +
-                ", price=" + price +
-                ", quantity=" + quantity +
-                ", category='" + category + '\'' +
-                '}';
+    public void setCategoryName(String categoryName) {
+        this.categoryName = categoryName;
     }
 }
