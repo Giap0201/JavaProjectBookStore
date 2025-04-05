@@ -1,22 +1,23 @@
-//package service;
-//
-//import dao.BookDAO;
-//import model.Books;
-//
-//import java.util.ArrayList;
-//
-//public class BookService {
-//    private BookDAO bookDAO = new BookDAO();
-//
-//    public boolean insertBook(Books book) {
-//        int rs = bookDAO.insert(book);
-//        if (rs == 0) {
-//            return false;
-//        }
-//        return true;
-//    }
-//
-//    public ArrayList<Books> getAllBooks() {
-//        return bookDAO.getAll();
-//    }
-//}
+package service;
+
+import dao.BookDAO;
+import model.Books;
+
+import java.util.ArrayList;
+
+
+public class BookService {
+    private BookDAO bookDAO;
+    public BookService() {
+        this.bookDAO = new BookDAO();
+    }
+    public BookService(BookDAO dao) {
+        this.bookDAO = dao;
+    }
+    public boolean addBook(Books book) {
+        return bookDAO.insert(book) > 0;
+    }
+    public ArrayList<Books> getAllBooks() {
+        return bookDAO.getAll();
+    }
+}

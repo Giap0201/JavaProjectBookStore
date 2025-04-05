@@ -1,9 +1,9 @@
 package view;
 
+import controller.BookController;
 import controller.CategoryController;
 import model.Books;
 import model.Category;
-import service.CategoryService;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableCellRenderer;
@@ -16,21 +16,21 @@ import java.util.ArrayList;
 public class BookView extends JPanel {
     private CategoryController categoryController;
     private JTextField textFieldBookId, textFieldBookId1;
-    private JComboBox<String> comboBoxCategory;
-    private JTextField textFieldCategory, textFieldCategory1;
+    private JComboBox<String> comboBoxCategory, comboBoxCategory_search;
     private JTextField textFieldBookName, textFieldBookName1;
     private JTextField textFieldAuthor, textFieldAuthor1;
     private JTextField textFieldYearPublished, textFieldYearPublished1;
     private JTextField textFieldQuantity, textFieldQuantity1;
     private JTextField textFieldPrice, textFieldPrice1;
     private JButton btnAdd, btnChange, btnDelete, btnReset, btnSaveFile, btnView, btnSearch;
-    public DefaultTableModel tableModel;
-    public JTable table;
-    public BookView(){
+    private DefaultTableModel tableModel;
+    private JTable table;
+
+    public BookView() {
         this.categoryController = new CategoryController();
     }
+
     public JPanel initBookView() {
-//        BookController bookController = new BookController(this);
         Font font = new Font("Tahoma", Font.BOLD, 15);
         JPanel panelContent = new JPanel();
         panelContent.setLayout(null);
@@ -58,8 +58,8 @@ public class BookView extends JPanel {
         panelContent.add(labelCategory);
 
         comboBoxCategory = new JComboBox<>();
-        //tai len tu ham duoi
-        loadCategories();
+        //tai len tu ham duoi db
+        loadCategories(comboBoxCategory);
         comboBoxCategory.setFont(font1);
         comboBoxCategory.setBounds(170, 90, 230, 30);
         panelContent.add(comboBoxCategory);
@@ -159,72 +159,73 @@ public class BookView extends JPanel {
 
         JLabel labelBookId1 = new JLabel("Mã sách");
         labelBookId1.setFont(font);
-        labelBookId1.setBounds(170, 30+10, 70, 20);
+        labelBookId1.setBounds(170, 30 + 10, 70, 20);
         searchPanel.add(labelBookId1);
-
+        Font font11 = new Font("Tahoma", Font.PLAIN, 13);
         textFieldBookId1 = new JTextField();
-        textFieldBookId1.setFont(font1);
-        textFieldBookId1.setBounds(280, 30+10, 120, 20);
+        textFieldBookId1.setFont(font11);
+        textFieldBookId1.setBounds(280, 30 + 10, 120, 20);
         searchPanel.add(textFieldBookId1);
 
         JLabel labelCategogy1 = new JLabel("Thể loại");
         labelCategogy1.setFont(font);
-        labelCategogy1.setBounds(420, 30+10, 70, 20);
+        labelCategogy1.setBounds(420, 30 + 10, 70, 20);
         searchPanel.add(labelCategogy1);
 
-        textFieldCategory1 = new JTextField();
-        textFieldCategory1.setFont(font1);
-        textFieldCategory1.setBounds(500, 30+10, 120, 20);
-        searchPanel.add(textFieldCategory1);
+        comboBoxCategory_search = new JComboBox<>();
+        loadCategories(comboBoxCategory_search);
+        comboBoxCategory_search.setFont(font11);
+        comboBoxCategory_search.setBounds(500, 30 + 10, 120, 20);
+        searchPanel.add(comboBoxCategory_search);
 
         JLabel labelBookName1 = new JLabel("Tên sách");
         labelBookName1.setFont(font);
-        labelBookName1.setBounds(640, 30+10, 70, 20);
+        labelBookName1.setBounds(640, 30 + 10, 70, 20);
         searchPanel.add(labelBookName1);
 
         textFieldBookName1 = new JTextField();
-        textFieldBookName1.setFont(font1);
-        textFieldBookName1.setBounds(720, 30+10, 120, 20);
+        textFieldBookName1.setFont(font11);
+        textFieldBookName1.setBounds(720, 30 + 10, 120, 20);
         searchPanel.add(textFieldBookName1);
 
         JLabel labelAuthor1 = new JLabel("Tác giả");
         labelAuthor1.setFont(font);
-        labelAuthor1.setBounds(860, 30+10, 70, 20);
+        labelAuthor1.setBounds(860, 30 + 10, 70, 20);
         searchPanel.add(labelAuthor1);
 
         textFieldAuthor1 = new JTextField();
-        textFieldAuthor1.setFont(font1);
-        textFieldAuthor1.setBounds(940, 30+10, 120, 20);
+        textFieldAuthor1.setFont(font11);
+        textFieldAuthor1.setBounds(940, 30 + 10, 120, 20);
         searchPanel.add(textFieldAuthor1);
 
         JLabel labelYearPublished1 = new JLabel("Năm xuất bản");
         labelYearPublished1.setFont(font);
-        labelYearPublished1.setBounds(170, 60+10, 110, 20);
+        labelYearPublished1.setBounds(170, 60 + 10, 110, 20);
         searchPanel.add(labelYearPublished1);
 
         textFieldYearPublished1 = new JTextField();
-        textFieldYearPublished1.setFont(font1);
-        textFieldYearPublished1.setBounds(280, 60+10, 120, 20);
+        textFieldYearPublished1.setFont(font11);
+        textFieldYearPublished1.setBounds(280, 60 + 10, 120, 20);
         searchPanel.add(textFieldYearPublished1);
 
         JLabel labelQuantity1 = new JLabel("Số lượng");
         labelQuantity1.setFont(font);
-        labelQuantity1.setBounds(420, 60+10, 80, 20);
+        labelQuantity1.setBounds(420, 60 + 10, 80, 20);
         searchPanel.add(labelQuantity1);
 
         textFieldQuantity1 = new JTextField();
-        textFieldQuantity1.setFont(font1);
-        textFieldQuantity1.setBounds(500, 60+10, 120, 20);
+        textFieldQuantity1.setFont(font11);
+        textFieldQuantity1.setBounds(500, 60 + 10, 120, 20);
         searchPanel.add(textFieldQuantity1);
 
         JLabel labelPrice1 = new JLabel("Giá");
         labelPrice1.setFont(font);
-        labelPrice1.setBounds(640, 60+10, 30, 20);
+        labelPrice1.setBounds(640, 60 + 10, 30, 20);
         searchPanel.add(labelPrice1);
 
         textFieldPrice1 = new JTextField();
-        textFieldPrice1.setFont(font1);
-        textFieldPrice1.setBounds(720, 60+10, 120, 20);
+        textFieldPrice1.setFont(font11);
+        textFieldPrice1.setBounds(720, 60 + 10, 120, 20);
         searchPanel.add(textFieldPrice1);
 
         btnSearch = new JButton("Tìm Kiếm");
@@ -232,7 +233,7 @@ public class BookView extends JPanel {
         btnSearch.setBackground(new Color(38, 55, 114));
         btnSearch.setForeground(new Color(255, 255, 255));
         btnSearch.setHorizontalAlignment(JButton.CENTER);
-        btnSearch.setBounds(940, 60+10, 120, 25);
+        btnSearch.setBounds(940, 60 + 10, 120, 25);
         searchPanel.add(btnSearch);
 
         //tao bang du lieu de hien thi ket qua
@@ -265,19 +266,14 @@ public class BookView extends JPanel {
 
         // Tao JScrollPane de chua JTable
         JScrollPane scrollPane = new JScrollPane(table);
-
-        // Dat vi tri va kich thuoc cho JScrollPane
-        scrollPane.setBounds(50, 100+10, 1200, 270);
-
-        // Them JScrollPane vao panel chinh
-//        panelContent.add(scrollPane);
-
+        scrollPane.setBounds(50, 100 + 10, 1200, 270);
+//        updateTable(bookController.getListOfBooks());
         searchPanel.add(scrollPane);
 
         JPanel panel3 = new JPanel();
         panel3.setBackground(new Color(255, 255, 255));
         panel3.setLayout(null);
-        panel3.setBounds(0,670,1500,300);
+        panel3.setBounds(0, 670, 1500, 300);
         panelContent.add(panel3);
 
         JLabel labelPriceMin = new JLabel("Đơn giá thấp nhất:");
@@ -325,17 +321,18 @@ public class BookView extends JPanel {
         panel3.add(labelTotalBooksValue);
 
 //        thao tac them su kien cho cac nut bam
-//        btnAdd.addActionListener(bookController);
-//        btnChange.addActionListener(bookController);
-//        btnView.addActionListener(bookController);
-//        btnDelete.addActionListener(bookController);
-//        btnReset.addActionListener(bookController);
-//        btnSaveFile.addActionListener(bookController);
-//        btnSearch.addActionListener(bookController);
+        BookController bookController = new BookController(this);
+        btnAdd.addActionListener(bookController);
+        btnChange.addActionListener(bookController);
+        btnView.addActionListener(bookController);
+        btnDelete.addActionListener(bookController);
+        btnReset.addActionListener(bookController);
+        btnSaveFile.addActionListener(bookController);
+        btnSearch.addActionListener(bookController);
         return panelContent;
     }
 
-    public JButton createButton(String title,Color color){
+    public JButton createButton(String title, Color color) {
         Font font = new Font("Tahoma", Font.BOLD, 15);
         JButton button = new JButton(title);
         button.setFont(font);
@@ -358,6 +355,7 @@ public class BookView extends JPanel {
             return new ImageIcon(new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB)); // Trả về ảnh trống
         }
     }
+
     //thuong thuc clear xu li khi them du lieu vao
     public void clear() {
         textFieldBookId.setText("");
@@ -366,39 +364,222 @@ public class BookView extends JPanel {
         textFieldYearPublished.setText("");
         textFieldPrice.setText("");
         textFieldQuantity.setText("");
-        textFieldCategory.setText("");
+        comboBoxCategory.setSelectedIndex(0);
     }
+
     //ham lay category tu db da thong qua controller them vao combobox
-    private void loadCategories(){
+    private void loadCategories(JComboBox<String> comboBox) {
         ArrayList<Category> categories = categoryController.getCategories();
-        this.comboBoxCategory.addItem("");
-        for(Category category : categories){
-            this.comboBoxCategory.addItem(category.getCategoryName());
+        comboBox.addItem("");
+//        comboBox.removeAllItems();
+        for (Category category : categories) {
+            comboBox.addItem(category.getCategoryName());
         }
     }
 
-    public void showMessage(String msg) {
-        JOptionPane.showMessageDialog(this, msg);
+    //ham update du lieu trong table
+    public void updateTable(ArrayList<Books> listBook) {
+        //xoa toan bo du lieu trong bang
+        tableModel.setRowCount(0);
+        //them du lieu vao trong bang
+        for (Books book : listBook) {
+            Object[] row = {book.getBookID(), book.getCategory().getCategoryName(),
+                    book.getBookName(), book.getAuthor(), book.getYearPublished(), book.getQuantity(), book.getPrice(),};
+            tableModel.addRow(row);
+        }
     }
 
-//    public void updateTable(ArrayList<Books> booksList) {
-//        // Clear existing rows
-//        tableModel.setRowCount(0);
-//
-//        // Add each book to the table
-//        for (Books book : booksList) {
-//            Object[] row = {
-//                    book.getBookID(),
-//                    book.getCategory(),
-//                    book.getBookName(),
-//                    book.getAuthor(),
-//                    book.getYearPublished(),
-//                    book.getQuantity(),
-//                    book.getPrice()
-//            };
-//            tableModel.addRow(row);
-//        }
-//    }
+    public CategoryController getCategoryController() {
+        return categoryController;
+    }
+
+    public void setCategoryController(CategoryController categoryController) {
+        this.categoryController = categoryController;
+    }
+
+    public JTextField getTextFieldBookId() {
+        return textFieldBookId;
+    }
+
+    public void setTextFieldBookId(JTextField textFieldBookId) {
+        this.textFieldBookId = textFieldBookId;
+    }
+
+    public JTextField getTextFieldBookId1() {
+        return textFieldBookId1;
+    }
+
+    public void setTextFieldBookId1(JTextField textFieldBookId1) {
+        this.textFieldBookId1 = textFieldBookId1;
+    }
+
+    public JComboBox<String> getComboBoxCategory() {
+        return comboBoxCategory;
+    }
+
+    public void setComboBoxCategory(JComboBox<String> comboBoxCategory) {
+        this.comboBoxCategory = comboBoxCategory;
+    }
+
+    public JComboBox<String> getComboBoxCategory_search() {
+        return comboBoxCategory_search;
+    }
+
+    public void setComboBoxCategory_search(JComboBox<String> comboBoxCategory_search) {
+        this.comboBoxCategory_search = comboBoxCategory_search;
+    }
+
+    public JTextField getTextFieldBookName() {
+        return textFieldBookName;
+    }
+
+    public void setTextFieldBookName(JTextField textFieldBookName) {
+        this.textFieldBookName = textFieldBookName;
+    }
+
+    public JTextField getTextFieldBookName1() {
+        return textFieldBookName1;
+    }
+
+    public void setTextFieldBookName1(JTextField textFieldBookName1) {
+        this.textFieldBookName1 = textFieldBookName1;
+    }
+
+    public JTextField getTextFieldAuthor() {
+        return textFieldAuthor;
+    }
+
+    public void setTextFieldAuthor(JTextField textFieldAuthor) {
+        this.textFieldAuthor = textFieldAuthor;
+    }
+
+    public JTextField getTextFieldAuthor1() {
+        return textFieldAuthor1;
+    }
+
+    public void setTextFieldAuthor1(JTextField textFieldAuthor1) {
+        this.textFieldAuthor1 = textFieldAuthor1;
+    }
+
+    public JTextField getTextFieldYearPublished() {
+        return textFieldYearPublished;
+    }
+
+    public void setTextFieldYearPublished(JTextField textFieldYearPublished) {
+        this.textFieldYearPublished = textFieldYearPublished;
+    }
+
+    public JTextField getTextFieldYearPublished1() {
+        return textFieldYearPublished1;
+    }
+
+    public void setTextFieldYearPublished1(JTextField textFieldYearPublished1) {
+        this.textFieldYearPublished1 = textFieldYearPublished1;
+    }
+
+    public JTextField getTextFieldQuantity() {
+        return textFieldQuantity;
+    }
+
+    public void setTextFieldQuantity(JTextField textFieldQuantity) {
+        this.textFieldQuantity = textFieldQuantity;
+    }
+
+    public JTextField getTextFieldQuantity1() {
+        return textFieldQuantity1;
+    }
+
+    public void setTextFieldQuantity1(JTextField textFieldQuantity1) {
+        this.textFieldQuantity1 = textFieldQuantity1;
+    }
+
+    public JTextField getTextFieldPrice() {
+        return textFieldPrice;
+    }
+
+    public void setTextFieldPrice(JTextField textFieldPrice) {
+        this.textFieldPrice = textFieldPrice;
+    }
+
+    public JTextField getTextFieldPrice1() {
+        return textFieldPrice1;
+    }
+
+    public void setTextFieldPrice1(JTextField textFieldPrice1) {
+        this.textFieldPrice1 = textFieldPrice1;
+    }
+
+    public JButton getBtnAdd() {
+        return btnAdd;
+    }
+
+    public void setBtnAdd(JButton btnAdd) {
+        this.btnAdd = btnAdd;
+    }
+
+    public JButton getBtnChange() {
+        return btnChange;
+    }
+
+    public void setBtnChange(JButton btnChange) {
+        this.btnChange = btnChange;
+    }
+
+    public JButton getBtnDelete() {
+        return btnDelete;
+    }
+
+    public void setBtnDelete(JButton btnDelete) {
+        this.btnDelete = btnDelete;
+    }
+
+    public JButton getBtnReset() {
+        return btnReset;
+    }
+
+    public void setBtnReset(JButton btnReset) {
+        this.btnReset = btnReset;
+    }
+
+    public JButton getBtnSaveFile() {
+        return btnSaveFile;
+    }
+
+    public void setBtnSaveFile(JButton btnSaveFile) {
+        this.btnSaveFile = btnSaveFile;
+    }
+
+    public JButton getBtnView() {
+        return btnView;
+    }
+
+    public void setBtnView(JButton btnView) {
+        this.btnView = btnView;
+    }
+
+    public JButton getBtnSearch() {
+        return btnSearch;
+    }
+
+    public void setBtnSearch(JButton btnSearch) {
+        this.btnSearch = btnSearch;
+    }
+
+    public DefaultTableModel getTableModel() {
+        return tableModel;
+    }
+
+    public void setTableModel(DefaultTableModel tableModel) {
+        this.tableModel = tableModel;
+    }
+
+    public JTable getTable() {
+        return table;
+    }
+
+    public void setTable(JTable table) {
+        this.table = table;
+    }
 
     public static void main(String[] args) {
         BookView a = new BookView();

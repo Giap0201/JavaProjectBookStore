@@ -1,59 +1,98 @@
-//package controller;
-//
-//import model.Books;
-//import service.BookService;
-//import view.BookView;
-//
-//import javax.swing.table.DefaultTableModel;
-//import java.awt.event.ActionEvent;
-//import java.awt.event.ActionListener;
-//
-//public class BookController implements ActionListener {
-//    private BookView bookView;
-//    private BookService bookService;
-//
-//    public BookController(BookView bookView) {
-//        this.bookView = bookView;
-//        this.bookService = new BookService();
-//        bookView.tableModel = new DefaultTableModel();
-//        // Đảm bảo bảng được cập nhật với tất cả các sách khi khởi tạo
-//        this.bookView.updateTable(bookService.getAllBooks());
-//    }
-//
-//    @Override
-//    public void actionPerformed(ActionEvent e) {
-//        if (e.getSource() == bookView.getBtnAdd()) {
-//            bookView.clear();  // Xóa các trường nhập liệu
-//        } else if (e.getSource() == bookView.getBtnView()) {
-//            try {
-//                // Lấy dữ liệu từ các trường nhập liệu và thêm vào cơ sở dữ liệu
-//                String bookName = bookView.getTextFieldBookName().getText().trim();
-//                String author = bookView.getTextFieldAuthor().getText().trim();
-//                String bookID = bookView.getTextFieldBookId().getText().trim();
-//                String yearTest = bookView.getTextFieldYearPublished().getText().trim();
-//                int yearPublished = Integer.parseInt(yearTest);
-//                float price = Float.parseFloat(bookView.getTextFieldPrice().getText().trim());
-//                int quantity = Integer.parseInt(bookView.getTextFieldQuantity().getText().trim());
-//                String category = bookView.getTextFieldCategory().getText().trim();
-//
-//                // Tạo đối tượng Book và thêm vào database
-//                Books book = new Books(bookID, bookName, author, yearPublished, price, quantity, category);
-//                boolean check = bookService.insertBook(book);
-//
-//                if (check) {
-//                    bookView.showMessage("Book added successfully.");
-//                    bookView.updateTable(bookService.getAllBooks());  // Cập nhật bảng
-//                    bookView.clear();  // Xóa các trường nhập liệu
-//                } else {
-//                    bookView.showMessage("Insert Book Failed.");
-//                }
-//            } catch (Exception ex) {
-//                ex.printStackTrace();
-//                bookView.showMessage("An error occurred while adding the book.");
-//            }
-//        } else if (e.getSource() == bookView.getBtnDelete()) {
-//            bookView.updateTable(bookService.getAllBooks());  // Cập nhật bảng
-//
-//        }
-//    }
-//}
+package controller;
+
+import model.Books;
+import model.Category;
+import service.BookService;
+import service.CategoryService;
+import view.BookView;
+
+import javax.swing.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.util.ArrayList;
+
+public class BookController implements ActionListener {
+    private BookView bookView;
+    private BookService bookService;
+    private CategoryService categoryService;
+    private ArrayList<Category> categories;
+    private ArrayList<Books> listOfBooks;
+
+
+    public BookController(BookView bookView) {
+        this.bookView = bookView;
+        this.bookService = new BookService();
+        this.categoryService = new CategoryService();
+        this.categories = categoryService.getCategory();
+        listOfBooks = bookService.getAllBooks();
+        bookView.updateTable(listOfBooks);
+    }
+
+
+    @Override
+    public void actionPerformed(ActionEvent e) {
+        if (e.getSource() == bookView.getBtnAdd()) {
+            try {
+                // Lấy dữ liệu và kiểm tra hợp lệ
+                String bookID = bookView.getTextFieldBookId().getText().trim();
+                String bookName = bookView.getTextFieldBookName().getText().trim();
+                String author = bookView.getTextFieldAuthor().getText().trim();
+                String yearStr = bookView.getTextFieldYearPublished().getText().trim();
+                String priceStr = bookView.getTextFieldPrice().getText().trim();
+                String quantityStr = bookView.getTextFieldQuantity().getText().trim();
+
+                if (bookID.isEmpty() || bookName.isEmpty() || author.isEmpty()
+                        || yearStr.isEmpty() || priceStr.isEmpty() || quantityStr.isEmpty()) {
+                    JOptionPane.showMessageDialog(bookView, "Vui lòng điền đầy đủ thông tin.");
+                    return;
+                }
+
+                int yearPublished;
+                try {
+                    yearPublished = Integer.parseInt(yearStr);
+                } catch (NumberFormatException ex) {
+                    JOptionPane.showMessageDialog(bookView, "Năm xuất bản phải là số nguyên.");
+                    return;
+                }
+
+                double price;
+                try {
+                    price = Double.parseDouble(priceStr);
+                } catch (NumberFormatException ex) {
+                    JOptionPane.showMessageDialog(bookView, "Giá sách phải là số thực.");
+                    return;
+                }
+
+                int quantity;
+                try {
+                    quantity = Integer.parseInt(quantityStr);
+                } catch (NumberFormatException ex) {
+                    JOptionPane.showMessageDialog(bookView, "Số lượng phải là số nguyên.");
+                    return;
+                }
+
+                int index = bookView.getComboBoxCategory().getSelectedIndex();
+                if (index <= 0) {
+                    JOptionPane.showMessageDialog(bookView, "Vui lòng chọn thể loại.");
+                    return;
+                }
+
+                Category category = categories.get(index - 1);
+                Books book = new Books(bookID, bookName, author, yearPublished, price, quantity, category);
+
+                boolean check = bookService.addBook(book);
+                if (check) {
+                    JOptionPane.showMessageDialog(bookView, "Thêm sách thành công!");
+                    bookView.updateTable(bookService.getAllBooks());
+                    bookView.clear();
+                } else {
+                    JOptionPane.showMessageDialog(bookView, "Không thể thêm sách. Có thể mã sách đã tồn tại.");
+                }
+
+            } catch (Exception ex) {
+                ex.printStackTrace();
+                JOptionPane.showMessageDialog(bookView, "Lỗi không xác định: " + ex.getMessage());
+            }
+        }
+    }
+}

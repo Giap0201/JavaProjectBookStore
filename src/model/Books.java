@@ -7,25 +7,23 @@ public class Books {
     private int yearPublished;
     private double price;
     private int quantity;
-    private String categoryName;
+    private Category category;
 
     public Books() {
     }
-
-    public Books(String bookID, String bookName, String author, int yearPublished, double price, int quantity, String categoryName) {
+    public Books(String bookID, String bookName, String author, int yearPublished, double price, int quantity, Category category) {
         this.bookID = bookID;
         this.bookName = bookName;
         this.author = author;
         this.yearPublished = yearPublished;
         this.price = price;
         this.quantity = quantity;
-        this.categoryName = categoryName;
+        this.category = category;
     }
 
     public String getBookID() {
         return bookID;
     }
-
     public void setBookID(String bookID) {
         this.bookID = bookID;
     }
@@ -70,11 +68,11 @@ public class Books {
         this.quantity = quantity;
     }
 
-    public String getCategoryName() {
-        return categoryName;
+    public Category getCategory() {
+        return category;
     }
 
-    public void setCategoryName(String categoryName) {
-        this.categoryName = categoryName;
+    public void setCategory(Category category) {
+        this.category = category;
     }
 }
