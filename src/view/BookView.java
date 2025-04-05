@@ -381,24 +381,24 @@ public class BookView extends JPanel {
         JOptionPane.showMessageDialog(this, msg);
     }
 
-    public void updateTable(ArrayList<Books> booksList) {
-        // Clear existing rows
-        tableModel.setRowCount(0);
-
-        // Add each book to the table
-        for (Books book : booksList) {
-            Object[] row = {
-                    book.getBookID(),
-                    book.getCategory(),
-                    book.getBookName(),
-                    book.getAuthor(),
-                    book.getYearPublished(),
-                    book.getQuantity(),
-                    book.getPrice()
-            };
-            tableModel.addRow(row);
-        }
-    }
+//    public void updateTable(ArrayList<Books> booksList) {
+//        // Clear existing rows
+//        tableModel.setRowCount(0);
+//
+//        // Add each book to the table
+//        for (Books book : booksList) {
+//            Object[] row = {
+//                    book.getBookID(),
+//                    book.getCategory(),
+//                    book.getBookName(),
+//                    book.getAuthor(),
+//                    book.getYearPublished(),
+//                    book.getQuantity(),
+//                    book.getPrice()
+//            };
+//            tableModel.addRow(row);
+//        }
+//    }
 
     public static void main(String[] args) {
         BookView a = new BookView();
