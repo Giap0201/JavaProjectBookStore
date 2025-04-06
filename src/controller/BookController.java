@@ -16,16 +16,54 @@ public class BookController implements ActionListener {
     private BookService bookService;
     private CategoryService categoryService;
     private ArrayList<Category> categories;
-    private ArrayList<Books> listOfBooks;
-
 
     public BookController(BookView bookView) {
         this.bookView = bookView;
         this.bookService = new BookService();
         this.categoryService = new CategoryService();
         this.categories = categoryService.getCategory();
-        listOfBooks = bookService.getAllBooks();
-        bookView.updateTable(listOfBooks);
+        //them su kien cho bang
+        addTableSelectionListener();
+        updateTable(bookService.getAllBooks());
+    }
+    //phuong thuc nay co the nem ra loi trong qua trinh chay, phai xu li trong try catch
+    private Books gotBookInForm() throws Exception{
+        String bookID = bookView.getTextFieldBookId().getText().trim();
+        String bookName = bookView.getTextFieldBookName().getText().trim();
+        String author = bookView.getTextFieldAuthor().getText().trim();
+        String yearPublishedStr = bookView.getTextFieldYearPublished().getText().trim();
+        String priceStr = bookView.getTextFieldPrice().getText().trim();
+        String quantityStr = bookView.getTextFieldQuantity().getText().trim();
+        if(bookID.isEmpty() || author.isEmpty() || bookName.isEmpty() || yearPublishedStr.isEmpty() || priceStr.isEmpty() || quantityStr.isEmpty()){
+            throw new Exception("Vui lòng điền đầy đủ thông tin! hoặc chọn sách cần sửa!!");
+            //khi gap loi thi chu dong tao ra exception va dung, nhay vao try catch de xu li loi nay
+        }
+        int yearPublished;
+        try {
+            yearPublished = Integer.parseInt(yearPublishedStr);
+            if(yearPublished > 2025 || yearPublished < 0) throw  new Exception("Năm xuất bản không hợp lệ!!");
+            //loi numberFormatException là loi chuyen tu String sang kieu so
+        }catch (NumberFormatException e){
+            throw new Exception("Năm xuất bản phải là số nguyên");
+        }
+        double price;
+        try {
+            price = Double.parseDouble(priceStr);
+            if(price < 0) throw new Exception("Giá phải là số dương!!");
+        }catch (NumberFormatException e){
+            throw new Exception("Giá sách phải là số thực!!");
+        }
+        int quantity;
+        try {
+            quantity = Integer.parseInt(quantityStr);
+            if(quantity < 0) throw new Exception("Số lượng phải là số dương!!");
+        }catch (NumberFormatException e){
+            throw  new Exception("Số lượng phải là số !!");
+        }
+        int choiceCaterogy = bookView.getComboBoxCategory().getSelectedIndex();
+        if(choiceCaterogy <= 0) throw  new Exception("Vui lòng chọn thể loại!!");
+        Category category = categories.get(choiceCaterogy-1);
+        return new Books(bookID,bookName,author,yearPublished,price,quantity,category);
     }
 
 
@@ -33,66 +71,68 @@ public class BookController implements ActionListener {
     public void actionPerformed(ActionEvent e) {
         if (e.getSource() == bookView.getBtnAdd()) {
             try {
-                // Lấy dữ liệu và kiểm tra hợp lệ
-                String bookID = bookView.getTextFieldBookId().getText().trim();
-                String bookName = bookView.getTextFieldBookName().getText().trim();
-                String author = bookView.getTextFieldAuthor().getText().trim();
-                String yearStr = bookView.getTextFieldYearPublished().getText().trim();
-                String priceStr = bookView.getTextFieldPrice().getText().trim();
-                String quantityStr = bookView.getTextFieldQuantity().getText().trim();
-
-                if (bookID.isEmpty() || bookName.isEmpty() || author.isEmpty()
-                        || yearStr.isEmpty() || priceStr.isEmpty() || quantityStr.isEmpty()) {
-                    JOptionPane.showMessageDialog(bookView, "Vui lòng điền đầy đủ thông tin.");
-                    return;
-                }
-
-                int yearPublished;
-                try {
-                    yearPublished = Integer.parseInt(yearStr);
-                } catch (NumberFormatException ex) {
-                    JOptionPane.showMessageDialog(bookView, "Năm xuất bản phải là số nguyên.");
-                    return;
-                }
-
-                double price;
-                try {
-                    price = Double.parseDouble(priceStr);
-                } catch (NumberFormatException ex) {
-                    JOptionPane.showMessageDialog(bookView, "Giá sách phải là số thực.");
-                    return;
-                }
-
-                int quantity;
-                try {
-                    quantity = Integer.parseInt(quantityStr);
-                } catch (NumberFormatException ex) {
-                    JOptionPane.showMessageDialog(bookView, "Số lượng phải là số nguyên.");
-                    return;
-                }
-
-                int index = bookView.getComboBoxCategory().getSelectedIndex();
-                if (index <= 0) {
-                    JOptionPane.showMessageDialog(bookView, "Vui lòng chọn thể loại.");
-                    return;
-                }
-
-                Category category = categories.get(index - 1);
-                Books book = new Books(bookID, bookName, author, yearPublished, price, quantity, category);
-
+                Books book = gotBookInForm();
                 boolean check = bookService.addBook(book);
                 if (check) {
                     JOptionPane.showMessageDialog(bookView, "Thêm sách thành công!");
-                    bookView.updateTable(bookService.getAllBooks());
+                    updateTable(bookService.getAllBooks());
                     bookView.clear();
                 } else {
                     JOptionPane.showMessageDialog(bookView, "Không thể thêm sách. Có thể mã sách đã tồn tại.");
                 }
-
+            } catch (Exception ex) {
+                ex.printStackTrace();//nhung loi khong bat duoc se hien thi trong consolog
+                JOptionPane.showMessageDialog(bookView, ex.getMessage());
+            }
+        }
+        else if (e.getSource() == bookView.getBtnChange()) {
+            try {
+                //lay du lieu tu form
+                Books book = gotBookInForm(); 
+                boolean check = bookService.updateBook(book); 
+                if (check) {
+                    JOptionPane.showMessageDialog(bookView, "Sửa sách thành công!");
+                    updateTable(bookService.getAllBooks()); //cap nhat lai table
+                    bookView.clear(); //lam trong form
+                } else {
+                    JOptionPane.showMessageDialog(bookView, "Không thể sửa sách. Vui lòng thử lại.");
+                }
             } catch (Exception ex) {
                 ex.printStackTrace();
-                JOptionPane.showMessageDialog(bookView, "Lỗi không xác định: " + ex.getMessage());
+                JOptionPane.showMessageDialog(bookView, ex.getMessage());
             }
+        }
+    }
+    public void addTableSelectionListener(){
+        bookView.getTable().getSelectionModel().addListSelectionListener(e->{
+            int selectRow = bookView.getTable().getSelectedRow();
+            if(selectRow >= 0){
+                String bookID = (String) bookView.getTable().getValueAt(selectRow, 0);
+                String categoryName = (String)bookView.getTable().getValueAt(selectRow, 1);
+                String bookName = (String)bookView.getTable().getValueAt(selectRow, 2);
+                String author = (String)bookView.getTable().getValueAt(selectRow, 3);
+                int yearPublished = (int)bookView.getTable().getValueAt(selectRow, 4);
+                int quantity = (int)bookView.getTable().getValueAt(selectRow, 5);
+                double price = (double)bookView.getTable().getValueAt(selectRow, 6);
+
+                bookView.getTextFieldBookId().setText(bookID);
+                bookView.getComboBoxCategory().setSelectedItem(categoryName);
+                bookView.getTextFieldBookName().setText(bookName);
+                bookView.getTextFieldAuthor().setText(author);
+                bookView.getTextFieldYearPublished().setText(String.valueOf(yearPublished));
+                bookView.getTextFieldQuantity().setText(String.valueOf(quantity));
+                bookView.getTextFieldPrice().setText(String.valueOf(price));
+            }
+        });
+    }
+    public void updateTable(ArrayList<Books> listBook) {
+        //xoa toan bo du lieu trong bang
+        bookView.getTableModel().setRowCount(0);
+        //them du lieu vao trong bang
+        for (Books book : listBook) {
+            Object[] row = {book.getBookID(), book.getCategory().getCategoryName(),
+                    book.getBookName(), book.getAuthor(), book.getYearPublished(), book.getQuantity(), book.getPrice(),};
+            bookView.getTableModel().addRow(row);
         }
     }
 }

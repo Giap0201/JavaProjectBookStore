@@ -20,4 +20,7 @@ public class BookService {
     public ArrayList<Books> getAllBooks() {
         return bookDAO.getAll();
     }
+    public boolean updateBook(Books book) {
+        return bookDAO.update(book) > 0;
+    }
 }

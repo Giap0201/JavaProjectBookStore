@@ -1,7 +1,5 @@
 package dao;
 
-import model.Books;
-
 import java.util.ArrayList;
 
 public interface DAOInterface<T> {

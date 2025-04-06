@@ -5,7 +5,6 @@ import model.Books;
 import model.Category;
 import service.CategoryService;
 
-import javax.swing.*;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -34,13 +33,8 @@ public class BookDAO implements DAOInterface<Books> {
             result = ps.executeUpdate();
 
         } catch (SQLException e) {
-            JOptionPane.showMessageDialog(null,
-                    "Lỗi khi thêm sách: " + e.getMessage(), "Database Error", JOptionPane.ERROR_MESSAGE);
-        } catch (Exception e) {
-            JOptionPane.showMessageDialog(null,
-                    "Lỗi không xác định khi thêm sách: " + e.getMessage(), "Unknown Error", JOptionPane.ERROR_MESSAGE);
+            e.printStackTrace();
         }
-
         return result;
     }
 
@@ -66,27 +60,18 @@ public class BookDAO implements DAOInterface<Books> {
                 String categoryID = rs.getString("categoryID");
 
                 // Tìm Category theo ID
-                Category category = categories.stream()
-                        .filter(c -> c.getCategoryID().equals(categoryID))
-                        .findFirst()
-                        .orElse(null);
-
-                // Nếu không tìm thấy category phù hợp => cảnh báo và bỏ qua sách này
-                if (category == null) {
-                    System.err.println("Không tìm thấy thể loại cho sách có ID: " + bookID);
-                    continue;
+                Category category = new Category();
+                for (Category c : categories) {
+                    if (c.getCategoryID().equals(categoryID)) {
+                        category = c;
+                    }
                 }
-
                 Books book = new Books(bookID, bookName, author, yearPublished, price, quantity, category);
                 listBooks.add(book);
             }
 
         } catch (SQLException e) {
-            JOptionPane.showMessageDialog(null,
-                    "Lỗi khi truy vấn danh sách sách: " + e.getMessage(), "Database Error", JOptionPane.ERROR_MESSAGE);
-        } catch (Exception e) {
-            JOptionPane.showMessageDialog(null,
-                    "Lỗi không xác định khi truy vấn sách: " + e.getMessage(), "Unknown Error", JOptionPane.ERROR_MESSAGE);
+            e.printStackTrace();
         }
 
         return listBooks;
@@ -106,8 +91,22 @@ public class BookDAO implements DAOInterface<Books> {
 
     @Override
     public int update(Books books) {
-        // Có thể viết sau nếu cần
-        return 0;
+        int result = 0;
+        String query = "UPDATE books SET bookName = ?,author = ?,yearPublished = ?,price = ?,quantity = ?,categoryID = ? WHERE bookID = ?";
+        try (Connection conn = JDBCUtil.getConnection();
+             PreparedStatement ps = conn.prepareStatement(query)) {
+            ps.setString(1, books.getBookName());
+            ps.setString(2, books.getAuthor());
+            ps.setInt(3, books.getYearPublished());
+            ps.setDouble(4, books.getPrice());
+            ps.setInt(5, books.getQuantity());
+            ps.setString(6, books.getCategory().getCategoryID());
+            ps.setString(7, books.getBookID());
+            result = ps.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return result;
     }
 
     @Override

@@ -1,10 +1,21 @@
 package view;
-import javax.swing.*;
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Font;
+import java.awt.Image;
+import java.awt.image.BufferedImage;
+
+import javax.swing.ImageIcon;
+import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTable;
+import javax.swing.JTextField;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.JTableHeader;
-import java.awt.*;
-import java.awt.image.BufferedImage;
 
 public class DiscountProgramView {
     public JPanel initDiscountProgramView() {
@@ -255,20 +266,6 @@ public class DiscountProgramView {
         discountDetailsPanel.add(btnDeleteDetail);
 
         return panelContent;
-    }
-
-    /**
-     * Hàm hỗ trợ scale ảnh (tái sử dụng từ code của bạn)
-     */
-    private ImageIcon scaleImage(String path, int width, int height) {
-        try {
-            ImageIcon icon = new ImageIcon(ClassLoader.getSystemResource(path));
-            Image img = icon.getImage().getScaledInstance(width, height, Image.SCALE_SMOOTH);
-            return new ImageIcon(img);
-        } catch (Exception e) {
-            System.err.println("Không tìm thấy ảnh: " + path);
-            return new ImageIcon(new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB)); // Trả về ảnh trống
-        }
     }
 
     public static void main(String[] args) {
