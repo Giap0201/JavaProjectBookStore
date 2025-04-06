@@ -27,7 +27,7 @@ public class BookController implements ActionListener {
         updateTable(bookService.getAllBooks());
     }
     //phuong thuc nay co the nem ra loi trong qua trinh chay, phai xu li trong try catch
-    private Books gotBookInForm() throws Exception{
+    public Books getBookInForm() throws Exception{
         String bookID = bookView.getTextFieldBookId().getText().trim();
         String bookName = bookView.getTextFieldBookName().getText().trim();
         String author = bookView.getTextFieldAuthor().getText().trim();
@@ -70,37 +70,67 @@ public class BookController implements ActionListener {
     @Override
     public void actionPerformed(ActionEvent e) {
         if (e.getSource() == bookView.getBtnAdd()) {
-            try {
-                Books book = gotBookInForm();
-                boolean check = bookService.addBook(book);
-                if (check) {
-                    JOptionPane.showMessageDialog(bookView, "Thêm sách thành công!");
-                    updateTable(bookService.getAllBooks());
-                    bookView.clear();
-                } else {
-                    JOptionPane.showMessageDialog(bookView, "Không thể thêm sách. Có thể mã sách đã tồn tại.");
-                }
-            } catch (Exception ex) {
-                ex.printStackTrace();//nhung loi khong bat duoc se hien thi trong consolog
-                JOptionPane.showMessageDialog(bookView, ex.getMessage());
-            }
+            addBook();
         }
         else if (e.getSource() == bookView.getBtnChange()) {
-            try {
-                //lay du lieu tu form
-                Books book = gotBookInForm(); 
-                boolean check = bookService.updateBook(book); 
-                if (check) {
-                    JOptionPane.showMessageDialog(bookView, "Sửa sách thành công!");
-                    updateTable(bookService.getAllBooks()); //cap nhat lai table
-                    bookView.clear(); //lam trong form
-                } else {
-                    JOptionPane.showMessageDialog(bookView, "Không thể sửa sách. Vui lòng thử lại.");
-                }
-            } catch (Exception ex) {
-                ex.printStackTrace();
-                JOptionPane.showMessageDialog(bookView, ex.getMessage());
+            updateBook();
+        }
+        else if(e.getSource() == bookView.getBtnDelete()){
+            deleteBook();
+        }
+    }
+    public void addBook(){
+        try {
+            Books book = getBookInForm();
+            boolean check = bookService.addBook(book);
+            if (check) {
+                JOptionPane.showMessageDialog(bookView, "Thêm sách thành công!");
+                updateTable(bookService.getAllBooks());
+                clearForm();
+            } else {
+                JOptionPane.showMessageDialog(bookView, "Không thể thêm sách. Có thể mã sách đã tồn tại.");
             }
+        } catch (Exception ex) {
+            ex.printStackTrace();//nhung loi khong bat duoc se hien thi trong consolog
+            JOptionPane.showMessageDialog(bookView, ex.getMessage());
+        }
+    }
+    public void updateBook(){
+        try {
+            //lay du lieu tu form
+            Books book = getBookInForm(); 
+            boolean check = bookService.updateBook(book); 
+            if (check) {
+                JOptionPane.showMessageDialog(bookView, "Sửa sách thành công!");
+                updateTable(bookService.getAllBooks()); //cap nhat lai table
+                clearForm(); //lam trong form
+            } else {
+                JOptionPane.showMessageDialog(bookView, "Không thể sửa sách. Vui lòng thử lại.");
+            }
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            JOptionPane.showMessageDialog(bookView, ex.getMessage());
+        }
+    }
+    //chuc nang xoa sach
+    public void deleteBook(){
+        String bookID = bookView.getTextFieldBookId().getText().trim();
+        if(bookID.equals("") || bookID == null){
+            JOptionPane.showMessageDialog(bookView, "Vui lòng chọn sách cần xoá!!");
+            return;
+        }
+        try{
+            Books book = getBookInForm();
+            boolean check = bookService.deleteBook(book);
+            if(check == true){
+                JOptionPane.showMessageDialog(bookView, "Xoá thành công!!");
+                updateTable(bookService.getAllBooks());
+            }else {
+                JOptionPane.showMessageDialog(bookView, "Lỗi");
+            }
+
+        }catch(Exception e){
+            e.printStackTrace();
         }
     }
     public void addTableSelectionListener(){
@@ -134,5 +164,15 @@ public class BookController implements ActionListener {
                     book.getBookName(), book.getAuthor(), book.getYearPublished(), book.getQuantity(), book.getPrice(),};
             bookView.getTableModel().addRow(row);
         }
+    }
+    //ham xoa du lieu form
+    public void clearForm(){
+        bookView.getTextFieldBookId().setText("");
+        bookView.getTextFieldBookName().setText("");
+        bookView.getTextFieldAuthor().setText("");
+        bookView.getTextFieldPrice().setText("");
+        bookView.getTextFieldQuantity().setText("");
+        bookView.getTextFieldYearPublished().setText("");
+        bookView.getComboBoxCategory().setSelectedIndex(0);
     }
 }

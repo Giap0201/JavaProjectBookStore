@@ -2,7 +2,6 @@ package view;
 
 import controller.BookController;
 import controller.CategoryController;
-import model.Books;
 import model.Category;
 
 import javax.swing.*;
@@ -355,17 +354,6 @@ public class BookView extends JPanel {
             return new ImageIcon(new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB)); // Trả về ảnh trống
         }
     }
-    //thuong thuc clear xu li khi them du lieu vao
-    public void clear() {
-        textFieldBookId.setText("");
-        textFieldBookName.setText("");
-        textFieldAuthor.setText("");
-        textFieldYearPublished.setText("");
-        textFieldPrice.setText("");
-        textFieldQuantity.setText("");
-        comboBoxCategory.setSelectedIndex(0);
-    }
-
     //ham lay category tu db da thong qua controller them vao combobox
     private void loadCategories(JComboBox<String> comboBox) {
         ArrayList<Category> categories = categoryController.getCategories();
@@ -373,18 +361,6 @@ public class BookView extends JPanel {
 //        comboBox.removeAllItems();
         for (Category category : categories) {
             comboBox.addItem(category.getCategoryName());
-        }
-    }
-
-    //ham update du lieu trong table
-    public void updateTable(ArrayList<Books> listBook) {
-        //xoa toan bo du lieu trong bang
-        tableModel.setRowCount(0);
-        //them du lieu vao trong bang
-        for (Books book : listBook) {
-            Object[] row = {book.getBookID(), book.getCategory().getCategoryName(),
-                    book.getBookName(), book.getAuthor(), book.getYearPublished(), book.getQuantity(), book.getPrice(),};
-            tableModel.addRow(row);
         }
     }
     public CategoryController getCategoryController() {

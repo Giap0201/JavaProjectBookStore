@@ -11,7 +11,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
-public class BookDAO implements DAOInterface<Books> {
+public class BookDAO implements IBookDAO {
 
     // Thêm sách vào CSDL
     @Override
@@ -76,19 +76,6 @@ public class BookDAO implements DAOInterface<Books> {
 
         return listBooks;
     }
-
-    @Override
-    public Books selectbyId(Books books) {
-        // Có thể viết sau nếu cần
-        return null;
-    }
-
-    @Override
-    public ArrayList<Books> selectbyCondition(String condition) {
-        // Có thể viết sau nếu cần
-        return null;
-    }
-
     @Override
     public int update(Books books) {
         int result = 0;
@@ -111,7 +98,16 @@ public class BookDAO implements DAOInterface<Books> {
 
     @Override
     public int delete(Books books) {
-        // Có thể viết sau nếu cần
-        return 0;
+        int result = 0;
+        String query = "DELETE FROM books WHERE bookID = ?";
+        try(Connection conn = JDBCUtil.getConnection();
+        PreparedStatement ps = conn.prepareStatement(query)){
+            ps.setString(1, books.getBookID());
+            result = ps.executeUpdate();
+        }catch(SQLException e){
+            e.printStackTrace();
+        }
+        return result;
+
     }
 }

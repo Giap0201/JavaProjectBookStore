@@ -23,4 +23,7 @@ public class BookService {
     public boolean updateBook(Books book) {
         return bookDAO.update(book) > 0;
     }
+    public boolean deleteBook(Books book){
+        return bookDAO.delete(book) > 0;
+    }
 }
