@@ -1,6 +1,7 @@
 package service;
 
 import dao.BookDAO;
+import model.BookSearch;
 import model.Books;
 
 import java.util.ArrayList;
@@ -25,5 +26,8 @@ public class BookService {
     }
     public boolean deleteBook(Books book){
         return bookDAO.delete(book) > 0;
+    }
+    public ArrayList<Books> listBookSearch(BookSearch condition){
+        return bookDAO.listSearchBooks(condition);
     }
 }

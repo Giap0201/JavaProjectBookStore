@@ -18,9 +18,9 @@ public class BookView extends JPanel {
     private JComboBox<String> comboBoxCategory, comboBoxCategory_search;
     private JTextField textFieldBookName, textFieldBookName1;
     private JTextField textFieldAuthor, textFieldAuthor1;
-    private JTextField textFieldYearPublished, textFieldYearPublished1;
-    private JTextField textFieldQuantity, textFieldQuantity1;
-    private JTextField textFieldPrice, textFieldPrice1;
+    private JTextField textFieldYearPublished,textFieldYearFrom,textFieldYearTo;
+    private JTextField textFieldQuantity;
+    private JTextField textFieldPrice,textFieldPriceFrom,textFieldPriceTo;
     private JButton btnAdd, btnChange, btnDelete, btnReset, btnSaveFile, btnView, btnSearch;
     private DefaultTableModel tableModel;
     private JTable table;
@@ -57,7 +57,7 @@ public class BookView extends JPanel {
         panelContent.add(labelCategory);
 
         comboBoxCategory = new JComboBox<>();
-        //tai len tu ham duoi db
+        // tai len tu ham duoi db
         loadCategories(comboBoxCategory);
         comboBoxCategory.setFont(font1);
         comboBoxCategory.setBounds(170, 90, 230, 30);
@@ -138,13 +138,12 @@ public class BookView extends JPanel {
         btnView.setBounds(600 + 40, 220, 100, 30);
         panelContent.add(btnView);
 
-
         ImageIcon icon6 = scaleImage("images/icon6.png", 400, 200);
         JLabel labelImage6 = new JLabel(icon6);
         labelImage6.setBounds(820, 30, 500, 250);
         panelContent.add(labelImage6);
 
-        //tao ra 1 panel moi chua tat ca phan tim kiem
+        // tao ra 1 panel moi chua tat ca phan tim kiem
         JPanel searchPanel = new JPanel();
         searchPanel.setLayout(null);
         searchPanel.setBackground(new Color(255, 255, 255));
@@ -155,88 +154,101 @@ public class BookView extends JPanel {
         labelSearch.setBounds(630, 10, 500, 20);
         labelSearch.setForeground(new Color(44, 44, 171));
         searchPanel.add(labelSearch);
+        Font font11 = new Font("Tahoma", Font.PLAIN, 13);
 
+        // First Row (y=40)
         JLabel labelBookId1 = new JLabel("Mã sách");
         labelBookId1.setFont(font);
-        labelBookId1.setBounds(170, 30 + 10, 70, 20);
+        labelBookId1.setBounds(150, 40, 70, 20);
         searchPanel.add(labelBookId1);
-        Font font11 = new Font("Tahoma", Font.PLAIN, 13);
+
         textFieldBookId1 = new JTextField();
         textFieldBookId1.setFont(font11);
-        textFieldBookId1.setBounds(280, 30 + 10, 120, 20);
+        textFieldBookId1.setBounds(230, 40, 120, 20);
         searchPanel.add(textFieldBookId1);
 
-        JLabel labelCategogy1 = new JLabel("Thể loại");
-        labelCategogy1.setFont(font);
-        labelCategogy1.setBounds(420, 30 + 10, 70, 20);
-        searchPanel.add(labelCategogy1);
+        JLabel labelCategory1 = new JLabel("Thể loại");
+        labelCategory1.setFont(font);
+        labelCategory1.setBounds(410-50, 40, 70, 20); 
+        searchPanel.add(labelCategory1);
 
         comboBoxCategory_search = new JComboBox<>();
         loadCategories(comboBoxCategory_search);
         comboBoxCategory_search.setFont(font11);
-        comboBoxCategory_search.setBounds(500, 30 + 10, 120, 20);
+        comboBoxCategory_search.setBounds(490-50, 40, 120, 20); 
         searchPanel.add(comboBoxCategory_search);
 
         JLabel labelBookName1 = new JLabel("Tên sách");
         labelBookName1.setFont(font);
-        labelBookName1.setBounds(640, 30 + 10, 70, 20);
+        labelBookName1.setBounds(620-50, 40, 70, 20); 
         searchPanel.add(labelBookName1);
 
         textFieldBookName1 = new JTextField();
         textFieldBookName1.setFont(font11);
-        textFieldBookName1.setBounds(720, 30 + 10, 120, 20);
+        textFieldBookName1.setBounds(700-50, 40, 120, 20); 
         searchPanel.add(textFieldBookName1);
 
         JLabel labelAuthor1 = new JLabel("Tác giả");
         labelAuthor1.setFont(font);
-        labelAuthor1.setBounds(860, 30 + 10, 70, 20);
+        labelAuthor1.setBounds(830-50, 40, 70, 20); 
         searchPanel.add(labelAuthor1);
 
         textFieldAuthor1 = new JTextField();
         textFieldAuthor1.setFont(font11);
-        textFieldAuthor1.setBounds(940, 30 + 10, 120, 20);
+        textFieldAuthor1.setBounds(910-50, 40, 120, 20); 
         searchPanel.add(textFieldAuthor1);
 
-        JLabel labelYearPublished1 = new JLabel("Năm xuất bản");
-        labelYearPublished1.setFont(font);
-        labelYearPublished1.setBounds(170, 60 + 10, 110, 20);
-        searchPanel.add(labelYearPublished1);
+        // Second Row (y=70)
+        JLabel labelYearFrom = new JLabel("Năm từ");
+        labelYearFrom.setFont(font);
+        labelYearFrom.setBounds(150, 70, 70, 20); 
+        searchPanel.add(labelYearFrom);
 
-        textFieldYearPublished1 = new JTextField();
-        textFieldYearPublished1.setFont(font11);
-        textFieldYearPublished1.setBounds(280, 60 + 10, 120, 20);
-        searchPanel.add(textFieldYearPublished1);
+        textFieldYearFrom = new JTextField();
+        textFieldYearFrom.setFont(font11);
+        textFieldYearFrom.setBounds(230, 70, 120, 20); 
+        searchPanel.add(textFieldYearFrom);
 
-        JLabel labelQuantity1 = new JLabel("Số lượng");
-        labelQuantity1.setFont(font);
-        labelQuantity1.setBounds(420, 60 + 10, 80, 20);
-        searchPanel.add(labelQuantity1);
+        JLabel labelYearTo = new JLabel("đến");
+        labelYearTo.setFont(font);
+        labelYearTo.setBounds(410-50, 70, 40, 20); // Adjusted x
+        searchPanel.add(labelYearTo);
 
-        textFieldQuantity1 = new JTextField();
-        textFieldQuantity1.setFont(font11);
-        textFieldQuantity1.setBounds(500, 60 + 10, 120, 20);
-        searchPanel.add(textFieldQuantity1);
+        textFieldYearTo = new JTextField();
+        textFieldYearTo.setFont(font11);
+        textFieldYearTo.setBounds(490-50, 70, 120, 20); // Adjusted x
+        searchPanel.add(textFieldYearTo);
 
-        JLabel labelPrice1 = new JLabel("Giá");
-        labelPrice1.setFont(font);
-        labelPrice1.setBounds(640, 60 + 10, 30, 20);
-        searchPanel.add(labelPrice1);
+        JLabel labelPriceFrom = new JLabel("Giá từ");
+        labelPriceFrom.setFont(font);
+        labelPriceFrom.setBounds(620-50, 70, 50, 20); // Adjusted x
+        searchPanel.add(labelPriceFrom);
 
-        textFieldPrice1 = new JTextField();
-        textFieldPrice1.setFont(font11);
-        textFieldPrice1.setBounds(720, 60 + 10, 120, 20);
-        searchPanel.add(textFieldPrice1);
+        textFieldPriceFrom = new JTextField();
+        textFieldPriceFrom.setFont(font11);
+        textFieldPriceFrom.setBounds(700-50, 70, 120, 20); // Adjusted x
+        searchPanel.add(textFieldPriceFrom);
 
+        JLabel labelPriceTo = new JLabel("đến");
+        labelPriceTo.setFont(font);
+        labelPriceTo.setBounds(830-50, 70, 40, 20); // Adjusted x
+        searchPanel.add(labelPriceTo);
+
+        textFieldPriceTo = new JTextField();
+        textFieldPriceTo.setFont(font11);
+        textFieldPriceTo.setBounds(910-50, 70, 120, 20); // Adjusted x
+        searchPanel.add(textFieldPriceTo);
+
+        // Search Button
         btnSearch = new JButton("Tìm Kiếm");
         btnSearch.setFont(font);
         btnSearch.setBackground(new Color(38, 55, 114));
         btnSearch.setForeground(new Color(255, 255, 255));
         btnSearch.setHorizontalAlignment(JButton.CENTER);
-        btnSearch.setBounds(940, 60 + 10, 120, 25);
+        btnSearch.setBounds(1060, 50, 120, 30); // Adjusted x
         searchPanel.add(btnSearch);
-
-        //tao bang du lieu de hien thi ket qua
-        String[] columnNames = {"Mã sách", "Thể loại", "Tên sách", "Tác giả", "Năm xuất bản", "Số lượng", "Giá"};
+        // tao bang du lieu de hien thi ket qua
+        String[] columnNames = { "Mã sách", "Thể loại", "Tên sách", "Tác giả", "Năm xuất bản", "Số lượng", "Giá" };
 
         // Tao model cho JTable
         tableModel = new DefaultTableModel(columnNames, 0);
@@ -244,7 +256,7 @@ public class BookView extends JPanel {
 
         // Dat font chu va do cao cua dong trong bang
         table.setFont(new Font("Tahoma", Font.PLAIN, 12));
-        table.setRowHeight(20);//dat chieu cao moi dong trong bang
+        table.setRowHeight(20);// dat chieu cao moi dong trong bang
 
         // Lay phan tieu de cua bang
         JTableHeader header = table.getTableHeader();
@@ -266,7 +278,7 @@ public class BookView extends JPanel {
         // Tao JScrollPane de chua JTable
         JScrollPane scrollPane = new JScrollPane(table);
         scrollPane.setBounds(50, 100 + 10, 1200, 270);
-//        updateTable(bookController.getListOfBooks());
+        // updateTable(bookController.getListOfBooks());
         searchPanel.add(scrollPane);
 
         JPanel panel3 = new JPanel();
@@ -319,7 +331,7 @@ public class BookView extends JPanel {
         labelTotalBooksValue.setBounds(650, 30, 150, 20);
         panel3.add(labelTotalBooksValue);
 
-//        thao tac them su kien cho cac nut bam
+        // thao tac them su kien cho cac nut bam
         BookController bookController = new BookController(this);
         btnAdd.addActionListener(bookController);
         btnChange.addActionListener(bookController);
@@ -354,11 +366,12 @@ public class BookView extends JPanel {
             return new ImageIcon(new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB)); // Trả về ảnh trống
         }
     }
-    //ham lay category tu db da thong qua controller them vao combobox
+
+    // ham lay category tu db da thong qua controller them vao combobox
     private void loadCategories(JComboBox<String> comboBox) {
         ArrayList<Category> categories = categoryController.getCategories();
         comboBox.addItem("");
-//        comboBox.removeAllItems();
+        // comboBox.removeAllItems();
         for (Category category : categories) {
             comboBox.addItem(category.getCategoryName());
         }
@@ -403,24 +416,28 @@ public class BookView extends JPanel {
         return textFieldYearPublished;
     }
 
-    public JTextField getTextFieldYearPublished1() {
-        return textFieldYearPublished1;
+    public JTextField getTextFieldYearFrom() {
+        return textFieldYearFrom;
+    }
+
+    public JTextField getTextFieldYearTo() {
+        return textFieldYearTo;
     }
 
     public JTextField getTextFieldQuantity() {
         return textFieldQuantity;
     }
 
-    public JTextField getTextFieldQuantity1() {
-        return textFieldQuantity1;
-    }
-
     public JTextField getTextFieldPrice() {
         return textFieldPrice;
     }
 
-    public JTextField getTextFieldPrice1() {
-        return textFieldPrice1;
+    public JTextField getTextFieldPriceFrom() {
+        return textFieldPriceFrom;
+    }
+
+    public JTextField getTextFieldPriceTo() {
+        return textFieldPriceTo;
     }
 
     public JButton getBtnAdd() {
@@ -465,6 +482,5 @@ public class BookView extends JPanel {
         JFrame app = new App();
         app.add(panel, BorderLayout.CENTER);
     }
-
 
 }
