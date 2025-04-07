@@ -28,8 +28,7 @@ public class BookController implements ActionListener {
         updateTable(bookService.getAllBooks());
     }
 
-    // phuong thuc nay co the nem ra loi trong qua trinh chay, phai xu li trong try
-    // catch
+    // phuong thuc nay co the nem ra loi trong qua trinh chay, phai xu li trong try catch
     public Books getBookInForm() throws Exception {
         String bookID = bookView.getTextFieldBookId().getText().trim();
         String bookName = bookView.getTextFieldBookName().getText().trim();
@@ -74,7 +73,7 @@ public class BookController implements ActionListener {
         Category category = categories.get(choiceCaterogy - 1);
         return new Books(bookID, bookName, author, yearPublished, price, quantity, category);
     }
-
+    //cac su kien cua cac nut bam thuc hien chuc nang
     @Override
     public void actionPerformed(ActionEvent e) {
         if (e.getSource() == bookView.getBtnAdd()) {
@@ -87,9 +86,10 @@ public class BookController implements ActionListener {
             searchBooks();
         } else if (e.getSource() == bookView.getBtnReset()) {
             updateTable(bookService.getAllBooks());
+            clearForm();
         }
     }
-
+    //chuc nang them sach
     public void addBook() {
         try {
             Books book = getBookInForm();
@@ -106,7 +106,7 @@ public class BookController implements ActionListener {
             JOptionPane.showMessageDialog(bookView, ex.getMessage());
         }
     }
-
+    //chuc nang cap nhat sach
     public void updateBook() {
         String bookID = bookView.getTextFieldBookId().getText().trim();
         if (bookID.equals("") || bookID == null) {
@@ -160,7 +160,7 @@ public class BookController implements ActionListener {
             }
         }
     }
-
+    //them su kien cho bang table
     public void addTableSelectionListener() {
         bookView.getTable().getSelectionModel().addListSelectionListener(e -> {
             int selectRow = bookView.getTable().getSelectedRow();
@@ -194,7 +194,7 @@ public class BookController implements ActionListener {
         String yearToStr = bookView.getTextFieldYearTo().getText().trim();
         int index = bookView.getComboBoxCategory_search().getSelectedIndex();
         if(bookID.isEmpty()&& bookName.isEmpty() && author.isEmpty() && priceFromStr.isEmpty()
-        && priceToStr.isEmpty() && yearFromStr.isEmpty() && yearToStr.isEmpty() && index <= 0) throw new Exception("vui lòng thêm điều kiện tìm kiếm!!");
+        && priceToStr.isEmpty() && yearFromStr.isEmpty() && yearToStr.isEmpty() && index <= 0) throw new Exception("Vui lòng thêm điều kiện tìm kiếm!!");
         Integer yearFrom = null;
         if (!yearFromStr.isEmpty()) {
             try {
@@ -206,6 +206,7 @@ public class BookController implements ActionListener {
                 throw new Exception("Năm xuất bản từ phải là số nguyên!");
             }
         }
+        //neu nhap vao moi thuc hien thao tac ben duoi
         Integer yearTo = null;
         if (!yearToStr.isEmpty()) {
             try {
@@ -220,6 +221,7 @@ public class BookController implements ActionListener {
                 throw new Exception("Năm xuất bản đến phải là số nguyên!");
             }
         }
+        //neu nhap vao moi thuc hien thao tac ben duoi
         Double priceFrom = null;
         if (!priceFromStr.isEmpty()) {
             try {
@@ -232,6 +234,7 @@ public class BookController implements ActionListener {
             }
         }
         Double priceTo = null;
+        //kiem tra neu nhap vao thi moi thao tac ben duoi
         if (!priceToStr.isEmpty()) {
             try {
                 priceTo = Double.parseDouble(priceToStr);
@@ -251,7 +254,7 @@ public class BookController implements ActionListener {
         }
         return new BookSearch(bookID, categoryName, bookName, author, yearFrom, yearTo, priceFrom, priceTo);
     }
-
+    //chuc nang tim kiem sach
     public void searchBooks() {
         try {
             BookSearch condition = getFormBookSearch();

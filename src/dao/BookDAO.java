@@ -112,7 +112,7 @@ public class BookDAO implements IBookDAO {
         return result;
 
     }
-
+    @Override
     public ArrayList<Books> listSearchBooks(BookSearch condition) {
         ArrayList<Books> listBooks = new ArrayList<>();
         StringBuilder query = new StringBuilder(
@@ -120,6 +120,10 @@ public class BookDAO implements IBookDAO {
         ArrayList<Object> params = new ArrayList<>();
 
         // xay dung cac dieu kien tim kiem
+        if(condition.getBookID() != null && !condition.getBookID().isEmpty()){
+            query.append(" and bookID like ?");
+            params.add("%" + condition.getBookID() + "%");
+        }
         if (condition.getBookName() != null && !condition.getBookName().isEmpty()) {
             query.append(" and bookName like ?");
             params.add("%" + condition.getBookName() + "%");
