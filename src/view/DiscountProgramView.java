@@ -1,10 +1,11 @@
 package view;
+import utils.CommonView;
+
 import javax.swing.*;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.JTableHeader;
 import java.awt.*;
-import java.awt.image.BufferedImage;
 
 public class DiscountProgramView {
     public JPanel initDiscountProgramView() {
@@ -27,7 +28,7 @@ public class DiscountProgramView {
         inputPanel.setBounds(0, 50, 1500, 450); // Tăng chiều cao để chứa bảng
         panelContent.add(inputPanel);
 
-        ImageIcon discount = scaleImage("images/discount2.png",300,150);
+        ImageIcon discount = CommonView.scaleImage("images/discount2.png",300,150);
         JLabel lblDiscount = new JLabel(discount);
         lblDiscount.setBounds(80,0,discount.getIconWidth(),discount.getIconHeight());
         inputPanel.add(lblDiscount);
@@ -107,7 +108,7 @@ public class DiscountProgramView {
 
         JButton calendarButton = new JButton();
         calendarButton.setBounds(380,290, 30, 30);
-        ImageIcon icon7=scaleImage("images/icon7.png",30,30);
+        ImageIcon icon7= CommonView.scaleImage("images/icon7.png",30,30);
         calendarButton.setIcon(icon7);
         inputPanel.add(calendarButton);
 
@@ -124,40 +125,24 @@ public class DiscountProgramView {
 
         JButton endDateButton = new JButton();
         endDateButton.setBounds(380,330, 30, 30);
-        ImageIcon endDateImage=scaleImage("images/icon7.png",30,30);
+        ImageIcon endDateImage=CommonView.scaleImage("images/icon7.png",30,30);
         endDateButton.setIcon(endDateImage);
         inputPanel.add(endDateButton);
 
         // Nút Thêm, Sửa, Xóa, Tắt Cả
-        JButton btnAdd = new JButton("THÊM");
-        btnAdd.setFont(font);
-        btnAdd.setBackground(new Color(32, 204, 35)); // Màu xanh lá
-        btnAdd.setForeground(new Color(255, 255, 255));
-        btnAdd.setHorizontalAlignment(JButton.CENTER);
+        JButton btnAdd = CommonView.createButton("THÊM",new Color(32, 204, 35));
         btnAdd.setBounds(50, 380, 100, 40); // Điều chỉnh y để nhường chỗ cho bảng
         inputPanel.add(btnAdd);
 
-        JButton btnEdit = new JButton("SỬA");
-        btnEdit.setFont(font);
-        btnEdit.setBackground(new Color(0, 0, 255)); // Màu xanh dương
-        btnEdit.setForeground(new Color(255, 255, 255));
-        btnEdit.setHorizontalAlignment(JButton.CENTER);
+        JButton btnEdit = CommonView.createButton("SỬA",new Color(0, 0, 255));
         btnEdit.setBounds(160, 380, 100, 40);
         inputPanel.add(btnEdit);
 
-        JButton btnDelete = new JButton("XÓA");
-        btnDelete.setFont(font);
-        btnDelete.setBackground(new Color(255, 0, 0)); // Màu đỏ
-        btnDelete.setForeground(new Color(255, 255, 255));
-        btnDelete.setHorizontalAlignment(JButton.CENTER);
+        JButton btnDelete = CommonView.createButton("XÓA",new Color(255, 0, 0));
         btnDelete.setBounds(270, 380, 100, 40);
         inputPanel.add(btnDelete);
 
-        JButton btnDisableAll = new JButton("TẤT CẢ");
-        btnDisableAll.setFont(font);
-        btnDisableAll.setBackground(new Color(0, 0, 0)); // Màu đen
-        btnDisableAll.setForeground(new Color(255, 255, 255));
-        btnDisableAll.setHorizontalAlignment(JButton.CENTER);
+        JButton btnDisableAll = CommonView.createButton("TẤT CẢ",new Color(0, 0, 0));
         btnDisableAll.setBounds(380, 380, 100, 40);
         inputPanel.add(btnDisableAll);
 
@@ -165,7 +150,7 @@ public class DiscountProgramView {
         JPanel searchPanel = new JPanel();
         searchPanel.setLayout(null);
         searchPanel.setBackground(new Color(157, 239, 227));
-        searchPanel.setBounds(50, 500, 900, 80); // Đặt ngay dưới inputPanel
+        searchPanel.setBounds(50, 500, 1200, 80); // Đặt ngay dưới inputPanel
         searchPanel.setBorder(BorderFactory.createLineBorder(new Color(228, 13, 13)));
         panelContent.add(searchPanel);
 
@@ -186,7 +171,7 @@ public class DiscountProgramView {
 
         JButton startDateButtonSearch = new JButton();
         startDateButtonSearch.setBounds(420,40, 30, 30);
-        ImageIcon startDateImageSearch=scaleImage("images/icon7.png",30,30);
+        ImageIcon startDateImageSearch=CommonView.scaleImage("images/icon7.png",30,30);
         startDateButtonSearch.setIcon(startDateImageSearch);
         searchPanel.add(startDateButtonSearch);
 
@@ -202,15 +187,11 @@ public class DiscountProgramView {
 
         JButton endDateButtonSearch = new JButton();
         endDateButtonSearch.setBounds(770,40, 30, 30);
-        ImageIcon endDateImageSearch=scaleImage("images/icon7.png",30,30);
+        ImageIcon endDateImageSearch=CommonView.scaleImage("images/icon7.png",30,30);
         endDateButtonSearch.setIcon(endDateImageSearch);
         searchPanel.add(endDateButtonSearch);
 
-        JButton dateSearch = new JButton("TÌM KIẾM");
-        dateSearch.setFont(font);
-        dateSearch.setBackground(new Color(0, 0, 0)); // Màu đen
-        dateSearch.setForeground(new Color(255, 255, 255));
-        dateSearch.setHorizontalAlignment(JButton.CENTER);
+        JButton dateSearch = CommonView.createButton("TÌM KIẾM",new Color(0, 0, 0));
         dateSearch.setBounds(950, 40, 130, 30);
         searchPanel.add(dateSearch);
 
@@ -276,48 +257,19 @@ public class DiscountProgramView {
         discountDetailsPanel.add(textFieldDiscountPercent);
 
         // Nút Thêm, Xóa (phần chi tiết)
-        JButton btnAddDetail = new JButton("THÊM");
-        btnAddDetail.setFont(font);
-        btnAddDetail.setBackground(new Color(32, 204, 35)); // Màu xanh lá
-        btnAddDetail.setForeground(new Color(255, 255, 255));
-        btnAddDetail.setHorizontalAlignment(JButton.CENTER);
+        JButton btnAddDetail = CommonView.createButton("THÊM",new Color(32, 204, 35));
         btnAddDetail.setBounds(650, 160, 100, 40);
         discountDetailsPanel.add(btnAddDetail);
 
-        JButton btnDeleteDetail = new JButton("XÓA");
-        btnDeleteDetail.setFont(font);
-        btnDeleteDetail.setBackground(new Color(255, 0, 0)); // Màu đỏ
-        btnDeleteDetail.setForeground(new Color(255, 255, 255));
-        btnDeleteDetail.setHorizontalAlignment(JButton.CENTER);
+        JButton btnDeleteDetail = CommonView.createButton("XÓA",new Color(255, 0, 0));
         btnDeleteDetail.setBounds(770, 160, 100, 40);
         discountDetailsPanel.add(btnDeleteDetail);
 
-        ImageIcon discount2 = scaleImage("images/discount.png",300,200);
+        ImageIcon discount2 = CommonView.scaleImage("images/discount.png",300,200);
         JLabel lblDiscount2 = new JLabel(discount2);
         lblDiscount2.setBounds(930,40,discount2.getIconWidth(),discount2.getIconHeight());
         discountDetailsPanel.add(lblDiscount2);
-
         return panelContent;
     }
 
-    /**
-     * Hàm hỗ trợ scale ảnh (tái sử dụng từ code của bạn)
-     */
-    private ImageIcon scaleImage(String path, int width, int height) {
-        try {
-            ImageIcon icon = new ImageIcon(ClassLoader.getSystemResource(path));
-            Image img = icon.getImage().getScaledInstance(width, height, Image.SCALE_SMOOTH);
-            return new ImageIcon(img);
-        } catch (Exception e) {
-            System.err.println("Không tìm thấy ảnh: " + path);
-            return new ImageIcon(new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB)); // Trả về ảnh trống
-        }
-    }
-
-    public static void main(String[] args) {
-        DiscountProgramView a = new DiscountProgramView();
-        JPanel panel = a.initDiscountProgramView();
-        JFrame app = new App();
-        app.add(panel, BorderLayout.CENTER);
-    }
 }

@@ -2,6 +2,7 @@ package view;
 
 import controller.BookController;
 import model.Books;
+import utils.CommonView;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableCellRenderer;
@@ -108,32 +109,32 @@ public class BookView extends JPanel {
         panelContent.add(textFieldPrice);
 
         // Các nút button
-        btnAdd = createButton("Thêm", new Color(14, 110, 166));
+        btnAdd = CommonView.createButton("Thêm", new Color(14, 110, 166));
         btnAdd.setBounds(50 + 40, 220, 100, 30);
         panelContent.add(btnAdd);
 
-        btnChange = createButton("Sửa", new Color(147, 32, 204));
+        btnChange = CommonView.createButton("Sửa", new Color(147, 32, 204));
         btnChange.setBounds(160 + 40, 220, 100, 30);
         panelContent.add(btnChange);
 
-        btnDelete = createButton("Xóa", new Color(246, 4, 60));
+        btnDelete = CommonView.createButton("Xóa", new Color(246, 4, 60));
         btnDelete.setBounds(270 + 40, 220, 100, 30);
         panelContent.add(btnDelete);
 
-        btnReset = createButton("Làm mới", new Color(222, 99, 1));
+        btnReset = CommonView.createButton("Làm mới", new Color(222, 99, 1));
         btnReset.setBounds(380 + 40, 220, 100, 30);
         panelContent.add(btnReset);
 
-        btnSaveFile = createButton("Xuất file", new Color(32, 204, 35));
+        btnSaveFile = CommonView.createButton("Xuất file", new Color(32, 204, 35));
         btnSaveFile.setBounds(490 + 40, 220, 100, 30);
         panelContent.add(btnSaveFile);
 
-        btnView = createButton("Lưu", new Color(16, 120, 133));
+        btnView = CommonView.createButton("Lưu", new Color(16, 120, 133));
         btnView.setBounds(600 + 40, 220, 100, 30);
         panelContent.add(btnView);
 
 
-        ImageIcon icon6 = scaleImage("images/icon6.png", 400, 200);
+        ImageIcon icon6 = CommonView.scaleImage("images/icon6.png", 400, 200);
         JLabel labelImage6 = new JLabel(icon6);
         labelImage6.setBounds(820, 30, 500, 250);
         panelContent.add(labelImage6);
@@ -295,7 +296,7 @@ public class BookView extends JPanel {
         labelPriceMaxValue.setBounds(250, 30, 150, 20);
         panel3.add(labelPriceMaxValue);
 
-        JButton btnThongKe = createButton("Thống Kê", new Color(0x57DC59));
+        JButton btnThongKe = CommonView.createButton("Thống Kê", new Color(0x57DC59));
         btnThongKe.setBounds(800, 15, 120, 30);
         panel3.add(btnThongKe);
 
@@ -331,15 +332,15 @@ public class BookView extends JPanel {
 
     }
 
-    public JButton createButton(String title,Color color){
-        Font font = new Font("Tahoma", Font.BOLD, 15);
-        JButton button = new JButton(title);
-        button.setFont(font);
-        button.setBackground(color);
-        button.setForeground(Color.WHITE);
-        button.setHorizontalAlignment(JButton.CENTER);
-        return button;
-    }
+//    public JButton createButton(String title,Color color){
+//        Font font = new Font("Tahoma", Font.BOLD, 15);
+//        JButton button = new JButton(title);
+//        button.setFont(font);
+//        button.setBackground(color);
+//        button.setForeground(Color.WHITE);
+//        button.setHorizontalAlignment(JButton.CENTER);
+//        return button;
+//    }
 
 
 //    private void updateTable() {
@@ -348,16 +349,16 @@ public class BookView extends JPanel {
     /**
      * Hàm hỗ trợ scale ảnh
      */
-    private ImageIcon scaleImage(String path, int width, int height) {
-        try {
-            ImageIcon icon = new ImageIcon(ClassLoader.getSystemResource(path));
-            Image img = icon.getImage().getScaledInstance(width, height, Image.SCALE_SMOOTH);
-            return new ImageIcon(img);
-        } catch (Exception e) {
-            System.err.println("No Image: " + path);
-            return new ImageIcon(new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB)); // Trả về ảnh trống
-        }
-    }
+//    private ImageIcon scaleImage(String path, int width, int height) {
+//        try {
+//            ImageIcon icon = new ImageIcon(ClassLoader.getSystemResource(path));
+//            Image img = icon.getImage().getScaledInstance(width, height, Image.SCALE_SMOOTH);
+//            return new ImageIcon(img);
+//        } catch (Exception e) {
+//            System.err.println("No Image: " + path);
+//            return new ImageIcon(new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB)); // Trả về ảnh trống
+//        }
+//    }
 
 
     public JTextField getTextFieldBookId() {
@@ -565,13 +566,4 @@ public class BookView extends JPanel {
             tableModel.addRow(row);
         }
     }
-
-    public static void main(String[] args) {
-        BookView a = new BookView();
-        JPanel panel = a.initBookView();
-        JFrame app = new App();
-        app.add(panel, BorderLayout.CENTER);
-    }
-
-
 }

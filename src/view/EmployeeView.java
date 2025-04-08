@@ -5,7 +5,7 @@ import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.JTableHeader;
 import java.awt.*;
-import java.awt.image.BufferedImage;
+import utils.CommonView;
 
 public class EmployeeView extends JPanel {
 
@@ -141,38 +141,29 @@ public class EmployeeView extends JPanel {
 
         JButton calendarButton = new JButton();
         calendarButton.setBounds(280,250, 20, 20);
-        ImageIcon icon7=scaleImage("images/icon7.png",20,20);
+        ImageIcon icon7=CommonView.scaleImage("images/icon7.png",20,20);
         calendarButton.setIcon(icon7);
         inputPanel.add(calendarButton);
 
         // Các nút chức năng
-        JButton btnAdd = new JButton("THÊM");
-        btnAdd.setFont(font);
-        btnAdd.setBackground(new Color(0, 153, 0)); // Màu xanh lá
-        btnAdd.setForeground(Color.WHITE);
+        JButton btnAdd = CommonView.createButton("THÊM",new Color(0, 153, 0));
         btnAdd.setBounds(30, 380, 100, 40);
         panelContent.add(btnAdd);
 
-        JButton btnUpdate = new JButton("SỬA");
-        btnUpdate.setFont(font);
-        btnUpdate.setBackground(new Color(255, 153, 0)); // Màu cam
-        btnUpdate.setForeground(Color.WHITE);
+        JButton btnUpdate = CommonView.createButton("SỬA",new Color(255, 153, 0));
         btnUpdate.setBounds(170, 380, 100, 40);
         panelContent.add(btnUpdate);
 
-        JButton btnDelete = new JButton("XÓA");
-        btnDelete.setFont(font);
-        btnDelete.setBackground(new Color(255, 0, 0)); // Màu đỏ
-        btnDelete.setForeground(Color.WHITE);
+        JButton btnDelete = CommonView.createButton("XÓA",new Color(255, 0, 0));
         btnDelete.setBounds(170, 440, 100, 40);
         panelContent.add(btnDelete);
 
-        ImageIcon icon9=scaleImage("images/icon10.png",300,200);
+        ImageIcon icon9=CommonView.scaleImage("images/icon10.png",300,200);
         JLabel lblicon9 = new JLabel(icon9);
         lblicon9.setBounds(10, 540, 300, 200);
         panelContent.add(lblicon9);
 
-        ImageIcon imageBackground = scaleImage("images/image.jpg",900,200);
+        ImageIcon imageBackground = CommonView.scaleImage("images/image.jpg",900,200);
         JLabel imageLabel = new JLabel(imageBackground);
         imageLabel.setBounds(350, 50, imageBackground.getIconWidth(), imageBackground.getIconHeight());
         panelContent.add(imageLabel);
@@ -201,17 +192,11 @@ public class EmployeeView extends JPanel {
         searchPanel.add(textFieldSearch);
 
 
-        JButton btnSearchAll = new JButton("Tìm Kiếm");
-        btnSearchAll.setFont(font);
-        btnSearchAll.setBackground(Color.BLACK);
-        btnSearchAll.setForeground(Color.WHITE);
+        JButton btnSearchAll = CommonView.createButton("Tìm Kiếm",Color.BLACK);
         btnSearchAll.setBounds(600, 40, 120, 25);
         searchPanel.add(btnSearchAll);
 
-        JButton btnSearchSpecific = new JButton("Tất Cả");
-        btnSearchSpecific.setFont(font);
-        btnSearchSpecific.setBackground(new Color(0, 153, 0)); // Màu xanh lá
-        btnSearchSpecific.setForeground(Color.WHITE);
+        JButton btnSearchSpecific = CommonView.createButton("Tất Cả",new Color(0, 153, 0));
         btnSearchSpecific.setBounds(730, 40, 120, 25);
         searchPanel.add(btnSearchSpecific);
 
@@ -235,10 +220,7 @@ public class EmployeeView extends JPanel {
         textFieldSearchSalaryTo.setBounds(310, 70, 100, 20);
         searchPanel.add(textFieldSearchSalaryTo);
 
-        JButton btnSearchSalary = new JButton("Tìm Kiếm");
-        btnSearchSalary.setFont(font);
-        btnSearchSalary.setBackground(Color.BLACK);
-        btnSearchSalary.setForeground(Color.WHITE);
+        JButton btnSearchSalary = CommonView.createButton("Tìm Kiếm",Color.BLACK);
         btnSearchSalary.setBounds(600, 70, 120, 25);
         searchPanel.add(btnSearchSalary);
 
@@ -279,31 +261,10 @@ public class EmployeeView extends JPanel {
         tableModel.addRow(row3);
         tableModel.addRow(row4);
 
-        JButton btnExportExcel = new JButton("Xuất Excel");
-        btnExportExcel.setFont(font);
-        btnExportExcel.setBackground(new Color(237, 16, 159)); // Màu xanh lam
-        btnExportExcel.setForeground(Color.WHITE);
+        JButton btnExportExcel = CommonView.createButton("Xuất Excel",new Color(237, 16, 159));
         btnExportExcel.setBounds(1130, 830, 120, 40);
         panelContent.add(btnExportExcel);
 
         return panelContent;
     }
-    private ImageIcon scaleImage(String path, int width, int height) {
-        try {
-            ImageIcon icon = new ImageIcon(ClassLoader.getSystemResource(path));
-            Image img = icon.getImage().getScaledInstance(width, height, Image.SCALE_SMOOTH);
-            return new ImageIcon(img);
-        } catch (Exception e) {
-            System.err.println("No Image: " + path);
-            return new ImageIcon(new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB)); // Trả về ảnh trống
-        }
-    }
-
-    public static void main(String[] args) {
-        EmployeeView a = new EmployeeView();
-        JPanel panel = a.initEmployeeView();
-        JFrame app = new App();
-        app.add(panel, BorderLayout.CENTER);
-    }
-
 }
