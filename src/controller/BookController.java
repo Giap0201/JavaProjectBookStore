@@ -5,6 +5,7 @@ import model.Books;
 import model.Category;
 import service.BookService;
 import service.CategoryService;
+import util.ValilateForm;
 import view.BookView;
 
 import javax.swing.*;
@@ -27,53 +28,7 @@ public class BookController implements ActionListener {
         addTableSelectionListener();
         updateTable(bookService.getAllBooks());
     }
-
-    // phuong thuc nay co the nem ra loi trong qua trinh chay, phai xu li trong try catch
-    public Books getBookInForm() throws Exception {
-        String bookID = bookView.getTextFieldBookId().getText().trim();
-        String bookName = bookView.getTextFieldBookName().getText().trim();
-        String author = bookView.getTextFieldAuthor().getText().trim();
-        String yearPublishedStr = bookView.getTextFieldYearPublished().getText().trim();
-        String priceStr = bookView.getTextFieldPrice().getText().trim();
-        String quantityStr = bookView.getTextFieldQuantity().getText().trim();
-        if (bookID.isEmpty() || author.isEmpty() || bookName.isEmpty() || yearPublishedStr.isEmpty()
-                || priceStr.isEmpty() || quantityStr.isEmpty()) {
-            throw new Exception("Vui lòng điền đầy đủ thông tin!");
-            // khi gap loi thi chu dong tao ra exception va dung, nhay vao try catch de xu
-            // li loi nay
-        }
-        int yearPublished;
-        try {
-            yearPublished = Integer.parseInt(yearPublishedStr);
-            if (yearPublished > 2025 || yearPublished < 0)
-                throw new Exception("Năm xuất bản không hợp lệ!!");
-            // loi numberFormatException là loi chuyen tu String sang kieu so
-        } catch (NumberFormatException e) {
-            throw new Exception("Năm xuất bản phải là số nguyên");
-        }
-        double price;
-        try {
-            price = Double.parseDouble(priceStr);
-            if (price < 0)
-                throw new Exception("Giá phải là số dương!!");
-        } catch (NumberFormatException e) {
-            throw new Exception("Giá sách phải là số thực!!");
-        }
-        int quantity;
-        try {
-            quantity = Integer.parseInt(quantityStr);
-            if (quantity < 0)
-                throw new Exception("Số lượng phải là số dương!!");
-        } catch (NumberFormatException e) {
-            throw new Exception("Số lượng phải là số !!");
-        }
-        int choiceCaterogy = bookView.getComboBoxCategory().getSelectedIndex();
-        if (choiceCaterogy <= 0)
-            throw new Exception("Vui lòng chọn thể loại!!");
-        Category category = categories.get(choiceCaterogy - 1);
-        return new Books(bookID, bookName, author, yearPublished, price, quantity, category);
-    }
-    //cac su kien cua cac nut bam thuc hien chuc nang
+    // cac su kien cua cac nut bam thuc hien chuc nang
     @Override
     public void actionPerformed(ActionEvent e) {
         if (e.getSource() == bookView.getBtnAdd()) {
@@ -89,7 +44,8 @@ public class BookController implements ActionListener {
             clearForm();
         }
     }
-    //chuc nang them sach
+
+    // chuc nang them sach
     public void addBook() {
         try {
             Books book = getBookInForm();
@@ -106,7 +62,8 @@ public class BookController implements ActionListener {
             JOptionPane.showMessageDialog(bookView, ex.getMessage());
         }
     }
-    //chuc nang cap nhat sach
+
+    // chuc nang cap nhat sach
     public void updateBook() {
         String bookID = bookView.getTextFieldBookId().getText().trim();
         if (bookID.equals("") || bookID == null) {
@@ -160,7 +117,8 @@ public class BookController implements ActionListener {
             }
         }
     }
-    //them su kien cho bang table
+
+    // them su kien cho bang table
     public void addTableSelectionListener() {
         bookView.getTable().getSelectionModel().addListSelectionListener(e -> {
             int selectRow = bookView.getTable().getSelectedRow();
@@ -184,6 +142,37 @@ public class BookController implements ActionListener {
         });
     }
 
+    // phuong thuc nay co the nem ra loi trong qua trinh chay, phai xu li trong try
+    // catch
+    public Books getBookInForm() throws Exception {
+        //thao tac lay du lieu tu view
+        String bookID = bookView.getTextFieldBookId().getText().trim();
+        String bookName = bookView.getTextFieldBookName().getText().trim();
+        String author = bookView.getTextFieldAuthor().getText().trim();
+        String yearPublishedStr = bookView.getTextFieldYearPublished().getText().trim();
+        String priceStr = bookView.getTextFieldPrice().getText().trim();
+        String quantityStr = bookView.getTextFieldQuantity().getText().trim();
+        int choiceCaterogy = bookView.getComboBoxCategory().getSelectedIndex();
+
+        if (bookID.isEmpty() || author.isEmpty() || bookName.isEmpty() || yearPublishedStr.isEmpty()
+                || priceStr.isEmpty() || quantityStr.isEmpty() || choiceCaterogy <=0) {
+            throw new Exception("Vui lòng điền đầy đủ thông tin!");
+        }
+        Integer yearPublished = ValilateForm.isInteger(yearPublishedStr, "Năm xuất bản");
+        if (yearPublished < 0 || yearPublished > 2025)
+            throw new Exception("Năm xuất bản không hợp lệ!!");
+        Integer quantity = ValilateForm.isInteger(quantityStr, "Số lượng");
+        if (quantity < 0)
+            throw new Exception("Số lượng phải là số dương!!");
+        Double price = ValilateForm.isDouble(priceStr, "Giá");
+        if (price < 0)
+            throw new Exception("Giá phải là số dương!!");
+        if (choiceCaterogy <= 0)
+            throw new Exception("Vui lòng chọn thể loại!!");
+        Category category = categories.get(choiceCaterogy - 1);
+        return new Books(bookID, bookName, author, yearPublished, price, quantity, category);
+    }
+
     public BookSearch getFormBookSearch() throws Exception {
         String bookID = bookView.getTextFieldBookId1().getText().trim();
         String bookName = bookView.getTextFieldBookName1().getText().trim();
@@ -193,59 +182,40 @@ public class BookController implements ActionListener {
         String yearFromStr = bookView.getTextFieldYearFrom().getText().trim();
         String yearToStr = bookView.getTextFieldYearTo().getText().trim();
         int index = bookView.getComboBoxCategory_search().getSelectedIndex();
-        if(bookID.isEmpty()&& bookName.isEmpty() && author.isEmpty() && priceFromStr.isEmpty()
-        && priceToStr.isEmpty() && yearFromStr.isEmpty() && yearToStr.isEmpty() && index <= 0) throw new Exception("Vui lòng thêm điều kiện tìm kiếm!!");
+        if (bookID.isEmpty() && bookName.isEmpty() && author.isEmpty() && priceFromStr.isEmpty()
+                && priceToStr.isEmpty() && yearFromStr.isEmpty() && yearToStr.isEmpty() && index <= 0)
+            throw new Exception("Vui lòng thêm điều kiện tìm kiếm!!");
         Integer yearFrom = null;
         if (!yearFromStr.isEmpty()) {
-            try {
-                yearFrom = Integer.parseInt(yearFromStr);
-                if (yearFrom < 0 || yearFrom > 2025) {
-                    throw new Exception("Năm xuất bản từ phải nằm trong khoảng từ 0 đến 2025!");
-                }
-            } catch (NumberFormatException e) {
-                throw new Exception("Năm xuất bản từ phải là số nguyên!");
+            yearFrom = ValilateForm.isInteger(yearFromStr, "Năm xuất bản");
+            if (yearFrom < 0 || yearFrom > 2025) {
+                throw new Exception("Năm xuất bản từ phải nằm trong khoảng từ 0 đến 2025!");
             }
         }
-        //neu nhap vao moi thuc hien thao tac ben duoi
         Integer yearTo = null;
         if (!yearToStr.isEmpty()) {
-            try {
-                yearTo = Integer.parseInt(yearToStr);
-                if (yearTo < 0 || yearTo > 2025) {
-                    throw new Exception("Năm xuất bản đến phải nằm trong khoảng từ 0 đến 2025!");
-                }
-                if (yearFrom != null && yearTo < yearFrom) {
-                    throw new Exception("Năm xuất bản đến phải lớn hơn hoặc bằng năm từ!");
-                }
-            } catch (NumberFormatException e) {
-                throw new Exception("Năm xuất bản đến phải là số nguyên!");
+            yearTo = ValilateForm.isInteger(yearToStr, "Năm xuất bản");
+            if ((yearFrom != null && yearFrom > yearTo) || yearTo > 2025) {
+                throw new Exception("Năm xuất bản đến phải lớn hơn hoặc bằng năm từ và bé hơn 2025!");
             }
         }
-        //neu nhap vao moi thuc hien thao tac ben duoi
+        // neu nhap vao moi thuc hien thao tac ben duoi
         Double priceFrom = null;
         if (!priceFromStr.isEmpty()) {
-            try {
-                priceFrom = Double.parseDouble(priceFromStr);
-                if (priceFrom < 0) {
-                    throw new Exception("Giá từ phải là số dương!");
-                }
-            } catch (NumberFormatException e) {
-                throw new Exception("Giá từ phải là số thực!");
+            priceFrom = ValilateForm.isDouble(priceFromStr, "Giá");
+            if (priceFrom < 0) {
+                throw new Exception("Giá từ phải là số dương!");
             }
         }
         Double priceTo = null;
-        //kiem tra neu nhap vao thi moi thao tac ben duoi
+        // kiem tra neu nhap vao thi moi thao tac ben duoi
         if (!priceToStr.isEmpty()) {
-            try {
-                priceTo = Double.parseDouble(priceToStr);
-                if (priceTo < 0) {
-                    throw new Exception("Giá đến phải là số dương!");
-                }
-                if (priceFrom != null && priceTo < priceFrom) {
-                    throw new Exception("Giá đến phải lớn hơn hoặc bằng giá từ!");
-                }
-            } catch (NumberFormatException e) {
-                throw new Exception("Giá đến phải là số thực!");
+            priceTo = ValilateForm.isDouble(priceToStr, "Giá");
+            if (priceTo < 0) {
+                throw new Exception("Giá đến phải là số dương!");
+            }
+            if (priceFrom != null && priceTo < priceFrom) {
+                throw new Exception("Giá đến phải lớn hơn hoặc bằng giá từ!");
             }
         }
         String categoryName = null;
@@ -254,7 +224,8 @@ public class BookController implements ActionListener {
         }
         return new BookSearch(bookID, categoryName, bookName, author, yearFrom, yearTo, priceFrom, priceTo);
     }
-    //chuc nang tim kiem sach
+
+    // chuc nang tim kiem sach
     public void searchBooks() {
         try {
             BookSearch condition = getFormBookSearch();
