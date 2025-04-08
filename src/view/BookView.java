@@ -5,9 +5,7 @@ import controller.CategoryController;
 import model.Category;
 
 import javax.swing.*;
-import javax.swing.table.DefaultTableCellRenderer;
-import javax.swing.table.DefaultTableModel;
-import javax.swing.table.JTableHeader;
+import javax.swing.table.*;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
@@ -254,6 +252,9 @@ public class BookView extends JPanel {
         // Tao model cho JTable
         tableModel = new DefaultTableModel(columnNames, 0);
         table = new JTable(tableModel);
+        //sap xep table
+        TableRowSorter<TableModel> sorter = new TableRowSorter<>(tableModel);
+        table.setRowSorter(sorter);
 
         // Dat font chu va do cao cua dong trong bang
         table.setFont(new Font("Tahoma", Font.PLAIN, 12));

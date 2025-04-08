@@ -9,15 +9,22 @@ public class Person {
     private Date dateOfBirth ;
     private String phoneNumber ;
     private String email ;
-
+    private String note;
+    public  static String setGenderPerson(boolean gender){
+        if(gender){
+            return "Nam";
+        }else return "Nữ";
+    }
     public Person(){}
-    public Person(String firstName, String lastName, Date dateOfBirth, String phoneNumber, String email,String gender) {
+
+    public Person(String firstName, String lastName, String gender, Date dateOfBirth, String phoneNumber, String email, String note) {
         this.firstName = firstName;
         this.lastName = lastName;
+        this.gender = gender;
         this.dateOfBirth = dateOfBirth;
         this.phoneNumber = phoneNumber;
         this.email = email;
-        this.gender = gender;
+        this.note = note;
     }
 
     public String getFirstName() {

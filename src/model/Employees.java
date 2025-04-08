@@ -3,27 +3,27 @@ package model;
 import java.util.Date;
 
 public class Employees extends Person{
-    private String empID;
+    private String employeeID;
     private double salary;
     private String position ;
-
-    public Employees(String firstName, String lastName, Date dateOfBirth, String phoneNumber, String email, String gender) {
-        super(firstName, lastName, dateOfBirth, phoneNumber, email, gender);
-        this.empID = "";
-        this.salary = 0.0;
-        this.position = "";
-    }
 
     public Employees() {
 
     }
 
-    public String getEmpID() {
-        return empID;
+    public Employees(String firstName, String lastName, String gender, Date dateOfBirth, String phoneNumber, String email, String note, String employeeID, double salary, String position) {
+        super(firstName, lastName, gender, dateOfBirth, phoneNumber, email, note);
+        this.employeeID = employeeID;
+        this.salary = salary;
+        this.position = position;
     }
 
-    public void setEmpID(String empID) {
-        this.empID = empID;
+    public String getEmployeeID() {
+        return employeeID;
+    }
+
+    public void setEmployeeID(String employeeID) {
+        this.employeeID = employeeID;
     }
 
     public double getSalary() {
