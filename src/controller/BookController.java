@@ -5,13 +5,16 @@ import model.Books;
 import model.Category;
 import service.BookService;
 import service.CategoryService;
-import util.ValilateForm;
+import util.ValidateForm;
 import view.BookView;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.*;
 import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Set;
 
 public class BookController implements ActionListener {
     private BookView bookView;
@@ -27,7 +30,10 @@ public class BookController implements ActionListener {
         // them su kien cho bang
         addTableSelectionListener();
         updateTable(bookService.getAllBooks());
+        statistical(bookService.getAllBooks());
+
     }
+
     // cac su kien cua cac nut bam thuc hien chuc nang
     @Override
     public void actionPerformed(ActionEvent e) {
@@ -40,8 +46,11 @@ public class BookController implements ActionListener {
         } else if (e.getSource() == bookView.getBtnSearch()) {
             searchBooks();
         } else if (e.getSource() == bookView.getBtnReset()) {
-            updateTable(bookService.getAllBooks());
+            ArrayList<Books> allBooks = bookService.getAllBooks();
+            statistical(allBooks);
             clearForm();
+        } else if(e.getSource() == bookView.getBtnSaveFile()){
+            exportToCSV();
         }
     }
 
@@ -53,6 +62,7 @@ public class BookController implements ActionListener {
             if (check) {
                 JOptionPane.showMessageDialog(bookView, "Thêm sách thành công!");
                 updateTable(bookService.getAllBooks());
+                statistical(bookService.getAllBooks());
                 clearForm();
             } else {
                 JOptionPane.showMessageDialog(bookView, "Không thể thêm sách. Có thể mã sách đã tồn tại.");
@@ -80,6 +90,7 @@ public class BookController implements ActionListener {
                 if (check) {
                     JOptionPane.showMessageDialog(bookView, "Sửa sách thành công!");
                     updateTable(bookService.getAllBooks()); // cap nhat lai table
+                    statistical(bookService.getAllBooks());
                     clearForm(); // lam trong form
                 } else {
                     JOptionPane.showMessageDialog(bookView, "Không thể sửa sách. Vui lòng thử lại.");
@@ -107,6 +118,7 @@ public class BookController implements ActionListener {
                 if (check == true) {
                     JOptionPane.showMessageDialog(bookView, "Xoá thành công!!");
                     updateTable(bookService.getAllBooks());
+                    statistical(bookService.getAllBooks());
                     clearForm();
                 } else {
                     JOptionPane.showMessageDialog(bookView, "Lỗi");
@@ -152,24 +164,25 @@ public class BookController implements ActionListener {
         String yearPublishedStr = bookView.getTextFieldYearPublished().getText().trim();
         String priceStr = bookView.getTextFieldPrice().getText().trim();
         String quantityStr = bookView.getTextFieldQuantity().getText().trim();
-        int choiceCaterogy = bookView.getComboBoxCategory().getSelectedIndex();
+        int choiceCategory = bookView.getComboBoxCategory().getSelectedIndex();
 
         if (bookID.isEmpty() || author.isEmpty() || bookName.isEmpty() || yearPublishedStr.isEmpty()
-                || priceStr.isEmpty() || quantityStr.isEmpty() || choiceCaterogy <=0) {
+                || priceStr.isEmpty() || quantityStr.isEmpty() || choiceCategory <= 0) {
             throw new Exception("Vui lòng điền đầy đủ thông tin!");
         }
-        Integer yearPublished = ValilateForm.isInteger(yearPublishedStr, "Năm xuất bản");
+        //vi o da kiem tra toan bo dieu kien khong rong roi nen co the khong dung lop Grapher
+        int yearPublished = ValidateForm.isInteger(yearPublishedStr, "Năm xuất bản");
         if (yearPublished < 0 || yearPublished > 2025)
             throw new Exception("Năm xuất bản không hợp lệ!!");
-        Integer quantity = ValilateForm.isInteger(quantityStr, "Số lượng");
+        int quantity = ValidateForm.isInteger(quantityStr, "Số lượng");
         if (quantity < 0)
             throw new Exception("Số lượng phải là số dương!!");
-        Double price = ValilateForm.isDouble(priceStr, "Giá");
+        double price = ValidateForm.isDouble(priceStr, "Giá");
         if (price < 0)
             throw new Exception("Giá phải là số dương!!");
-        if (choiceCaterogy <= 0)
+        if (choiceCategory <= 0)
             throw new Exception("Vui lòng chọn thể loại!!");
-        Category category = categories.get(choiceCaterogy - 1);
+        Category category = categories.get(choiceCategory - 1);
         return new Books(bookID, bookName, author, yearPublished, price, quantity, category);
     }
 
@@ -187,14 +200,14 @@ public class BookController implements ActionListener {
             throw new Exception("Vui lòng thêm điều kiện tìm kiếm!!");
         Integer yearFrom = null;
         if (!yearFromStr.isEmpty()) {
-            yearFrom = ValilateForm.isInteger(yearFromStr, "Năm xuất bản");
+            yearFrom = ValidateForm.isInteger(yearFromStr, "Năm xuất bản");
             if (yearFrom < 0 || yearFrom > 2025) {
                 throw new Exception("Năm xuất bản từ phải nằm trong khoảng từ 0 đến 2025!");
             }
         }
         Integer yearTo = null;
         if (!yearToStr.isEmpty()) {
-            yearTo = ValilateForm.isInteger(yearToStr, "Năm xuất bản");
+            yearTo = ValidateForm.isInteger(yearToStr, "Năm xuất bản");
             if ((yearFrom != null && yearFrom > yearTo) || yearTo > 2025) {
                 throw new Exception("Năm xuất bản đến phải lớn hơn hoặc bằng năm từ và bé hơn 2025!");
             }
@@ -202,7 +215,7 @@ public class BookController implements ActionListener {
         // neu nhap vao moi thuc hien thao tac ben duoi
         Double priceFrom = null;
         if (!priceFromStr.isEmpty()) {
-            priceFrom = ValilateForm.isDouble(priceFromStr, "Giá");
+            priceFrom = ValidateForm.isDouble(priceFromStr, "Giá");
             if (priceFrom < 0) {
                 throw new Exception("Giá từ phải là số dương!");
             }
@@ -210,7 +223,7 @@ public class BookController implements ActionListener {
         Double priceTo = null;
         // kiem tra neu nhap vao thi moi thao tac ben duoi
         if (!priceToStr.isEmpty()) {
-            priceTo = ValilateForm.isDouble(priceToStr, "Giá");
+            priceTo = ValidateForm.isDouble(priceToStr, "Giá");
             if (priceTo < 0) {
                 throw new Exception("Giá đến phải là số dương!");
             }
@@ -230,6 +243,7 @@ public class BookController implements ActionListener {
         try {
             BookSearch condition = getFormBookSearch();
             ArrayList<Books> booksResult = bookService.listBookSearch(condition);
+            statistical(booksResult);
             if (booksResult.isEmpty()) {
                 JOptionPane.showMessageDialog(bookView, "Không tìm thấy sách!!!");
                 updateTable(booksResult);
@@ -259,10 +273,76 @@ public class BookController implements ActionListener {
         bookView.getTableModel().setRowCount(0);
         // them du lieu vao trong bang
         for (Books book : listBook) {
-            Object[] row = { book.getBookID(), book.getCategory().getCategoryName(),
+            Object[] row = {book.getBookID(), book.getCategory().getCategoryName(),
                     book.getBookName(), book.getAuthor(), book.getYearPublished(), book.getQuantity(),
-                    book.getPrice(), };
+                    book.getPrice(),};
             bookView.getTableModel().addRow(row);
+        }
+    }
+    // Import thêm dòng này nếu cần
+
+    public void exportToCSV() {
+        JFileChooser fileChooser = new JFileChooser();
+        fileChooser.setDialogTitle("Chọn nơi lưu file CSV");
+        int userSelection = fileChooser.showSaveDialog(bookView);
+        if (userSelection == JFileChooser.APPROVE_OPTION) {
+            File fileToSave = fileChooser.getSelectedFile();
+            String filePath = fileToSave.getAbsolutePath();
+            if (!filePath.endsWith(".csv")) {
+                filePath += ".csv";
+            }
+
+            try (PrintWriter writer = new PrintWriter(
+                    new OutputStreamWriter(new FileOutputStream(filePath), "UTF-8"))) {
+
+                // Ghi tiêu đề
+                writer.println("Mã sách,Thể loại,Tên sách,Tác giả,Năm xuất bản,Số lượng,Giá");
+
+                // Ghi từng dòng dữ liệu từ bảng
+                for (int i = 0; i < bookView.getTableModel().getRowCount(); i++) {
+                    StringBuilder sb = new StringBuilder();
+                    for (int j = 0; j < bookView.getTableModel().getColumnCount(); j++) {
+                        sb.append(bookView.getTableModel().getValueAt(i, j));
+                        if (j != bookView.getTableModel().getColumnCount() - 1) {
+                            sb.append(",");
+                        }
+                    }
+                    writer.println(sb);
+                }
+
+                JOptionPane.showMessageDialog(bookView, "Xuất file CSV thành công!");
+            } catch (IOException ex) {
+                ex.printStackTrace();
+                JOptionPane.showMessageDialog(bookView, "Lỗi khi ghi file CSV: " + ex.getMessage());
+            }
+        }
+    }
+    //chuc nang tu dong thong ke du lieu sau khi tim kiem
+    public void statistical(ArrayList<Books> listBook) {
+        //neu danh sach rong thi 0 het
+        if (listBook.isEmpty()) {
+            bookView.getLabelBookTypeCountValue().setText("0");
+            bookView.getLabelTotalBooksValue().setText("0");
+            bookView.getLabelPriceMinValue().setText("0");
+            bookView.getLabelPriceMaxValue().setText("0");
+        } else {
+            String totalBooksValue = String.valueOf(listBook.size());
+            bookView.getLabelTotalBooksValue().setText(totalBooksValue);
+            Double minPrice = 1e9;
+            Double maxPrice = -1e9;
+            //thao tac tim gia min
+            for (int i = 0; i < listBook.size(); i++) {
+                minPrice = Math.min(minPrice, listBook.get(i).getPrice());
+                maxPrice = Math.max(maxPrice, listBook.get(i).getPrice());
+            }
+            bookView.getLabelPriceMinValue().setText(String.valueOf(minPrice));
+            bookView.getLabelPriceMaxValue().setText(String.valueOf(maxPrice));
+            //thao tac thong ke so loai sach
+            Set<String> categorySet = new HashSet<>();
+            for (Books books : listBook) {
+                categorySet.add(books.getCategory().getCategoryName());
+            }
+            bookView.getLabelBookTypeCountValue().setText(String.valueOf(categorySet.size()));
         }
     }
 }

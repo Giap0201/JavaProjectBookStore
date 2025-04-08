@@ -24,6 +24,7 @@ public class BookView extends JPanel {
     private JButton btnAdd, btnChange, btnDelete, btnReset, btnSaveFile, btnView, btnSearch;
     private DefaultTableModel tableModel;
     private JTable table;
+    private JLabel labelPriceMinValue,labelPriceMaxValue,labelBookTypeCountValue,labelTotalBooksValue;
 
     public BookView() {
         this.categoryController = new CategoryController();
@@ -292,7 +293,7 @@ public class BookView extends JPanel {
         labelPriceMin.setBounds(100, 0, 150, 20);
         panel3.add(labelPriceMin);
 
-        JLabel labelPriceMinValue = new JLabel("");
+        labelPriceMinValue = new JLabel("");
         labelPriceMinValue.setFont(font);
         labelPriceMinValue.setBounds(250, 0, 150, 20);
         panel3.add(labelPriceMinValue);
@@ -302,7 +303,7 @@ public class BookView extends JPanel {
         labelPriceMax.setBounds(100, 30, 150, 20);
         panel3.add(labelPriceMax);
 
-        JLabel labelPriceMaxValue = new JLabel("");
+        labelPriceMaxValue = new JLabel("");
         labelPriceMaxValue.setFont(font);
         labelPriceMaxValue.setBounds(250, 30, 150, 20);
         panel3.add(labelPriceMaxValue);
@@ -316,7 +317,7 @@ public class BookView extends JPanel {
         labelBookTypeCount.setBounds(500, 0, 150, 20);
         panel3.add(labelBookTypeCount);
 
-        JLabel labelBookTypeCountValue = new JLabel("");
+        labelBookTypeCountValue = new JLabel("");
         labelBookTypeCountValue.setFont(font);
         labelBookTypeCountValue.setBounds(650, 0, 150, 20);
         panel3.add(labelBookTypeCountValue);
@@ -326,7 +327,7 @@ public class BookView extends JPanel {
         labelTotalBooks.setBounds(500, 30, 150, 20);
         panel3.add(labelTotalBooks);
 
-        JLabel labelTotalBooksValue = new JLabel("");
+        labelTotalBooksValue = new JLabel("");
         labelTotalBooksValue.setFont(font);
         labelTotalBooksValue.setBounds(650, 30, 150, 20);
         panel3.add(labelTotalBooksValue);
@@ -474,6 +475,22 @@ public class BookView extends JPanel {
 
     public JTable getTable() {
         return table;
+    }
+
+    public JLabel getLabelPriceMinValue() {
+        return labelPriceMinValue;
+    }
+
+    public JLabel getLabelPriceMaxValue() {
+        return labelPriceMaxValue;
+    }
+
+    public JLabel getLabelBookTypeCountValue() {
+        return labelBookTypeCountValue;
+    }
+
+    public JLabel getLabelTotalBooksValue() {
+        return labelTotalBooksValue;
     }
 
     public static void main(String[] args) {

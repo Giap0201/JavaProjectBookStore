@@ -1,6 +1,6 @@
 package util;
 
-public class ValilateForm {
+public class ValidateForm {
     public static Integer isInteger(String value, String path) throws Exception {
         try {
             return Integer.parseInt(value);
