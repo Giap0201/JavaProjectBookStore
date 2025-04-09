@@ -121,7 +121,7 @@ public class App extends JFrame {
     }
 
     public void changeBackground(JPanel panel) {
-        panel.setBackground(new Color(148, 9, 217));
+        panel.setBackground(new Color(220, 152, 129));
     }
 
     public JPanel getPanelSale() {

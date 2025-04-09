@@ -1,5 +1,7 @@
 package view;
 
+import utils.CommonView;
+
 import javax.swing.*;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
@@ -92,24 +94,20 @@ public class ManageInvoiceView extends JPanel {
         textFieldThanhTien.setBounds(820,50, 130, 25);
         panelContent1.add(textFieldThanhTien);
 
-        JButton btnDelete = createButton("Xoá",font1);
-        btnDelete.setBackground(new Color(211, 99, 167));
-        btnDelete.setBounds(1000,15,110,25);
+        JButton btnDelete = CommonView.createButton("Xoá",new Color(211, 99, 167));
+        btnDelete.setBounds(1000,15,110,30);
         panelContent1.add(btnDelete);
 
-        JButton btnChange = createButton("Sửa",font1);
-        btnChange.setBackground(new Color(211, 99, 167));
-        btnChange.setBounds(1130,15,110,25);
+        JButton btnChange = CommonView.createButton("Sửa",new Color(211, 99, 167));
+        btnChange.setBounds(1130,15,110,30);
         panelContent1.add(btnChange);
 
-        JButton btnSave = createButton("Xuất",font1);
-        btnSave.setBackground(new Color(211, 99, 167));
-        btnSave.setBounds(1000,50,110,25);
+        JButton btnSave = CommonView.createButton("Xuất",new Color(211, 99, 167));
+        btnSave.setBounds(1000,50,110,30);
         panelContent1.add(btnSave);
 
-        JButton btnLoad = createButton("Làm mới",font1);
-        btnLoad.setBackground(new Color(211, 99, 167));
-        btnLoad.setBounds(1130,50,110,25);
+        JButton btnLoad = CommonView.createButton("Làm mới",new Color(211, 99, 167));
+        btnLoad.setBounds(1130,50,110,30);
         panelContent1.add(btnLoad);
 
         //content2
@@ -148,8 +146,7 @@ public class ManageInvoiceView extends JPanel {
         textFieldSearchCID.setBounds(800, 30, 150, 25);
         panelConten2.add(textFieldSearchCID);
 
-        JButton btnSearch = createButton("Tìm Kiếm", font1);
-        btnSearch.setBackground(new Color(211, 99, 167));
+        JButton btnSearch = CommonView.createButton("Tìm Kiếm", new Color(211, 99, 167));
         btnSearch.setBounds(1010, 30, 150, 25);
         panelConten2.add(btnSearch);
 
@@ -282,14 +279,12 @@ public class ManageInvoiceView extends JPanel {
         panelConten3.add(lblTotalPriceValue);
 
 // Thêm nút "Sửa"
-        JButton btnChange2 = createButton("Sửa", font1);
-        btnChange2.setBackground(new Color(44, 134, 3));
+        JButton btnChange2 = CommonView.createButton("Sửa", new Color(44, 134, 3));
         btnChange2.setBounds(1110, 110, 120, 30);
         panelConten3.add(btnChange2);
 
 // Thêm nút "Xoá"
-        JButton btnDelete2 = createButton("Xoá", font1);
-        btnDelete2.setBackground(new Color(203, 13, 13));
+        JButton btnDelete2 = CommonView.createButton("Xoá", new Color(203, 13, 13));
         btnDelete2.setBounds(1110, 150, 120, 30);
         panelConten3.add(btnDelete2);
 
@@ -309,16 +304,5 @@ public class ManageInvoiceView extends JPanel {
         label.setFont(font);
         return label;
     }
-    public JButton createButton(String title,Font font) {
-        JButton button = new JButton(title);
-        button.setFont(font);
-        return button;
-    }
 
-    public static void main(String[] args) {
-        ManageInvoiceView a = new ManageInvoiceView();
-        JPanel panel = a.initManageInvoiceView();
-        JFrame app = new App();
-        app.add(panel, BorderLayout.CENTER);
-    }
 }
