@@ -4,19 +4,24 @@ import java.util.Date;
 
 public class Customers extends Person{
     private String customerID ;
-    private String spending ;
+    private double totalMoney ;
+    private Date creationDate ;
     private String note ;
 
-    public Customers(String customerID, String spending, String note) {
+    public Customers() {}
+
+    public Customers(String customerID, double totalMoney, Date creationDate, String note) {
         this.customerID = customerID;
-        this.spending = spending;
+        this.totalMoney = totalMoney;
+        this.creationDate = creationDate;
         this.note = note;
     }
 
-    public Customers(String firstName, String lastName, Date dateOfBirth, String phoneNumber, String email, String gender, String customerID, String spending, String note) {
+    public Customers(String firstName, String lastName, Date dateOfBirth, String phoneNumber, String email, String gender, String customerID, double totalMoney, Date creationDate, String note) {
         super(firstName, lastName, dateOfBirth, phoneNumber, email, gender);
         this.customerID = customerID;
-        this.spending = spending;
+        this.totalMoney = totalMoney;
+        this.creationDate = creationDate;
         this.note = note;
     }
 
@@ -28,12 +33,20 @@ public class Customers extends Person{
         this.customerID = customerID;
     }
 
-    public String getSpending() {
-        return spending;
+    public double getTotalMoney() {
+        return totalMoney;
     }
 
-    public void setSpending(String spending) {
-        this.spending = spending;
+    public void setTotalMoney(double totalMoney) {
+        this.totalMoney = totalMoney;
+    }
+
+    public Date getCreationDate() {
+        return creationDate;
+    }
+
+    public void setCreationDate(Date creationDate) {
+        this.creationDate = creationDate;
     }
 
     public String getNote() {

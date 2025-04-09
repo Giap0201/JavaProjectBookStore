@@ -1,5 +1,7 @@
 package view;
 
+import utils.CommonView;
+
 import javax.swing.*;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
@@ -93,15 +95,11 @@ public class CreateInvoiceView {
         panelHeader.add(textFieldDate);
 
         // Create Invoice Button
-        JButton btnCreateInvoice = new JButton("TẠO HÓA ĐƠN");
-        btnCreateInvoice.setFont(font);
-        btnCreateInvoice.setBackground(new Color(34, 139, 34)); // Green color
-        btnCreateInvoice.setForeground(new Color(255, 255, 255));
-        btnCreateInvoice.setHorizontalAlignment(JButton.CENTER);
+        JButton btnCreateInvoice = CommonView.createButton("TẠO HÓA ĐƠN",new Color(34, 139, 34));
         btnCreateInvoice.setBounds(830, 90, 150, 40);
         panelHeader.add(btnCreateInvoice);
 
-        ImageIcon saleIcon = scaleImage("images/icon11.png", 150, 150); // Replace with actual path
+        ImageIcon saleIcon = CommonView.scaleImage("images/icon11.png", 150, 150); // Replace with actual path
         JLabel labelBookImage = new JLabel(saleIcon);
         labelBookImage.setBounds(1050, 20, 150, 150);
         panelHeader.add(labelBookImage);
@@ -119,7 +117,7 @@ public class CreateInvoiceView {
         panelDetails.setBounds(0, 170, 1450, 800); // Điều chỉnh vị trí và kích thước
 
         // Book Image (Placeholder for the book cover)
-        ImageIcon bookIcon = scaleImage("images/book1.jpg", 200, 200); // Replace with actual path
+        ImageIcon bookIcon = CommonView.scaleImage("images/book1.jpg", 200, 200); // Replace with actual path
         JLabel labelBookImage = new JLabel(bookIcon);
         labelBookImage.setBounds(80, 10, 200, 200);
         labelBookImage.setBorder(BorderFactory.createLineBorder(Color.BLACK));
@@ -173,27 +171,15 @@ public class CreateInvoiceView {
         panelDetails.add(textFieldUnitPrice);
 
         // Add, Edit, Delete Buttons
-        JButton btnAdd = new JButton("THÊM");
-        btnAdd.setFont(font);
-        btnAdd.setBackground(new Color(32, 204, 35)); // Green color
-        btnAdd.setForeground(new Color(255, 255, 255));
-        btnAdd.setHorizontalAlignment(JButton.CENTER);
+        JButton btnAdd = CommonView.createButton("THÊM",new Color(32, 204, 35));
         btnAdd.setBounds(50, 400, 100, 30);
         panelDetails.add(btnAdd);
 
-        JButton btnEdit = new JButton("SỬA");
-        btnEdit.setFont(font);
-        btnEdit.setBackground(new Color(255, 105, 180)); // Pink color
-        btnEdit.setForeground(new Color(255, 255, 255));
-        btnEdit.setHorizontalAlignment(JButton.CENTER);
+        JButton btnEdit = CommonView.createButton("SỬA",new Color(255, 105, 180));
         btnEdit.setBounds(180, 400, 100, 30);
         panelDetails.add(btnEdit);
 
-        JButton btnDelete = new JButton("XÓA");
-        btnDelete.setFont(font);
-        btnDelete.setBackground(new Color(250, 4, 4)); // Light blue color
-        btnDelete.setForeground(new Color(255, 255, 255));
-        btnDelete.setHorizontalAlignment(JButton.CENTER);
+        JButton btnDelete = CommonView.createButton("XÓA",new Color(250, 4, 4));
         btnDelete.setBounds(180, 440, 100, 30);
         panelDetails.add(btnDelete);
 
@@ -234,19 +220,11 @@ public class CreateInvoiceView {
         panelDetails.add(textFieldTotalInvoiceAmount);
 
         // Share and Cancel Buttons
-        JButton btnCancel = new JButton("HỦY");
-        btnCancel.setFont(font);
-        btnCancel.setBackground(new Color(0, 0, 255)); // Blue color
-        btnCancel.setForeground(new Color(255, 255, 255));
-        btnCancel.setHorizontalAlignment(JButton.CENTER);
+        JButton btnCancel = CommonView.createButton("HỦY",new Color(0, 0, 255));
         btnCancel.setBounds(950, 520, 140, 40);
         panelDetails.add(btnCancel);
 
-        JButton btnShare = new JButton("XÁC NHẬN");
-        btnShare.setFont(font);
-        btnShare.setBackground(new Color(255, 165, 0)); // Orange color
-        btnShare.setForeground(new Color(255, 255, 255));
-        btnShare.setHorizontalAlignment(JButton.CENTER);
+        JButton btnShare = CommonView.createButton("XÁC NHẬN",new Color(255, 165, 0));
         btnShare.setBounds(1100, 520, 150, 40);
         panelDetails.add(btnShare);
 
@@ -281,24 +259,4 @@ public class CreateInvoiceView {
         return panelDetails;
     }
 
-    /**
-     * Hàm hỗ trợ scale ảnh (reused from your code)
-     */
-    private ImageIcon scaleImage(String path, int width, int height) {
-        try {
-            ImageIcon icon = new ImageIcon(ClassLoader.getSystemResource(path));
-            Image img = icon.getImage().getScaledInstance(width, height, Image.SCALE_SMOOTH);
-            return new ImageIcon(img);
-        } catch (Exception e) {
-            System.err.println("No Image: " + path);
-            return new ImageIcon(new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB)); // Trả về ảnh trống
-        }
-    }
-
-    public static void main(String[] args) {
-        CreateInvoiceView a = new CreateInvoiceView();
-        JPanel panel = a.initCustomerInvoiceView();
-        JFrame app = new App();
-        app.add(panel, BorderLayout.CENTER);
-    }
 }
