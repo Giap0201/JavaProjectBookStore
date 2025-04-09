@@ -9,13 +9,13 @@ import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.JTableHeader;
 import java.awt.*;
-import java.util.ArrayList;
+import java.awt.event.ActionListener;
 
 public class CustomerView extends JPanel {
 
     private JTextField textFieldTotalCustomers;
-    public DefaultTableModel tableModel;
-    public JTable table;
+    private DefaultTableModel tableModel;
+    private JTable table;
     private JButton btnExportExcel;
     private JButton btnImportExcel;
     private JTextField textFieldCustomerId;
@@ -28,6 +28,7 @@ public class CustomerView extends JPanel {
     private JTextField textFieldSearch;
     private JTextField textFieldLastName;
     private JTextField textFieldFirstName;
+    private JTextField textFieldNote;
 
 
     public JPanel initCustomerView() {
@@ -36,23 +37,23 @@ public class CustomerView extends JPanel {
         panelContent.setLayout(null);
         panelContent.setBackground(new Color(157, 239, 227));
 
-        CustomerController action = new CustomerController(this);
+
 
         // Tiêu đề của panel
         JLabel labelTitle = new JLabel("THÔNG TIN KHÁCH HÀNG");
         labelTitle.setBounds(500, 10, 300, 30);
-        labelTitle.setFont(new Font("Tahoma", Font.BOLD, 20));
+        labelTitle.setFont(new Font("Tahoma", Font.BOLD, 30));
         panelContent.add(labelTitle);
 
         // Nhãn hiển thị tổng số khách hàng
         JLabel labelTotalCustomers = new JLabel("Số lượng khách hàng: ");
         labelTotalCustomers.setFont(font);
-        labelTotalCustomers.setBounds(50, 50, 500, 20);
+        labelTotalCustomers.setBounds(50, 50, 500, 30);
         panelContent.add(labelTotalCustomers);
 
         textFieldTotalCustomers = new JTextField("0");
         textFieldTotalCustomers.setFont(new Font("Tahoma", Font.PLAIN, 15));
-        textFieldTotalCustomers.setBounds(250, 50, 50, 20);
+        textFieldTotalCustomers.setBounds(250, 50, 50, 30);
         //textFieldTotalCustomers.setEditable(false); // Không cho phép chỉnh sửa
         panelContent.add(textFieldTotalCustomers);
 
@@ -64,6 +65,8 @@ public class CustomerView extends JPanel {
         // Thiết lập font và chiều cao dòng cho bảng
         table.setFont(new Font("Tahoma", Font.PLAIN, 12));
         table.setRowHeight(20);
+
+        CustomerController action = new CustomerController(this);
 
         // Tùy chỉnh tiêu đề bảng
         JTableHeader header = table.getTableHeader();
@@ -102,35 +105,35 @@ public class CustomerView extends JPanel {
 
         JLabel labelInputTitle = new JLabel("NHẬP THÔNG TIN");
         labelInputTitle.setFont(new Font("Tahoma", Font.BOLD, 17));
-        labelInputTitle.setBounds(50, 10, 200, 20);
+        labelInputTitle.setBounds(50, 10, 200, 30);
         inputPanel.add(labelInputTitle);
 
         // Mã khách hàng
         JLabel labelCustomerId = new JLabel("Mã KH");
         labelCustomerId.setFont(font);
-        labelCustomerId.setBounds(50, 40, 70, 20);
+        labelCustomerId.setBounds(50, 40, 70, 30);
         inputPanel.add(labelCustomerId);
 
         textFieldCustomerId = new JTextField();
         textFieldCustomerId.setFont(new Font("Tahoma", Font.PLAIN, 15));
-        textFieldCustomerId.setBounds(120, 40, 150, 20);
+        textFieldCustomerId.setBounds(120, 40, 150, 30);
         inputPanel.add(textFieldCustomerId);
 
         // Vị trí (Giới tính)
         JLabel labelGender = new JLabel("Giới tính");
         labelGender.setFont(font);
-        labelGender.setBounds(290, 40, 70, 20);
+        labelGender.setBounds(290, 40, 70, 30);
         inputPanel.add(labelGender);
 
         radioPositionNam = new JRadioButton("Nam");
         radioPositionNam.setFont(new Font("Tahoma", Font.PLAIN, 15));
-        radioPositionNam.setBounds(360, 40, 60, 20);
+        radioPositionNam.setBounds(360, 40, 60, 30);
         radioPositionNam.setBackground(Color.WHITE);
         inputPanel.add(radioPositionNam);
 
         radioPositionNu = new JRadioButton("Nữ");
         radioPositionNu.setFont(new Font("Tahoma", Font.PLAIN, 15));
-        radioPositionNu.setBounds(420, 40, 60, 20);
+        radioPositionNu.setBounds(420, 40, 60, 30);
         radioPositionNu.setBackground(Color.WHITE);
         inputPanel.add(radioPositionNu);
 
@@ -141,64 +144,79 @@ public class CustomerView extends JPanel {
         // Họ tên
         JLabel labelLastName = new JLabel("Họ");
         labelLastName.setFont(font);
-        labelLastName.setBounds(50, 70, 70, 20);
+        labelLastName.setBounds(50, 70, 70, 30);
         inputPanel.add(labelLastName);
 
         textFieldLastName = new JTextField();
         textFieldLastName.setFont(new Font("Tahoma", Font.PLAIN, 15));
-        textFieldLastName.setBounds(120, 70, 150, 20);
+        textFieldLastName.setBounds(120, 70, 150, 30);
         inputPanel.add(textFieldLastName);
 
         JLabel labelFirstName = new JLabel("Tên");
         labelFirstName.setFont(font);
-        labelFirstName.setBounds(50, 100, 70, 20);
+        labelFirstName.setBounds(50, 100, 70, 30);
         inputPanel.add(labelFirstName);
 
         textFieldFirstName = new JTextField();
         textFieldFirstName.setFont(new Font("Tahoma", Font.PLAIN, 15));
-        textFieldFirstName.setBounds(120, 100, 150, 20);
+        textFieldFirstName.setBounds(120, 100, 150, 30);
         inputPanel.add(textFieldFirstName);
 
 
         // Số điện thoại
         JLabel labelPhone = new JLabel("Số ĐT");
         labelPhone.setFont(font);
-        labelPhone.setBounds(50, 130, 70, 20);
+        labelPhone.setBounds(50, 130, 70, 30);
         inputPanel.add(labelPhone);
 
         textFieldPhone = new JTextField();
         textFieldPhone.setFont(new Font("Tahoma", Font.PLAIN, 15));
-        textFieldPhone.setBounds(120, 130, 150, 20);
+        textFieldPhone.setBounds(120, 130, 150, 30);
         inputPanel.add(textFieldPhone);
 
         // Email
         JLabel labelEmail = new JLabel("Email");
         labelEmail.setFont(font);
-        labelEmail.setBounds(290, 100, 70, 20);
+        labelEmail.setBounds(290, 100, 70, 30);
         inputPanel.add(labelEmail);
 
         textFieldEmail = new JTextField();
         textFieldEmail.setFont(new Font("Tahoma", Font.PLAIN, 15));
-        textFieldEmail.setBounds(380, 100, 150, 20);
+        textFieldEmail.setBounds(380, 100, 150, 30);
         inputPanel.add(textFieldEmail);
+
 
         // Ngày sinh
         JLabel labelDob = new JLabel("Ngày sinh");
         labelDob.setFont(font);
-        labelDob.setBounds(290, 70, 80, 20);
+        labelDob.setBounds(290, 70, 80, 30);
         inputPanel.add(labelDob);
 
 
         textFieldDob = new JTextField();
         textFieldDob.setFont(new Font("Tahoma", Font.PLAIN, 15));
-        textFieldDob.setBounds(380, 70, 150, 20);
+        textFieldDob.setBounds(380, 70, 150, 30);
         inputPanel.add(textFieldDob);
 
         calendarButton = new JButton();
-        calendarButton.setBounds(540, 70, 20, 20);
-        ImageIcon icon7 = CommonView.scaleImage("images/icon7.png", 20, 20);
+        calendarButton.setBounds(540, 70, 30, 30);
+        ImageIcon icon7 = CommonView.scaleImage("images/icon7.png", 30, 30);
         calendarButton.setIcon(icon7);
         inputPanel.add(calendarButton);
+
+        calendarButton.addActionListener(action);
+
+
+        // Note
+        JLabel labelNote = new JLabel("Note");
+        labelNote.setFont(font);
+        labelNote.setBounds(290, 130, 70, 30);
+        inputPanel.add(labelNote);
+
+        textFieldNote = new JTextField();
+        textFieldNote.setFont(new Font("Tahoma", Font.PLAIN, 15));
+        textFieldNote.setBounds(380, 130, 200, 30);
+        inputPanel.add(textFieldNote);
 
         // Các nút chức năng
         btnAdd = CommonView.createButton("THÊM", new Color(0, 153, 0));
@@ -225,12 +243,12 @@ public class CustomerView extends JPanel {
         // Phần tìm kiếm
         JLabel labelSearchTitle = new JLabel("TÌM KIẾM");
         labelSearchTitle.setFont(new Font("Tahoma", Font.BOLD, 17));
-        labelSearchTitle.setBounds(720, 10, 200, 20);
+        labelSearchTitle.setBounds(720, 10, 200, 30);
         inputPanel.add(labelSearchTitle);
 
         JLabel labelSearchCustomerId = new JLabel("Tìm Kiếm Theo");
         labelSearchCustomerId.setFont(font);
-        labelSearchCustomerId.setBounds(720, 40, 120, 20);
+        labelSearchCustomerId.setBounds(720, 40, 120, 30);
         inputPanel.add(labelSearchCustomerId);
 
         String[] check = {"Mã KH", "Họ KH", "Tên KH", "Số ĐT", "Email"};
@@ -243,18 +261,18 @@ public class CustomerView extends JPanel {
         // Vị trí (Giới tính)
         JLabel labelGenderSearch = new JLabel("Giới tính");
         labelGenderSearch.setFont(font);
-        labelGenderSearch.setBounds(720, 70, 70, 20);
+        labelGenderSearch.setBounds(720, 70, 70, 30);
         inputPanel.add(labelGenderSearch);
 
         radioNamSearch = new JRadioButton("Nam");
         radioNamSearch.setFont(new Font("Tahoma", Font.PLAIN, 15));
-        radioNamSearch.setBounds(850, 70, 60, 20);
+        radioNamSearch.setBounds(850, 70, 60, 30);
         radioNamSearch.setBackground(Color.WHITE);
         inputPanel.add(radioNamSearch);
 
         radioNuSearch = new JRadioButton("Nữ");
         radioNuSearch.setFont(new Font("Tahoma", Font.PLAIN, 15));
-        radioNuSearch.setBounds(910, 70, 60, 20);
+        radioNuSearch.setBounds(910, 70, 60, 30);
         radioNuSearch.setBackground(Color.WHITE);
         inputPanel.add(radioNuSearch);
 
@@ -473,6 +491,14 @@ public class CustomerView extends JPanel {
         this.textFieldFirstName = textFieldFirstName;
     }
 
+    public JTextField getTextFieldNote() {
+        return textFieldNote;
+    }
+
+    public void setTextFieldNote(JTextField textFieldNote) {
+        this.textFieldNote = textFieldNote;
+    }
+
     public void clear() {
         JTextField[] fields = {
                 textFieldCustomerId,
@@ -480,7 +506,8 @@ public class CustomerView extends JPanel {
                 textFieldFirstName,
                 textFieldPhone,
                 textFieldEmail,
-                textFieldDob
+                textFieldDob,
+                textFieldNote
         };
         for (JTextField field : fields) {
             field.setText("");
@@ -491,26 +518,4 @@ public class CustomerView extends JPanel {
         JOptionPane.showMessageDialog(this, msg);
     }
 
-    public void updateTable(ArrayList<Customers> customers) {
-
-        if (tableModel == null) {
-            throw new IllegalStateException("tableModel chưa được khởi tạo. Hãy gọi initCustomerView trước khi cập nhật bảng.");
-        }
-        tableModel.setRowCount(0);
-
-        for (Customers customer : customers) {
-            tableModel.addRow(new Object[]{
-                    customer.getCustomerID(),
-                    customer.getLastName(),
-                    customer.getFirstName(),
-                    customer.getGender(),
-                    customer.getPhoneNumber(),
-                    customer.getEmail(),
-                    customer.getDateOfBirth(),
-                    customer.getTotalMoney(),
-                    customer.getCreationDate(),
-                    customer.getNote()
-            });
-        }
-    }
 }
