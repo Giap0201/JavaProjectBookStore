@@ -9,7 +9,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
-public class BookDAO implements dao.DAOInterface<Books> {
+public class BookDAO implements DAOInterface<Books> {
 
     @Override
     public int insert(Books books) {
@@ -34,7 +34,7 @@ public class BookDAO implements dao.DAOInterface<Books> {
     }
 
     @Override
-    public int update(Books books)  {
+    public int update(Books books) {
         return 0;
     }
 
