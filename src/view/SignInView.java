@@ -1,20 +1,30 @@
 package view;
 
-import controller.AdminController;
-import model.User;
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.Font;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.Insets;
 
-import javax.swing.*;
-import java.awt.*;
+import javax.swing.BorderFactory;
+import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JPasswordField;
+import javax.swing.JTextField;
+
+import controller.AdminController;
 
 public class SignInView extends JFrame {
-    private User user;
     private JTextField jTextFieldName;
     private JPasswordField jPasswordField;
     private JButton btnSignIn;
     private JButton btnCancel;
 
     public SignInView() {
-        this.user = new User();
         this.init();
         this.setVisible(true);
     }

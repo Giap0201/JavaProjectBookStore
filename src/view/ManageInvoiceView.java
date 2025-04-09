@@ -10,7 +10,6 @@ import java.awt.*;
 
 public class ManageInvoiceView extends JPanel {
     public JPanel initManageInvoiceView() {
-        Font font = new Font("Tahoma", Font.BOLD, 15);
         JPanel panelContent = new JPanel();
         panelContent.setLayout(null);
         panelContent.setBackground(new Color(157, 239, 227));

@@ -1,15 +1,22 @@
 package controller;
 
-import view.*;
-
-import javax.swing.*;
-import java.awt.*;
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Component;
+import java.awt.Container;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
-import java.awt.event.MouseMotionListener;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+
+import javax.swing.JPanel;
+
+import view.App;
+import view.BookView;
+import view.CreateInvoiceView;
+import view.CustomerView;
+import view.DiscountProgramView;
+import view.EmployeeView;
+import view.ManageInvoiceView;
 
 public class AppController implements MouseListener {
     private App app;
@@ -26,7 +33,7 @@ public class AppController implements MouseListener {
         listSidebar = new ArrayList<>();
     }
 
-    //phai them vao list de khi di chuot hay click moi tu dong  thay doi mau nen
+    // phai them vao list de khi di chuot hay click moi tu dong thay doi mau nen
     public void addJpanelList() {
         listSidebar.add(app.getPanelSale());
         listSidebar.add(app.getPanelBooks());
@@ -83,61 +90,17 @@ public class AppController implements MouseListener {
 
     }
 
-    //ham thay the panel trong Jpanel
+    // ham thay the panel trong Jpanel
     private void replacePanel(JPanel panel) {
-        //lay contenpane cua JFrame
+        // lay contenpane cua JFrame
         Container container = app.getContentPane();
-        //lay component hien tai trong BorderLayout.Center
+        // lay component hien tai trong BorderLayout.Center
         Component currentPanel = ((BorderLayout) container.getLayout()).getLayoutComponent(BorderLayout.CENTER);
         if (currentPanel != null) {
             container.remove(currentPanel);
         }
         container.add(panel, BorderLayout.CENTER);
-        container.revalidate();//cap nhat lai layout
-        container.repaint();//ve lai UI
+        container.revalidate();// cap nhat lai layout
+        container.repaint();// ve lai UI
     }
 }
-
-//private void replacePanel(JPanel newPanel) {
-//        Container contentPane = appView.getContentPane(); // Lấy content pane của JFrame
-//        // Lấy component hiện tại trong BorderLayout.CENTER
-//        Component currentCenterPanel = ((BorderLayout) contentPane.getLayout()).getLayoutComponent(BorderLayout.CENTER);
-//        if (currentCenterPanel != null) {
-//            contentPane.remove(currentCenterPanel); // Xóa panel hiện tại ở CENTER
-//        }
-//        contentPane.add(newPanel, BorderLayout.CENTER); // Thêm panel mới vào CENTER
-//        contentPane.revalidate(); // Cập nhật layout
-//        contentPane.repaint(); // Vẽ lại UI
-//    }
-/*
-public class AppController {
-    private App appView;
-//    private JPanel panelBook = new BookView().initBookView();
-//    private JPanel panelEmployee = new EmployeeView().Employee();
-
-    public AppController(App appView) {
-        this.appView = appView;
-        initManageInvoiceView();
-    }
-
-    public void initManageInvoiceView() {
-        appView.getPanelBooks().addMouseListener(new MouseAdapter() {
-            @Override
-            public void mouseClicked(MouseEvent e) {
-                replacePanel(new BookView().initBookView());
-                appView.changeBackground(appView.getPanelBooks());
-            }
-        });
-
-        appView.getPanelEmployee().addMouseListener(new MouseAdapter() {
-            @Override
-            public void mouseClicked(MouseEvent e) {
-                replacePanel(new EmployeeView().initEmployeeView());
-            }
-        });
-    }
-
-    // Hàm thay thế panel trong JFrame
-
-}
-*/
