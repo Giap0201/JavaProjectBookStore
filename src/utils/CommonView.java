@@ -1,5 +1,7 @@
 package utils;
 
+import com.toedter.calendar.JDateChooser;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.image.BufferedImage;
@@ -27,5 +29,14 @@ public class CommonView {
             System.err.println("No Image: " + path);
             return new ImageIcon(new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB)); // Trả về ảnh trống
         }
+    }
+    //ham chung su dung JCalendar
+    public static JDateChooser createDateChooser() {
+        JDateChooser dateChooser = new JDateChooser();
+        dateChooser.setFont(new Font("Tahoma", Font.PLAIN, 15));
+        // Chặn không cho người dùng nhập trực tiếp
+        JTextField editor = ((JTextField) dateChooser.getDateEditor().getUiComponent());
+        editor.setEditable(false); // <-- Chặn nhập
+        return dateChooser;
     }
 }

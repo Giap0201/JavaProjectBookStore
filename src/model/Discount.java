@@ -1,6 +1,6 @@
 package model;
 
-import java.util.Date;
+import java.sql.Date;
 
 public class Discount {
     private String discountID;
@@ -8,18 +8,16 @@ public class Discount {
     private String typeDiscount;
     private Date startDate;
     private Date endDate;
-    private float percent;
 
     public Discount() {
     }
 
-    public Discount(String discountID, String nameDiscount, String typeDiscount, Date startDate, Date endDate, float percent) {
+    public Discount(String discountID, String nameDiscount, String typeDiscount, Date startDate, Date endDate) {
         this.discountID = discountID;
         this.nameDiscount = nameDiscount;
         this.typeDiscount = typeDiscount;
         this.startDate = startDate;
         this.endDate = endDate;
-        this.percent = percent;
     }
 
     public String getDiscountID() {
@@ -60,26 +58,6 @@ public class Discount {
 
     public void setEndDate(Date endDate) {
         this.endDate = endDate;
-    }
-
-    public float getPercent() {
-        return percent;
-    }
-
-    public void setPercent(float percent) {
-        this.percent = percent;
-    }
-
-    @Override
-    public String toString() {
-        return "Discount{" +
-                "discountID='" + discountID + '\'' +
-                ", nameDiscount='" + nameDiscount + '\'' +
-                ", typeDiscount='" + typeDiscount + '\'' +
-                ", startDate=" + startDate +
-                ", endDate=" + endDate +
-                ", percent=" + percent +
-                '}';
     }
 }
 

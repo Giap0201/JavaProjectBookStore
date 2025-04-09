@@ -1,13 +1,21 @@
 package view;
+
+import com.toedter.calendar.JDateChooser;
+import controller.DiscountController;
 import utils.CommonView;
 
 import javax.swing.*;
-import javax.swing.table.DefaultTableCellRenderer;
-import javax.swing.table.DefaultTableModel;
-import javax.swing.table.JTableHeader;
+import javax.swing.table.*;
 import java.awt.*;
 
+
 public class DiscountProgramView {
+    private JTextField textFieldProgramType, textFieldProgramName, textFieldDiscountId;
+    private JDateChooser dateChooserStart, dateChooserEnd, dateStartSearch, dateEndSearch;
+    private JButton btnAdd, btnEdit, btnDelete, btnDisableAll, dateSearch, btnAddDetail, btnDeleteDetail;
+    private DefaultTableModel tableModelTop, tableModelDetails;
+    private JTable tableTop, tableDetails;
+
     public JPanel initDiscountProgramView() {
         Font font = new Font("Tahoma", Font.BOLD, 15);
         Font font1 = new Font("Tahoma", Font.PLAIN, 15);
@@ -28,15 +36,15 @@ public class DiscountProgramView {
         inputPanel.setBounds(0, 50, 1500, 450); // Tăng chiều cao để chứa bảng
         panelContent.add(inputPanel);
 
-        ImageIcon discount = CommonView.scaleImage("images/discount2.png",300,150);
+        ImageIcon discount = CommonView.scaleImage("images/discount2.png", 300, 150);
         JLabel lblDiscount = new JLabel(discount);
-        lblDiscount.setBounds(80,0,discount.getIconWidth(),discount.getIconHeight());
+        lblDiscount.setBounds(80, 0, discount.getIconWidth(), discount.getIconHeight());
         inputPanel.add(lblDiscount);
 
         // Bảng hiển thị trong inputPanel
-        String[] columnNamesTop = {"Mã", "Chương trình", "Loại Khuyến mãi", "Phần trăm", "Ngày BD", "Ngày KT"};
-        DefaultTableModel tableModelTop = new DefaultTableModel(columnNamesTop, 0);
-        JTable tableTop = new JTable(tableModelTop);
+        String[] columnNamesTop = {"Mã chương trình", "Tên chương trình", "Loại khuyến mãi", "Ngày BĐ", "Ngày KT"};
+        tableModelTop = new DefaultTableModel(columnNamesTop, 0);
+        tableTop = new JTable(tableModelTop);
 
         tableTop.setFont(new Font("Tahoma", Font.PLAIN, 12));
         tableTop.setRowHeight(20);
@@ -51,24 +59,21 @@ public class DiscountProgramView {
         for (int i = 0; i < tableTop.getColumnCount(); i++) {
             tableTop.getColumnModel().getColumn(i).setCellRenderer(centerRendererTop);
         }
+        //them thao tac tu dong sap xep
+        TableRowSorter<TableModel> sorter = new TableRowSorter<>(tableModelTop);
+        tableTop.setRowSorter(sorter);
 
         JScrollPane scrollPaneTop = new JScrollPane(tableTop);
         scrollPaneTop.setBounds(450, 10, 800, 350); // Đặt ở góc bên phải trong inputPanel
         inputPanel.add(scrollPaneTop);
 
-        // Thêm một dòng mẫu vào bảng trên
-        Object[] newRowTop = {"A02", "", "", "", "2021/05/01", "2021/05/08"};
-        Object[] newRowTop2 = {"A04", "", "", "", "2021/05/01", "2021/05/02"};
-        tableModelTop.addRow(newRowTop);
-        tableModelTop.addRow(newRowTop2);
-
         // Mã giảm giá
-        JLabel labelDiscountId = new JLabel("Mã giảm giá:");
+        JLabel labelDiscountId = new JLabel("Mã chương trình:");
         labelDiscountId.setFont(font);
-        labelDiscountId.setBounds(50, 170, 100, 30); // Điều chỉnh y để nhường chỗ cho bảng
+        labelDiscountId.setBounds(50, 170, 150, 30); // Điều chỉnh y để nhường chỗ cho bảng
         inputPanel.add(labelDiscountId);
 
-        JTextField textFieldDiscountId = new JTextField("A04");
+        textFieldDiscountId = new JTextField();
         textFieldDiscountId.setFont(font1);
         textFieldDiscountId.setBounds(190, 170, 180, 30);
         inputPanel.add(textFieldDiscountId);
@@ -79,7 +84,7 @@ public class DiscountProgramView {
         labelProgramName.setBounds(50, 210, 150, 30);
         inputPanel.add(labelProgramName);
 
-        JTextField textFieldProgramName = new JTextField("");
+        textFieldProgramName = new JTextField("");
         textFieldProgramName.setFont(font1);
         textFieldProgramName.setBounds(190, 210, 180, 30);
         inputPanel.add(textFieldProgramName);
@@ -90,7 +95,7 @@ public class DiscountProgramView {
         labelProgramType.setBounds(50, 250, 150, 30);
         inputPanel.add(labelProgramType);
 
-        JTextField textFieldProgramType = new JTextField("");
+        textFieldProgramType = new JTextField("");
         textFieldProgramType.setFont(font1);
         textFieldProgramType.setBounds(190, 250, 180, 30);
         inputPanel.add(textFieldProgramType);
@@ -101,16 +106,10 @@ public class DiscountProgramView {
         labelStartDate.setBounds(50, 290, 150, 30);
         inputPanel.add(labelStartDate);
 
-        JTextField textFieldStartDate = new JTextField("");
-        textFieldStartDate.setFont(font1);
-        textFieldStartDate.setBounds(190, 290, 180, 30);
-        inputPanel.add(textFieldStartDate);
-
-        JButton calendarButton = new JButton();
-        calendarButton.setBounds(380,290, 30, 30);
-        ImageIcon icon7= CommonView.scaleImage("images/icon7.png",30,30);
-        calendarButton.setIcon(icon7);
-        inputPanel.add(calendarButton);
+        // JDateChooser cho ngày bắt đầu
+        dateChooserStart = CommonView.createDateChooser();
+        dateChooserStart.setBounds(190, 290, 200, 30);
+        inputPanel.add(dateChooserStart);
 
         // Ngày kết thúc
         JLabel labelEndDate = new JLabel("Ngày kết thúc:");
@@ -118,31 +117,25 @@ public class DiscountProgramView {
         labelEndDate.setBounds(50, 330, 150, 30);
         inputPanel.add(labelEndDate);
 
-        JTextField textFieldEndDate = new JTextField("");
-        textFieldEndDate.setFont(font1);
-        textFieldEndDate.setBounds(190, 330, 180, 30);
-        inputPanel.add(textFieldEndDate);
-
-        JButton endDateButton = new JButton();
-        endDateButton.setBounds(380,330, 30, 30);
-        ImageIcon endDateImage=CommonView.scaleImage("images/icon7.png",30,30);
-        endDateButton.setIcon(endDateImage);
-        inputPanel.add(endDateButton);
+        //calendar cho ngay ket thuc
+        dateChooserEnd = CommonView.createDateChooser();
+        dateChooserEnd.setBounds(190, 330, 200, 30);
+        inputPanel.add(dateChooserEnd);
 
         // Nút Thêm, Sửa, Xóa, Tắt Cả
-        JButton btnAdd = CommonView.createButton("THÊM",new Color(32, 204, 35));
+        btnAdd = CommonView.createButton("THÊM", new Color(32, 204, 35));
         btnAdd.setBounds(50, 380, 100, 40); // Điều chỉnh y để nhường chỗ cho bảng
         inputPanel.add(btnAdd);
 
-        JButton btnEdit = CommonView.createButton("SỬA",new Color(0, 0, 255));
+        btnEdit = CommonView.createButton("SỬA", new Color(0, 0, 255));
         btnEdit.setBounds(160, 380, 100, 40);
         inputPanel.add(btnEdit);
 
-        JButton btnDelete = CommonView.createButton("XÓA",new Color(255, 0, 0));
+        btnDelete = CommonView.createButton("XÓA", new Color(255, 0, 0));
         btnDelete.setBounds(270, 380, 100, 40);
         inputPanel.add(btnDelete);
 
-        JButton btnDisableAll = CommonView.createButton("TẤT CẢ",new Color(0, 0, 0));
+        btnDisableAll = CommonView.createButton("TẤT CẢ", new Color(0, 0, 0));
         btnDisableAll.setBounds(380, 380, 100, 40);
         inputPanel.add(btnDisableAll);
 
@@ -150,7 +143,7 @@ public class DiscountProgramView {
         JPanel searchPanel = new JPanel();
         searchPanel.setLayout(null);
         searchPanel.setBackground(new Color(157, 239, 227));
-        searchPanel.setBounds(50, 500, 1200, 80); // Đặt ngay dưới inputPanel
+        searchPanel.setBounds(50, 500, 1200, 80);
         searchPanel.setBorder(BorderFactory.createLineBorder(new Color(228, 13, 13)));
         panelContent.add(searchPanel);
 
@@ -164,34 +157,21 @@ public class DiscountProgramView {
         labelSearchStartDate.setBounds(170, 40, 110, 30);
         searchPanel.add(labelSearchStartDate);
 
-        JTextField textFieldSearchStartDate = new JTextField();
-        textFieldSearchStartDate.setFont(font1);
-        textFieldSearchStartDate.setBounds(280, 40, 130, 30);
-        searchPanel.add(textFieldSearchStartDate);
-
-        JButton startDateButtonSearch = new JButton();
-        startDateButtonSearch.setBounds(420,40, 30, 30);
-        ImageIcon startDateImageSearch=CommonView.scaleImage("images/icon7.png",30,30);
-        startDateButtonSearch.setIcon(startDateImageSearch);
-        searchPanel.add(startDateButtonSearch);
+        dateStartSearch = CommonView.createDateChooser();
+        dateStartSearch.setBounds(280, 40, 170, 30);
+        searchPanel.add(dateStartSearch);
 
         JLabel labelSearchEndDate = new JLabel("Ngày kết thúc:");
         labelSearchEndDate.setFont(font);
         labelSearchEndDate.setBounds(500, 40, 150, 30);
         searchPanel.add(labelSearchEndDate);
 
-        JTextField textFieldSearchEndDate = new JTextField();
-        textFieldSearchEndDate.setFont(font1);
-        textFieldSearchEndDate.setBounds(630, 40, 130, 30);
-        searchPanel.add(textFieldSearchEndDate);
+        //search daystart using Jdatechooser
+        dateEndSearch = CommonView.createDateChooser();
+        dateEndSearch.setBounds(630, 40, 170, 30);
+        searchPanel.add(dateEndSearch);
 
-        JButton endDateButtonSearch = new JButton();
-        endDateButtonSearch.setBounds(770,40, 30, 30);
-        ImageIcon endDateImageSearch=CommonView.scaleImage("images/icon7.png",30,30);
-        endDateButtonSearch.setIcon(endDateImageSearch);
-        searchPanel.add(endDateButtonSearch);
-
-        JButton dateSearch = CommonView.createButton("TÌM KIẾM",new Color(0, 0, 0));
+        dateSearch = CommonView.createButton("TÌM KIẾM", new Color(0, 0, 0));
         dateSearch.setBounds(950, 40, 130, 30);
         searchPanel.add(dateSearch);
 
@@ -209,30 +189,29 @@ public class DiscountProgramView {
 
         // Bảng chi tiết chương trình giảm giá
         String[] columnNames = {"Mã GG", "% Giảm giá", "Mã sách"};
-        DefaultTableModel tableModel = new DefaultTableModel(columnNames, 0);
-        JTable table = new JTable(tableModel);
+        tableModelDetails = new DefaultTableModel(columnNames, 0);
+        tableDetails = new JTable(tableModelDetails);
 
-        table.setFont(new Font("Tahoma", Font.PLAIN, 12));
-        table.setRowHeight(20);
+        tableDetails.setFont(new Font("Tahoma", Font.PLAIN, 12));
+        tableDetails.setRowHeight(20);
 
-        JTableHeader header = table.getTableHeader();
+        JTableHeader header = tableDetails.getTableHeader();
         header.setFont(new Font("Tahoma", Font.BOLD, 14));
         header.setBackground(Color.LIGHT_GRAY);
         header.setForeground(Color.BLACK);
 
         DefaultTableCellRenderer centerRenderer = new DefaultTableCellRenderer();
         centerRenderer.setHorizontalAlignment(JLabel.CENTER);
-        for (int i = 0; i < table.getColumnCount(); i++) {
-            table.getColumnModel().getColumn(i).setCellRenderer(centerRenderer);
+        for (int i = 0; i < tableDetails.getColumnCount(); i++) {
+            tableDetails.getColumnModel().getColumn(i).setCellRenderer(centerRenderer);
         }
+        //tu dong sap xep data
+        TableRowSorter<TableModel> sorter1 = new TableRowSorter<>(tableModelDetails);
+        tableDetails.setRowSorter(sorter1);
 
-        JScrollPane scrollPane = new JScrollPane(table);
+        JScrollPane scrollPane = new JScrollPane(tableDetails);
         scrollPane.setBounds(50, 40, 500, 200);
         discountDetailsPanel.add(scrollPane);
-
-        // Thêm một dòng mẫu vào bảng
-        Object[] newRow = {"A04", "15.0", "KD04"};
-        tableModel.addRow(newRow);
 
         // Mã sách (phần chi tiết)
         JLabel labelBookId = new JLabel("Mã sách:");
@@ -240,7 +219,7 @@ public class DiscountProgramView {
         labelBookId.setBounds(600, 40, 150, 40);
         discountDetailsPanel.add(labelBookId);
 
-        JTextField textFieldBookId = new JTextField("KD04");
+        JTextField textFieldBookId = new JTextField();
         textFieldBookId.setFont(font1);
         textFieldBookId.setBounds(700, 40, 200, 40);
         discountDetailsPanel.add(textFieldBookId);
@@ -257,19 +236,98 @@ public class DiscountProgramView {
         discountDetailsPanel.add(textFieldDiscountPercent);
 
         // Nút Thêm, Xóa (phần chi tiết)
-        JButton btnAddDetail = CommonView.createButton("THÊM",new Color(32, 204, 35));
+        btnAddDetail = CommonView.createButton("THÊM", new Color(32, 204, 35));
         btnAddDetail.setBounds(650, 160, 100, 40);
         discountDetailsPanel.add(btnAddDetail);
 
-        JButton btnDeleteDetail = CommonView.createButton("XÓA",new Color(255, 0, 0));
+        btnDeleteDetail = CommonView.createButton("XÓA", new Color(255, 0, 0));
         btnDeleteDetail.setBounds(770, 160, 100, 40);
         discountDetailsPanel.add(btnDeleteDetail);
 
-        ImageIcon discount2 = CommonView.scaleImage("images/discount.png",300,200);
+        ImageIcon discount2 = CommonView.scaleImage("images/discount.png", 300, 200);
         JLabel lblDiscount2 = new JLabel(discount2);
-        lblDiscount2.setBounds(930,40,discount2.getIconWidth(),discount2.getIconHeight());
+        lblDiscount2.setBounds(930, 40, discount2.getIconWidth(), discount2.getIconHeight());
         discountDetailsPanel.add(lblDiscount2);
+        //them cac su kien vao view
+        DiscountController controller = new DiscountController(this);
+        btnAdd.addActionListener(controller);
+        btnDelete.addActionListener(controller);
+        btnDeleteDetail.addActionListener(controller);
+        btnEdit.addActionListener(controller);
+        btnDisableAll.addActionListener(controller);
+        btnAddDetail.addActionListener(controller);
         return panelContent;
     }
 
+    public JTextField getTextFieldProgramType() {
+        return textFieldProgramType;
+    }
+
+    public JTextField getTextFieldProgramName() {
+        return textFieldProgramName;
+    }
+
+    public JTextField getTextFieldDiscountId() {
+        return textFieldDiscountId;
+    }
+
+    public JDateChooser getDateChooserStart() {
+        return dateChooserStart;
+    }
+
+    public JDateChooser getDateChooserEnd() {
+        return dateChooserEnd;
+    }
+
+    public JDateChooser getDateStartSearch() {
+        return dateStartSearch;
+    }
+
+    public JDateChooser getDateEndSearch() {
+        return dateEndSearch;
+    }
+
+    public JButton getBtnAdd() {
+        return btnAdd;
+    }
+
+    public JButton getBtnEdit() {
+        return btnEdit;
+    }
+
+    public JButton getBtnDelete() {
+        return btnDelete;
+    }
+
+    public JButton getBtnDisableAll() {
+        return btnDisableAll;
+    }
+
+    public JButton getDateSearch() {
+        return dateSearch;
+    }
+
+    public JButton getBtnAddDetail() {
+        return btnAddDetail;
+    }
+
+    public JButton getBtnDeleteDetail() {
+        return btnDeleteDetail;
+    }
+
+    public DefaultTableModel getTableModelTop() {
+        return tableModelTop;
+    }
+
+    public DefaultTableModel getTableModelDetails() {
+        return tableModelDetails;
+    }
+
+    public JTable getTableTop() {
+        return tableTop;
+    }
+
+    public JTable getTableDetails() {
+        return tableDetails;
+    }
 }
