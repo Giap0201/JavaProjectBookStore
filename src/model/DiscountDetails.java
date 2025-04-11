@@ -3,9 +3,9 @@ package model;
 public class DiscountDetails {
     private Discount discount;
     private Books book;
-    private float percent;
+    private double percent;
 
-    public DiscountDetails(Discount discount, float percent, Books book) {
+    public DiscountDetails(Discount discount, double percent, Books book) {
         this.discount = discount;
         this.percent = percent;
         this.book = book;
@@ -27,20 +27,11 @@ public class DiscountDetails {
         this.book = book;
     }
 
-    public float getPercent() {
+    public double getPercent() {
         return percent;
     }
 
-    public void setPercent(float percent) {
+    public void setPercent(double percent) {
         this.percent = percent;
-    }
-
-    @Override
-    public String toString() {
-        return "DiscountDetails{" +
-                "discount=" + discount +
-                ", book=" + book +
-                ", percent=" + percent +
-                '}';
     }
 }

@@ -58,6 +58,7 @@ public class BookDAO implements IBookDAO {
                 for (Category c : categories) {
                     if (c.getCategoryID().equals(categoryID)) {
                         category = c;
+                        break;
                     }
                 }
                 Books book = new Books(bookID, bookName, author, yearPublished, price, quantity, category);

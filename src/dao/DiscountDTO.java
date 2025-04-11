@@ -92,4 +92,40 @@ public class DiscountDTO implements IDiscountDTO {
         return result;
     }
 
+    @Override
+    public ArrayList<Discount> searchCondition(Date startDate, Date endDate){
+        ArrayList<Discount> listDiscounts = new ArrayList<>();
+        StringBuilder query = new StringBuilder("select * from discount where 1 = 1");
+        ArrayList<Date> pargam = new ArrayList<>();
+        if(startDate != null){
+            query.append(" and startDate >= ?");
+            pargam.add(startDate);
+        }
+        if(endDate != null){
+            query.append(" and endDate <= ?");
+            pargam.add(endDate);
+        }
+        try(Connection conn = JDBCUtil.getConnection();
+        PreparedStatement ps = conn.prepareStatement(query.toString())){
+            //gan gia tri cho ?
+            for (int i = 0; i<pargam.size(); i++){
+                Date date = pargam.get(i);
+                ps.setDate(i+1, date);
+            }
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                String discountID = rs.getString("discountID");
+                String discountName = rs.getString("nameDiscount");
+                String typeDiscount = rs.getString("typeDiscount");
+                Date startDateResult = rs.getDate("startDate");
+                Date endDateResult = rs.getDate("endDate");
+                Discount discount = new Discount(discountID,discountName,typeDiscount,startDateResult,endDateResult);
+                listDiscounts.add(discount);
+            }
+        }catch (SQLException e){
+            e.printStackTrace();
+        }
+        return listDiscounts;
+    }
+
 }
