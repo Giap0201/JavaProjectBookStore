@@ -45,6 +45,7 @@ public class CustomerController implements ActionListener {
         updateCustomerTable();
         updateTotalCustomers();
         addTableSelectionListener();
+        initializeButtonStates();
     }
 
     // Đặt trạng thái ban đầu cho các nút Sửa/Xóa
@@ -56,13 +57,18 @@ public class CustomerController implements ActionListener {
     }
 
 
-    // --- Listener cho việc chọn hàng trên bảng ---
+    /**
+     * Đăng ký một ListSelectionListener cho bảng khách hàng trong View.
+     * Listener này sẽ được kích hoạt khi người dùng chọn hoặc bỏ chọn một hàng.
+     * Nó cập nhật các trường nhập liệu với dữ liệu từ hàng được chọn và quản lý trạng thái các nút.
+     */
     public void addTableSelectionListener() {
         customerView.getTable().getSelectionModel().addListSelectionListener(new ListSelectionListener() {
             @Override
             public void valueChanged(ListSelectionEvent e) {
-                if (!e.getValueIsAdjusting()) {
-                    int selectRow = customerView.getTable().getSelectedRow();
+                int selectRow = customerView.getTable().getSelectedRow();
+                if (!e.getValueIsAdjusting() && selectRow != -1 ) {
+
                     if (selectRow >= 0) {
                         DefaultTableModel model = customerView.getTableModel();
                         // Lấy dữ liệu từ model, xử lý null an toàn
@@ -75,7 +81,10 @@ public class CustomerController implements ActionListener {
                         String dobStr = getStringValueFromModel(model, selectRow, 6);
                         // double totalMoney = getDoubleValueFromModel(model, selectRow, 7); // Lấy nếu cần hiển thị
                         // String creationDateStr = getStringValueFromModel(model, selectRow, 8); // Lấy nếu cần
-                        String note = getStringValueFromModel(model, selectRow, 9); // <-- Lấy note
+                        String note = "";
+                        if (model.getColumnCount() > 9) {
+                            note = getStringValueFromModel(model, selectRow, 9);
+                        }
 
                         // --- Điền dữ liệu ---
                         customerView.getTextFieldCustomerId().setText(customerID);
@@ -389,7 +398,7 @@ public class CustomerController implements ActionListener {
         customerView.getTextFieldSearch().setText("");
         customerView.getRadioNamSearch().setSelected(false);
         customerView.getRadioNuSearch().setSelected(false);
-        // if(customerView.getGroupSearch() != null) customerView.getGroupSearch().clearSelection();
+         //if(customerView.getGroupSearch() != null) customerView.getGroupSearch().clearSelection();
 
         // Tải lại toàn bộ dữ liệu
         updateCustomerTable();
@@ -494,12 +503,11 @@ public class CustomerController implements ActionListener {
         }
 
         // 6. Validate độ dài Note (ví dụ, nếu cần giới hạn)
-        /*
-        int maxNoteLength = 255; // Ví dụ giới hạn 255 ký tự
+
+        int maxNoteLength = 200; // Ví dụ giới hạn 255 ký tự
         if (note.length() > maxNoteLength) {
             throw new IllegalArgumentException("Ghi chú không được vượt quá " + maxNoteLength + " ký tự.");
         }
-        */
 
         // --- Nếu tất cả validation thành công, tạo đối tượng Customers ---
         Date creationDate = new Date(); // Xử lý riêng khi update

@@ -146,12 +146,12 @@ public class CustomerDAO {
     }
 
 
-    public Customers selectbyId(Customers customers) {
-        if (customers != null && customers.getCustomerID() != null) {
-            return selectById(customers.getCustomerID());
-        }
-        return null;
-    }
+//    public Customers selectbyId(Customers customers) {
+//        if (customers != null && customers.getCustomerID() != null) {
+//            return selectById(customers.getCustomerID());
+//        }
+//        return null;
+//    }
 
     // Phương thức search linh hoạt hơn
     public ArrayList<Customers> search(String field, String value, String gender) {

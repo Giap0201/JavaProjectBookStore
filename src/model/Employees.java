@@ -1,30 +1,46 @@
 
 package model;
 
+
 import java.util.Date;
 
 public class Employees extends Person{
-    private String empID;
-    private double salary;
+    private String employeeID;
     private String position ;
+    private double salary;
 
-    public Employees(String firstName, String lastName, Date dateOfBirth, String phoneNumber, String email, String gender) {
-        super(firstName, lastName, dateOfBirth, phoneNumber, email, gender);
-        this.empID = "";
-        this.salary = 0.0;
-        this.position = "";
-    }
 
     public Employees() {
 
     }
 
-    public String getEmpID() {
-        return empID;
+    public Employees(String employeeID, String position, double salary, String note) {
+        this.employeeID = employeeID;
+        this.position = position;
+        this.salary = salary;
     }
 
-    public void setEmpID(String empID) {
-        this.empID = empID;
+    public Employees(String firstName, String lastName, Date dateOfBirth, String phoneNumber, String email, String gender, String employeeID, String position, double salary) {
+        super(firstName, lastName, dateOfBirth, phoneNumber, email, gender);
+        this.employeeID = employeeID;
+        this.position = position;
+        this.salary = salary;
+    }
+
+    public String getEmployeeID() {
+        return employeeID;
+    }
+
+    public void setEmployeeID(String employeeID) {
+        this.employeeID = employeeID;
+    }
+
+    public String getPosition() {
+        return position;
+    }
+
+    public void setPosition(String position) {
+        this.position = position;
     }
 
     public double getSalary() {
@@ -35,11 +51,4 @@ public class Employees extends Person{
         this.salary = salary;
     }
 
-    public String getPosition() {
-        return position;
-    }
-
-    public void setPosition(String position) {
-        this.position = position;
-    }
 }

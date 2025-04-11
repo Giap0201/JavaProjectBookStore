@@ -18,12 +18,16 @@ public class CustomerView extends JPanel {
     private JTable table;
     private JButton btnExportExcel;
     private JButton btnImportExcel;
-    private JTextField textFieldCustomerId;
+    private JTextField textFieldCustomerId = new JTextField();
     private JRadioButton radioPositionNam, radioPositionNu, radioNamSearch, radioNuSearch;
     private JTextField textFieldPhone;
     private JTextField textFieldEmail, textFieldDob;
-    private JButton calendarButton, btnAdd, btnUpdate, btnDelete, btnSearch;
-    private JButton btnReset;
+    private JButton calendarButton;
+    private JButton btnAdd= CommonView.createButton("THÊM", new Color(0, 153, 0));
+    private JButton btnUpdate = CommonView.createButton("SỬA", new Color(128, 128, 128));
+    private JButton btnDelete = CommonView.createButton("XÓA", new Color(255, 0, 0));
+    private JButton btnReset = CommonView.createButton("LÀM MỚI", new Color(255, 153, 0));
+    private JButton btnSearch;
     private JComboBox<String> checkcombobox;
     private JTextField textFieldSearch;
     private JTextField textFieldLastName;
@@ -58,7 +62,7 @@ public class CustomerView extends JPanel {
         panelContent.add(textFieldTotalCustomers);
 
         // Bảng dữ liệu khách hàng
-        String[] columnNames = {"Mã KH", "Họ", "Tên", "Giới tính", "Số ĐT", "Email","Ngày sinh", "Tổng chi tiêu", "Ngày lập thẻ", "Ghi chú"};
+        String[] columnNames = {"Mã KH", "Họ", "Tên", "Giới tính", "Số ĐT", "Email","Ngày sinh", "Tổng chi tiêu", "Ngày lập thẻ","Note"};
         tableModel = new DefaultTableModel(columnNames, 0);
         table = new JTable(tableModel);
 
@@ -114,7 +118,7 @@ public class CustomerView extends JPanel {
         labelCustomerId.setBounds(50, 40, 70, 30);
         inputPanel.add(labelCustomerId);
 
-        textFieldCustomerId = new JTextField();
+
         textFieldCustomerId.setFont(new Font("Tahoma", Font.PLAIN, 15));
         textFieldCustomerId.setBounds(120, 40, 150, 30);
         inputPanel.add(textFieldCustomerId);
@@ -219,23 +223,19 @@ public class CustomerView extends JPanel {
         inputPanel.add(textFieldNote);
 
         // Các nút chức năng
-        btnAdd = CommonView.createButton("THÊM", new Color(0, 153, 0));
         btnAdd.setBounds(50, 180, 100, 40);
         inputPanel.add(btnAdd);
         btnAdd.addActionListener(action);
 
-        btnDelete = CommonView.createButton("XÓA", new Color(255, 0, 0));
         btnDelete.setBounds(160, 180, 100, 40);
         inputPanel.add(btnDelete);
         btnDelete.addActionListener(action);
 
-        btnUpdate = CommonView.createButton("SỬA", new Color(128, 128, 128));
         btnUpdate.setBounds(270, 180, 100, 40);
         inputPanel.add(btnUpdate);
         btnUpdate.addActionListener(action);
 
 
-        btnReset = CommonView.createButton("LÀM MỚI", new Color(255, 153, 0));
         btnReset.setBounds(380, 180, 150, 40);
         inputPanel.add(btnReset);
         btnReset.addActionListener(action);

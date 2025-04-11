@@ -105,7 +105,7 @@ public class BookController implements ActionListener {
     // chuc nang xoa sach
     public void deleteBook() {
         String bookID = bookView.getTextFieldBookId().getText().trim();
-        if (bookID.equals("") || bookID == null) {
+        if (bookID.equals("") || (bookID == null)) {
             JOptionPane.showMessageDialog(bookView, "Vui lòng chọn sách cần xoá!!");
             return;
         }
