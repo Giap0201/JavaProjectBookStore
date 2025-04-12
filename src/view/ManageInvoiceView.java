@@ -1,296 +1,201 @@
 package view;
 
+import com.toedter.calendar.JDateChooser;
 import utils.CommonView;
 
 import javax.swing.*;
-import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
-import javax.swing.table.JTableHeader;
 import java.awt.*;
 
 public class ManageInvoiceView extends JPanel {
+    private static final Font font1 = new Font("Tahoma", Font.BOLD, 15);
+    private static final Font font2 = new Font("Tahoma", Font.PLAIN, 15);
+    private JButton btnDelete2,btnChange2,btnSearch,btnLoad,btnSave,btnChange,btnDelete;
+    private JDateChooser date;
+    private DefaultTableModel tableModelInvoice,tableModelDetails;
+    private JTable tableInvoice,tabelDetails;
+    private JLabel labeltotal,labelMonney,lblTotalItemsValue,lblTotalPriceValue;
+    private JTextField textFieldInvoiceId,textFieldCustomerId,textFieldEmployee;
+    private JComboBox<String> jComboBoxTT;
+
+    public JPanel createPanel1() {
+        JPanel panelContent1 = new JPanel();
+        panelContent1.setLayout(null);
+        JLabel labelInvoiceId = createLabel("Mã HĐ", font1);
+        labelInvoiceId.setBounds(50, 15, 70, 25);
+        panelContent1.add(labelInvoiceId);
+
+        textFieldInvoiceId = createTextField(font2);
+        textFieldInvoiceId.setBounds(130, 15, 120, 25);
+        panelContent1.add(textFieldInvoiceId);
+
+        JLabel labelCustomerId = createLabel("Mã KH", font1);
+        labelCustomerId.setBounds(280, 15, 70, 25);
+        panelContent1.add(labelCustomerId);
+
+        textFieldCustomerId = createTextField(font2);
+        textFieldCustomerId.setBounds(355, 15, 120, 25);
+        panelContent1.add(textFieldCustomerId);
+
+        JLabel labelEmployee = createLabel("Mã NV", font1);
+        labelEmployee.setBounds(510, 15, 70, 25);
+        panelContent1.add(labelEmployee);
+
+        textFieldEmployee = createTextField(font2);
+        textFieldEmployee.setBounds(585, 15, 120, 25);
+        panelContent1.add(textFieldEmployee);
+
+        JLabel labelDay = createLabel("Ngày lập", font1);
+        labelDay.setBounds(730, 15, 70, 25);
+        panelContent1.add(labelDay);
+
+        date = new JDateChooser();
+        date.setFont(font2);
+        date.setBounds(820, 15, 130, 25);
+        panelContent1.add(date);
+
+        JLabel labelTT = createLabel("Trạng thái", font1);
+        labelTT.setBounds(970, 15, 90, 25);
+        panelContent1.add(labelTT);
+
+        jComboBoxTT = new JComboBox<>();
+        jComboBoxTT.setFont(font2);
+        jComboBoxTT.addItem("Chọn trạng thái");
+        jComboBoxTT.addItem("Đã thanh toán");
+        jComboBoxTT.addItem("Chưa thanh toán");
+        jComboBoxTT.setBounds(1080,15,140,25);
+        panelContent1.add(jComboBoxTT);
+
+        btnDelete = CommonView.createButton("Xoá", new Color(246, 4, 60));
+        btnDelete.setBounds(300, 50, 100, 30);
+        panelContent1.add(btnDelete);
+
+        btnChange = CommonView.createButton("Sửa", new Color(1, 131, 85));
+        btnChange.setBounds(450, 50, 100, 30);
+        panelContent1.add(btnChange);
+
+        btnSave = CommonView.createButton("Xuất", new Color(60, 197, 71));
+        btnSave.setBounds(600, 50, 100, 30);
+        panelContent1.add(btnSave);
+
+        btnLoad = CommonView.createButton("Làm mới", new Color(211, 99, 167));
+        btnLoad.setBounds(750, 50, 100, 30);
+        panelContent1.add(btnLoad);
+
+        btnSearch = CommonView.createButton("Tìm kiếm", new Color(56, 46, 211));
+        btnSearch.setBounds(900, 50, 120, 30);
+        panelContent1.setBackground(new Color(245, 248, 214));
+        panelContent1.add(btnSearch);
+        panelContent1.setBorder(BorderFactory.createLineBorder(new Color(3, 30, 117)));
+        return panelContent1;
+    }
+
+    private JPanel createPanel2() {
+        JPanel panelContent2 = new JPanel();
+        String[] columns = {"Mã HĐ", "Mã KH", "Mã NV", "Mã GD", "Ngày lập", "Tổng tiền", "Giảm giá", "Thành tiền"};
+        tableModelInvoice = new DefaultTableModel();
+        tableInvoice = CommonView.createTable(tableModelInvoice, columns);
+        JScrollPane scrollPane = new JScrollPane(tableInvoice);
+        scrollPane.setBounds(40, 10, 1200, 280);
+        panelContent2.add(scrollPane);
+        JLabel labeltotal1 = createLabel("Số lượng hoá đơn: ", font1);
+        labeltotal1.setBounds(50, 300, 150, 20);
+        panelContent2.add(labeltotal1);
+
+        labeltotal = createLabel("0", font1);
+        labeltotal.setBounds(200, 300, 150, 20);
+        panelContent2.add(labeltotal);
+
+        JLabel labelMonney1 = createLabel("Tổng tiền: ", font1);
+        labelMonney1.setBounds(400, 300, 100, 20);
+        panelContent2.add(labelMonney1);
+
+        labelMonney = createLabel("0 VNĐ", font1);
+        labelMonney.setBounds(500, 300, 150, 20);
+        panelContent2.add(labelMonney);
+        return panelContent2;
+    }
+
+    private JPanel createPanel3() {
+        JPanel panelContent3 = new JPanel();
+        panelContent3.setBorder(BorderFactory.createMatteBorder(2, 0, 0, 0, Color.BLUE));
+        panelContent3.setLayout(null);
+        JLabel labeltitle3 = new JLabel("CHI TIẾT HOÁ ĐƠN");
+        labeltitle3.setFont(new Font("Tahoma", Font.BOLD, 16));
+        labeltitle3.setForeground(new Color(2, 62, 150));
+        labeltitle3.setBounds(620, 5, 200, 25);
+        panelContent3.add(labeltitle3);
+
+        String[] columnTabel2 = {"Mã HĐ", "Mã Sách", "Tên Sách", "Số lượng", "Đơn Giá", "Giảm Giá", "Thành tiền"};
+        tableModelDetails = new DefaultTableModel();
+        tabelDetails = CommonView.createTable(tableModelDetails, columnTabel2);
+
+        JScrollPane scrollPane2 = new JScrollPane(tabelDetails);
+        scrollPane2.setBounds(40, 40, 1000, 260);
+        panelContent3.add(scrollPane2);
+
+// Nhãn hiển thị tiêu đề tổng số sản phẩm
+        JLabel lblTotalItems = createLabel("Tổng số sản phẩm:", font1);
+        lblTotalItems.setBounds(1060, 30, 150, 25);
+        panelContent3.add(lblTotalItems);
+
+// Nhãn hiển thị giá trị tổng số sản phẩm (mặc định là 0)
+        lblTotalItemsValue = createLabel("0", font1);
+        lblTotalItemsValue.setBounds(1220, 30, 100, 25);
+        panelContent3.add(lblTotalItemsValue);
+
+// Nhãn hiển thị tiêu đề tổng tiền
+        JLabel lblTotalPrice = createLabel("Tổng tiền:", font1);
+        lblTotalPrice.setBounds(1060, 70, 150, 25);
+        panelContent3.add(lblTotalPrice);
+
+// Nhãn hiển thị giá trị tổng tiền (mặc định là 0 VNĐ)
+        lblTotalPriceValue = createLabel("0 VNĐ", font1);
+        lblTotalPriceValue.setBounds(1220, 70, 120, 25);
+        panelContent3.add(lblTotalPriceValue);
+
+        btnChange2 = CommonView.createButton("Sửa", new Color(44, 134, 3));
+        btnChange2.setBounds(1110, 110, 120, 30);
+        panelContent3.add(btnChange2);
+
+        btnDelete2 = CommonView.createButton("Xoá", new Color(203, 13, 13));
+        btnDelete2.setBounds(1110, 150, 120, 30);
+        panelContent3.add(btnDelete2);
+        return panelContent3;
+    }
+
     public JPanel initManageInvoiceView() {
         JPanel panelContent = new JPanel();
         panelContent.setLayout(null);
-        panelContent.setBackground(new Color(157, 239, 227));
-
         JLabel labeltitle = new JLabel("QUẢN LÍ HOÁ ĐƠN");
         labeltitle.setBounds(600, 10, 250, 30);
         labeltitle.setFont(new Font("Tahoma", Font.BOLD, 20));
         panelContent.add(labeltitle);
 
         //phan chua sua xoa xuat lam moi
-        JPanel panelContent1  = new JPanel();
+        JPanel panelContent1 = createPanel1();
         panelContent1.setLayout(null);
-        panelContent1.setBounds(0,45,1500,85);
+        panelContent1.setBounds(30, 45, 1230, 100);
+
+        JPanel panelContent2 = createPanel2();
+        panelContent2.setLayout(null);
+        panelContent2.setBounds(0, 150, 1500, 330);
+        JPanel panelContent3 = createPanel3();
+        panelContent3.setLayout(null);
+        panelContent3.setBounds(0, 480, 1500, 320);
 
         //them vao panel chinh
         panelContent.add(panelContent1);
+        panelContent.setBackground(new Color(245, 248, 214));
+        panelContent1.setBackground(new Color(245, 248, 214));
+        panelContent2.setBackground(new Color(245, 248, 214));
+        panelContent3.setBackground(new Color(245, 248, 214));
 
-        Font font1 = new Font("Tahoma", Font.BOLD, 15);
-        Font font2 = new Font("Tahoma", Font.PLAIN, 15);
-        JLabel labelInvoiceId = createLabel("Mã HĐ",font1);
-        labelInvoiceId.setBounds(50,15, 70, 25);
-        panelContent1.add(labelInvoiceId);
-
-        JTextField textFieldInvoiceId = createTextField(font2);
-        textFieldInvoiceId.setBounds(130,15, 120, 25);
-        panelContent1.add(textFieldInvoiceId);
-
-        JLabel labelCustomerId = createLabel("Mã KH",font1);
-        labelCustomerId.setBounds(280,15,70,25);
-        panelContent1.add(labelCustomerId);
-
-        JTextField textFieldCustomerId = createTextField(font2);
-        textFieldCustomerId.setBounds(355,15, 120, 25);
-        panelContent1.add(textFieldCustomerId);
-
-        JLabel labelEmployee = createLabel("Mã NV",font1);
-        labelEmployee.setBounds(510,15, 70, 25);
-        panelContent1.add(labelEmployee);
-
-        JTextField textFieldEmployee = createTextField(font2);
-        textFieldEmployee.setBounds(585,15, 120, 25);
-        panelContent1.add(textFieldEmployee);
-
-        JLabel labelDay = createLabel("Ngày lập",font1);
-        labelDay.setBounds(730,15, 70, 25);
-        panelContent1.add(labelDay);
-
-        JTextField textFieldDay = createTextField(font2);
-        textFieldDay.setBounds(820,15, 130, 25);
-        panelContent1.add(textFieldDay);
-
-        JLabel labelGD = createLabel("Mã GD",font1);
-        labelGD.setBounds(50,50, 70, 25);
-        panelContent1.add(labelGD);
-
-        JTextField textFieldGD = createTextField(font2);
-        textFieldGD.setBounds(130,50, 120, 25);
-        panelContent1.add(textFieldGD);
-
-        JLabel labelTong = createLabel("Tổng tiền",font1);
-        labelTong.setBounds(270,50, 80, 25);
-        panelContent1.add(labelTong);
-
-        JTextField textFieldTong = createTextField(font2);
-        textFieldTong.setBounds(355,50, 120, 25);
-        panelContent1.add(textFieldTong);
-
-        JLabel labelSales = createLabel("Giảm giá",font1);
-        labelSales.setBounds(510,50, 70, 25);
-        panelContent1.add(labelSales);
-
-        JTextField textFieldSales = createTextField(font2);
-        textFieldSales.setBounds(585,50, 120, 25);
-        panelContent1.add(textFieldSales);
-
-        JLabel labelThanhTien = createLabel("Thành tiền",font1);
-        labelThanhTien.setBounds(730,50, 100, 25);
-        panelContent1.add(labelThanhTien);
-
-        JTextField textFieldThanhTien = createTextField(font2);
-        textFieldThanhTien.setBounds(820,50, 130, 25);
-        panelContent1.add(textFieldThanhTien);
-
-        JButton btnDelete = CommonView.createButton("Xoá",new Color(211, 99, 167));
-        btnDelete.setBounds(1000,15,110,30);
-        panelContent1.add(btnDelete);
-
-        JButton btnChange = CommonView.createButton("Sửa",new Color(211, 99, 167));
-        btnChange.setBounds(1130,15,110,30);
-        panelContent1.add(btnChange);
-
-        JButton btnSave = CommonView.createButton("Xuất",new Color(211, 99, 167));
-        btnSave.setBounds(1000,50,110,30);
-        panelContent1.add(btnSave);
-
-        JButton btnLoad = CommonView.createButton("Làm mới",new Color(211, 99, 167));
-        btnLoad.setBounds(1130,50,110,30);
-        panelContent1.add(btnLoad);
-
-        //content2
-        JPanel panelConten2  = new JPanel();
-        panelConten2.setLayout(null);
-        panelConten2.setBounds(0,130,1500,340);
-        panelConten2.setBackground(new Color(245, 248, 214));
-
-        JLabel title2 = new JLabel("TÌM KIẾM HOÁ ĐƠN");
-        title2.setFont(new Font("Tahoma", Font.BOLD, 16));
-        title2.setForeground(new Color(41, 41, 201));
-        title2.setBounds(610, 0, 250, 30);
-        panelConten2.add(title2);
-
-        JLabel labelSearchID = createLabel("Mã HĐ", font1);
-        labelSearchID.setBounds(220, 30, 80, 25);
-        panelConten2.add(labelSearchID);
-
-        JTextField textFieldSearchID = createTextField(font2);
-        textFieldSearchID.setBounds(300, 30, 150, 25);
-        panelConten2.add(textFieldSearchID);
-
-        JLabel labelSearchEID = createLabel("Mã NV", font1);
-        labelSearchEID.setBounds(470, 30, 80, 25);
-        panelConten2.add(labelSearchEID);
-
-        JTextField textFieldSearchEID = createTextField(font2);
-        textFieldSearchEID.setBounds(550, 30, 150, 25);
-        panelConten2.add(textFieldSearchEID);
-
-        JLabel labelSearchCID = createLabel("Mã KH", font1);
-        labelSearchCID.setBounds(720, 30, 80, 25);
-        panelConten2.add(labelSearchCID);
-
-        JTextField textFieldSearchCID = createTextField(font2);
-        textFieldSearchCID.setBounds(800, 30, 150, 25);
-        panelConten2.add(textFieldSearchCID);
-
-        JButton btnSearch = CommonView.createButton("Tìm Kiếm", new Color(211, 99, 167));
-        btnSearch.setBounds(1010, 30, 150, 25);
-        panelConten2.add(btnSearch);
-
-        JLabel labelDayStart = createLabel("Thời gian từ", font1);
-        labelDayStart.setBounds(180, 60, 130, 25);
-        panelConten2.add(labelDayStart);
-
-        JTextField textFieldDayStart = createTextField(font2);
-        textFieldDayStart.setBounds(300, 60, 150, 25);
-        panelConten2.add(textFieldDayStart);
-
-        JLabel labelDayEnd = createLabel("đến", font1);
-        labelDayEnd.setBounds(490, 60, 50, 25);
-        panelConten2.add(labelDayEnd);
-
-        JTextField textFieldDayEnd = createTextField(font2);
-        textFieldDayEnd.setBounds(550, 60, 150, 25);
-        panelConten2.add(textFieldDayEnd);
-
-        JLabel labelMoneyStart = createLabel("Giá tiền từ", font1);
-        labelMoneyStart.setBounds(710, 60, 100, 25);
-        panelConten2.add(labelMoneyStart);
-
-        JTextField textFieldMoneyStart = createTextField(font2);
-        textFieldMoneyStart.setBounds(800, 60, 150, 25);
-        panelConten2.add(textFieldMoneyStart);
-
-        JLabel labelMonneyEnd = createLabel("đến", font1);
-        labelMonneyEnd.setBounds(960, 60, 50, 25);
-        panelConten2.add(labelMonneyEnd);
-
-        JTextField textFieldMonneyEnd = createTextField(font2);
-        textFieldMonneyEnd.setBounds(1010, 60, 150, 25);
-        panelConten2.add(textFieldMonneyEnd);
-
-        //bang du dieu
-        String[] column = {"Mã HĐ","Mã KH","Mã NV","Mã GD","Ngày lập","Tổng tiền","Giảm giá","Thành tiền"};
-        DefaultTableModel tableModel = new DefaultTableModel(column, 0);
-        JTable table = new JTable(tableModel);
-        table.setFont(new Font("Tahoma", Font.PLAIN, 12));
-        table.setRowHeight(15);
-
-        JTableHeader tableHeader = table.getTableHeader();
-
-        //dat font va tieu de cot
-        tableHeader.setFont(new Font("Tahoma", Font.BOLD, 13));
-        tableHeader.setBackground(new Color(172, 172, 182));
-
-        //tao doi tuong can giua noi dung
-        DefaultTableCellRenderer centerRenderer = new DefaultTableCellRenderer();
-        centerRenderer.setHorizontalAlignment(JLabel.CENTER);
-        //duyet qua tung cot tao can giua noi dung
-        for (int i = 0; i<table.getColumnCount(); i++){
-            table.getColumnModel().getColumn(i).setCellRenderer(centerRenderer);
-        }
-
-
-        JScrollPane scrollPane = new JScrollPane(table);
-        scrollPane.setBounds(40,95,1200,220);
-        panelConten2.add(scrollPane);
-
-        JLabel labeltotal = createLabel("Số lượng hoá đơn: ",font1);
-        labeltotal.setBounds(50,317,150,20);
-        panelConten2.add(labeltotal);
-
-        JLabel textFieldTotal = createLabel("0",font1);
-        textFieldTotal.setBounds(200, 317, 150, 20);
-        panelConten2.add(textFieldTotal);
-
-        JLabel labelmonney = createLabel("Tổng tiền: ",font1);
-        labelmonney.setBounds(400,317,100,20);
-        panelConten2.add(labelmonney);
-
-        JLabel textFieldMonney = createLabel("0 VNĐ",font1);
-        textFieldMonney.setBounds(500, 317, 150, 20);
-        panelConten2.add(textFieldMonney);
-
-
-        //content3
-        JPanel panelConten3 = new JPanel();
-        panelConten3.setLayout(null);
-        panelConten3.setBounds(0,466,1500,320);
-
-        JLabel labeltitle3 = new JLabel("CHI TIẾT HOÁ ĐƠN");
-        labeltitle3.setFont(new Font("Tahoma", Font.BOLD, 16));
-        labeltitle3.setForeground(new Color(2, 62, 150));
-        labeltitle3.setBounds(620, 5, 200, 25);
-        panelConten3.add(labeltitle3);
-
-        String[] columnTabel2 = {"Mã HĐ","Mã Sách","Tên Sách","Số lượng","Đơn Giá","Giảm Giá","Thành tiền"};
-        DefaultTableModel tableModel2 = new DefaultTableModel(columnTabel2, 0);
-        JTable tabel2 = new JTable(tableModel2);
-        tabel2.setFont(new Font("Tahoma", Font.PLAIN, 12));
-        tabel2.setRowHeight(20);
-        JTableHeader tableHeader2 = tabel2.getTableHeader();
-        tableHeader2.setFont(new Font("Tahoma", Font.BOLD, 13));
-        tableHeader2.setBackground(new Color(172, 172, 182));
-
-// Căn giữa nội dung bảng
-        DefaultTableCellRenderer tableCellRenderer2 = new DefaultTableCellRenderer();
-        tableCellRenderer2.setHorizontalAlignment(JLabel.CENTER);
-
-        for (int i = 0; i < tabel2.getColumnCount(); i++) {
-            tabel2.getColumnModel().getColumn(i).setCellRenderer(tableCellRenderer2);
-        }
-
-// Thêm bảng vào JScrollPane
-        JScrollPane scrollPane2 = new JScrollPane(tabel2);
-        scrollPane2.setBounds(40, 40, 1000, 260);
-        panelConten3.add(scrollPane2);
-
-// Nhãn hiển thị tiêu đề tổng số sản phẩm
-        JLabel lblTotalItems = createLabel("Tổng số sản phẩm:", font1);
-        lblTotalItems.setBounds(1060, 30, 150, 25);
-        panelConten3.add(lblTotalItems);
-
-// Nhãn hiển thị giá trị tổng số sản phẩm (mặc định là 0)
-        JLabel lblTotalItemsValue = createLabel("0", font1);
-        lblTotalItemsValue.setBounds(1220, 30, 100, 25);
-        panelConten3.add(lblTotalItemsValue);
-
-// Nhãn hiển thị tiêu đề tổng tiền
-        JLabel lblTotalPrice = createLabel("Tổng tiền:", font1);
-        lblTotalPrice.setBounds(1060, 70, 150, 25);
-        panelConten3.add(lblTotalPrice);
-
-// Nhãn hiển thị giá trị tổng tiền (mặc định là 0 VNĐ)
-        JLabel lblTotalPriceValue = createLabel("0 VNĐ", font1);
-        lblTotalPriceValue.setBounds(1220, 70, 120, 25);
-        panelConten3.add(lblTotalPriceValue);
-
-// Thêm nút "Sửa"
-        JButton btnChange2 = CommonView.createButton("Sửa", new Color(44, 134, 3));
-        btnChange2.setBounds(1110, 110, 120, 30);
-        panelConten3.add(btnChange2);
-
-// Thêm nút "Xoá"
-        JButton btnDelete2 = CommonView.createButton("Xoá", new Color(203, 13, 13));
-        btnDelete2.setBounds(1110, 150, 120, 30);
-        panelConten3.add(btnDelete2);
-
-        panelContent.add(panelConten2);
-        panelContent.add(panelConten3);
+        panelContent.add(panelContent2);
+        panelContent.add(panelContent3);
         return panelContent;
     }
+
     //ham tao hang loat textFile
     public JTextField createTextField(Font font) {
         JTextField textField = new JTextField();
@@ -298,10 +203,90 @@ public class ManageInvoiceView extends JPanel {
         textField.setFont(font);
         return textField;
     }
-    public JLabel createLabel(String title,Font font) {
+
+    public JLabel createLabel(String title, Font font) {
         JLabel label = new JLabel(title);
         label.setFont(font);
         return label;
     }
 
+    public JButton getBtnDelete2() {
+        return btnDelete2;
+    }
+
+    public JButton getBtnChange2() {
+        return btnChange2;
+    }
+
+    public JButton getBtnSearch() {
+        return btnSearch;
+    }
+
+    public JButton getBtnLoad() {
+        return btnLoad;
+    }
+
+    public JButton getBtnSave() {
+        return btnSave;
+    }
+
+    public JButton getBtnChange() {
+        return btnChange;
+    }
+
+    public JButton getBtnDelete() {
+        return btnDelete;
+    }
+
+    public JDateChooser getDate() {
+        return date;
+    }
+
+    public DefaultTableModel getTableModelInvoice() {
+        return tableModelInvoice;
+    }
+
+    public DefaultTableModel getTableModelDetails() {
+        return tableModelDetails;
+    }
+
+    public JTable getTableInvoice() {
+        return tableInvoice;
+    }
+
+    public JTable getTabelDetails() {
+        return tabelDetails;
+    }
+
+    public JLabel getLabeltotal() {
+        return labeltotal;
+    }
+
+    public JLabel getLabelMonney() {
+        return labelMonney;
+    }
+
+    public JLabel getLblTotalItemsValue() {
+        return lblTotalItemsValue;
+    }
+
+    public JLabel getLblTotalPriceValue() {
+        return lblTotalPriceValue;
+    }
+
+    public JTextField getTextFieldInvoiceId() {
+        return textFieldInvoiceId;
+    }
+
+    public JTextField getTextFieldCustomerId() {
+        return textFieldCustomerId;
+    }
+
+    public JTextField getTextFieldEmployee() {
+        return textFieldEmployee;
+    }
+
+    public JComboBox<String> getjComboBoxTT() {
+        return jComboBoxTT;
+    }
 }
