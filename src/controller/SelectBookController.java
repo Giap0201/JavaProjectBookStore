@@ -14,40 +14,42 @@ public class SelectBookController implements ActionListener {
     private SelectBookView view;
     private BookService bookService;
     private CategoryController categoryController;
+
     public SelectBookController(SelectBookView view) {
         this.view = view;
         bookService = new BookService();
         categoryController = new CategoryController();
         addDataToTable(bookService.getAllBooks());
     }
+
     @Override
     public void actionPerformed(ActionEvent e) {
-        if(e.getSource() == view.getSelectButton()){
+        if (e.getSource() == view.getSelectButton()) {
             try {
                 selectBook();
                 view.dispose();
-            }catch (Exception e1) {
+            } catch (Exception e1) {
                 e1.printStackTrace();
-                JOptionPane.showMessageDialog(null,e1.getMessage());
+                JOptionPane.showMessageDialog(null, e1.getMessage());
             }
         }
     }
 
     public void selectBook() throws Exception {
-        ArrayList<Books> listBook= new ArrayList<>();
+        ArrayList<Books> listBook = new ArrayList<>();
         int[] rowSelected = view.getTable().getSelectedRows();
-        if(rowSelected.length == 0){
+        if (rowSelected.length == 0) {
             throw new Exception("Vui lòng chọn sách !!");
         }
-        int confirm = JOptionPane.showConfirmDialog(null,"Bạn có chắn chắn muốn thêm?","Xác nhận thêm",JOptionPane.YES_NO_OPTION);
-        if(confirm == JOptionPane.YES_OPTION){
+        int confirm = JOptionPane.showConfirmDialog(null, "Bạn có chắn chắn muốn thêm?", "Xác nhận thêm", JOptionPane.YES_NO_OPTION);
+        if (confirm == JOptionPane.YES_OPTION) {
             for (int row : rowSelected) {
                 String bookID = (String) view.getTable().getValueAt(row, 0);
                 String category = (String) view.getTable().getValueAt(row, 1);
                 ArrayList<Category> listCategory = categoryController.getCategories();
                 Category categoryResult = new Category();
-                for(Category c : listCategory){
-                    if(c.getCategoryName().equals(category)){
+                for (Category c : listCategory) {
+                    if (c.getCategoryName().equals(category)) {
                         categoryResult = c;
                         break;
                     }
@@ -57,17 +59,18 @@ public class SelectBookController implements ActionListener {
                 int year = (Integer) view.getTable().getValueAt(row, 4);
                 double priceDouble = (Double) view.getTable().getValueAt(row, 6);
                 int quantity = (Integer) view.getTable().getValueAt(row, 5);
-                Books book = new Books(bookID,bookName,author,year,priceDouble,quantity,categoryResult);
+                Books book = new Books(bookID, bookName, author, year, priceDouble, quantity, categoryResult);
                 listBook.add(book);
             }
         }
-        JOptionPane.showMessageDialog(null,"Đã thêm thành công!!");
+        JOptionPane.showMessageDialog(null, "Đã thêm thành công!!");
         view.setListBook(listBook);
     }
+
     public void addDataToTable(ArrayList<Books> books) {
         view.getTableModel().setRowCount(0);
-        for(Books book : books){
-            Object[] row = {book.getBookID(),book.getCategory().getCategoryName(),book.getBookName(),book.getAuthor(),book.getYearPublished(),book.getQuantity(),book.getPrice()};
+        for (Books book : books) {
+            Object[] row = {book.getBookID(), book.getCategory().getCategoryName(), book.getBookName(), book.getAuthor(), book.getYearPublished(), book.getQuantity(), book.getPrice()};
             view.getTableModel().addRow(row);
         }
     }

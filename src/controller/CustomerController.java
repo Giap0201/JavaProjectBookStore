@@ -16,7 +16,7 @@ public class CustomerController implements ActionListener {
     private CustomerView customerView;
     private CustomerService customerService;
 
-    public CustomerController(CustomerView customerView ) {
+    public CustomerController(CustomerView customerView) {
         this.customerView = customerView;
         this.customerService = new CustomerService();
         customerView.tableModel = new DefaultTableModel();
@@ -29,7 +29,7 @@ public class CustomerController implements ActionListener {
         customerView.updateTable(customers);
     }
 
-//    public void updateTotalCustomers() {
+    //    public void updateTotalCustomers() {
 //        int total = customerService.getAllCustomers().size();
 //        customerView.setTextFieldTotalCustomers();
 //    }
@@ -44,9 +44,10 @@ public class CustomerController implements ActionListener {
         } else if (e.getSource() == customerView.getBtnSearch()) {
             //handleSearchCustomer();
         } else if (e.getSource() == customerView.getBtnReset()) {
-           // handleReset();
+            // handleReset();
         }
     }
+
     private void handleAddCustomer() {
         try {
             Customers customer = createCustomerFromInput();

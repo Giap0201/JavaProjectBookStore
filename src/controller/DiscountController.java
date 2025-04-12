@@ -3,7 +3,7 @@ package controller;
 import model.Books;
 import model.Discount;
 import model.DiscountDetails;
-import model.ListBook;
+import service.DiscountDetailService;
 import service.DiscountService;
 import utils.ValidateForm;
 import view.DiscountProgramView;
@@ -21,10 +21,12 @@ public class DiscountController implements ActionListener {
     private DiscountProgramView view;
     private DiscountService discountService;
     private ArrayList<Books> listBook;
+    private DiscountDetailService discountDetailService;
 
     public DiscountController(DiscountProgramView discountProgramView) {
         this.view = discountProgramView;
         this.discountService = new DiscountService();
+        this.discountDetailService = new DiscountDetailService();
         updateAllTable(discountService.getAllDiscounts());
         setComboBox(discountService.listMapDiscount());
         //su kien click vao cac hang cua bang
@@ -35,36 +37,46 @@ public class DiscountController implements ActionListener {
     public void actionPerformed(ActionEvent e) {
         if (e.getSource() == view.getBtnAdd()) {
             addDiscount();
-        }
-        else if(e.getSource() == view.getBtnDisableAll()){
+        } else if (e.getSource() == view.getBtnDisableAll()) {
             ArrayList<Discount> listDiscounts = discountService.getAllDiscounts();
-            if(!listDiscounts.isEmpty()){
+            if (!listDiscounts.isEmpty()) {
                 clearForm();
                 updateAllTable(listDiscounts);
-            }else {
-                JOptionPane.showMessageDialog(null,"Không có giảm giá!!");
+            } else {
+                JOptionPane.showMessageDialog(null, "Không có giảm giá!!");
             }
-        }
-        else if(e.getSource() == view.getBtnDelete()){
+        } else if (e.getSource() == view.getBtnDelete()) {
             deleteDiscount();
-        }
-        else if(e.getSource() == view.getBtnEdit()){
+        } else if (e.getSource() == view.getBtnEdit()) {
             updateDiscount();
-        }
-        else if(e.getSource() == view.getDateSearch()){
+        } else if (e.getSource() == view.getDateSearch()) {
             searchDiscount();
-        }else if(e.getSource() == view.getBtnAddDetail()){
-            try{
+        } else if (e.getSource() == view.getBtnAddDetail()) {
+            addDetails();
+            try {
                 ArrayList<DiscountDetails> test = getDataFormDiscountDetail();
-            }catch (Exception ex){
+            } catch (Exception ex) {
                 ex.printStackTrace();
-                JOptionPane.showMessageDialog(null,ex.getMessage());
+                JOptionPane.showMessageDialog(null, ex.getMessage());
             }
-        }else if(e.getSource() == view.getButtonClick()){
+        } else if (e.getSource() == view.getButtonClick()) {
             SelectBookView selectBookView = new SelectBookView();
             selectBookView.setVisible(true);
             listBook = selectBookView.getListBook();
 
+        }
+    }
+    public void addDetails(){
+        try {
+            ArrayList<DiscountDetails> listDiscountDetails = getDataFormDiscountDetail();
+            int confirm = JOptionPane.showConfirmDialog(null,"Ban chac chan muon them?","Confirmation",JOptionPane.YES_NO_OPTION);
+            if (confirm == JOptionPane.YES_OPTION) {
+                discountDetailService.insert(listDiscountDetails);
+                updateAllTableDetails(discountDetailService.getAllDiscountDetails());
+            }
+        }catch (Exception ex) {
+            ex.printStackTrace();
+            JOptionPane.showMessageDialog(null, ex.getMessage());
         }
     }
 
@@ -103,47 +115,45 @@ public class DiscountController implements ActionListener {
         java.sql.Date dateSqlEnd = new java.sql.Date(dateEnd.getTime());
         return new Discount(discountID, discountName, discountType, dateSqlStart, dateSqlEnd);
     }
-
     //chuc nang xoa
     public void deleteDiscount() {
         String discountID = view.getTextFieldDiscountId().getText().trim();
-        if(discountID.isEmpty()){
-            JOptionPane.showMessageDialog(null,"Vui lòng chọn chương trình cần xoá!!");
+        if (discountID.isEmpty()) {
+            JOptionPane.showMessageDialog(null, "Vui lòng chọn chương trình cần xoá!!");
             return;
         }
-        int confirm = JOptionPane.showConfirmDialog(null,"Bạn có chắc chắn muốn xoá?","Confirmation",JOptionPane.YES_NO_OPTION);
+        int confirm = JOptionPane.showConfirmDialog(null, "Bạn có chắc chắn muốn xoá?", "Confirmation", JOptionPane.YES_NO_OPTION);
         if (confirm == JOptionPane.YES_OPTION) {
             boolean checkDelete = discountService.deleteCondition(discountID);
             if (checkDelete) {
-                JOptionPane.showMessageDialog(null,"Đã xoá thành công!!");
+                JOptionPane.showMessageDialog(null, "Đã xoá thành công!!");
                 clearForm();
                 updateAllTable(discountService.getAllDiscounts());
                 setComboBox(discountService.listMapDiscount());
-            }else {
-                JOptionPane.showMessageDialog(null,"Lỗi khi xoá chương trình, có thể chương trình không tồn tại!!");
+            } else {
+                JOptionPane.showMessageDialog(null, "Lỗi khi xoá chương trình, có thể chương trình không tồn tại!!");
             }
         }
     }
-
     //chuc nang sua
     public void updateDiscount() {
         String discountID = view.getTextFieldDiscountId().getText().trim();
-        if(discountID.isEmpty()){
-            JOptionPane.showMessageDialog(null,"Vui lòng chọn chương trình cần sửa!!!");
+        if (discountID.isEmpty()) {
+            JOptionPane.showMessageDialog(null, "Vui lòng chọn chương trình cần sửa!!!");
             return;
         }
         try {
             Discount discount = getDataDiscount();
-            int confirm = JOptionPane.showConfirmDialog(null,"Bạn chắc chắn muốn sửa?","Confirmation",JOptionPane.YES_NO_OPTION);
-            if(confirm == JOptionPane.YES_OPTION){
+            int confirm = JOptionPane.showConfirmDialog(null, "Bạn chắc chắn muốn sửa?", "Confirmation", JOptionPane.YES_NO_OPTION);
+            if (confirm == JOptionPane.YES_OPTION) {
                 boolean checkDelete = discountService.updateDiscount(discount);
                 if (checkDelete) {
-                    JOptionPane.showMessageDialog(null,"Cập nhập thành công!!");
+                    JOptionPane.showMessageDialog(null, "Cập nhập thành công!!");
                     clearForm();
                     updateAllTable(discountService.getAllDiscounts());
                     setComboBox(discountService.listMapDiscount());
-                }else{
-                    JOptionPane.showMessageDialog(null,"Lỗi khi cập nhật!!");
+                } else {
+                    JOptionPane.showMessageDialog(null, "Lỗi khi cập nhật!!");
                 }
             }
         } catch (Exception e) {
@@ -151,34 +161,34 @@ public class DiscountController implements ActionListener {
         }
     }
     //chuc nang tim kiem theo ngay
-    public  void searchDiscount(){
+    public void searchDiscount() {
         Date dateStart = view.getDateStartSearch().getDate();
         Date dateEnd = view.getDateEndSearch().getDate();
         //chuyen du lieu ngay sang dang sql
-        if(dateStart == null && dateEnd == null){
-            JOptionPane.showMessageDialog(null,"Vui lòng chọn thời gian tìm kiếm!!");
+        if (dateStart == null && dateEnd == null) {
+            JOptionPane.showMessageDialog(null, "Vui lòng chọn thời gian tìm kiếm!!");
             return;
         }
         //khong nhap gi se tra ve null, khong kiem tra dieu kien tim kiem
         java.sql.Date dateSqlStart = null;
-        if(dateStart != null){
+        if (dateStart != null) {
             dateSqlStart = new java.sql.Date(dateStart.getTime());
         }
         java.sql.Date dateSqlEnd = null;
-        if(dateEnd != null){
+        if (dateEnd != null) {
             dateSqlEnd = new java.sql.Date(dateEnd.getTime());
         }
-        if(dateSqlStart != null && dateSqlEnd != null){
-            if(dateSqlStart.after(dateEnd)){
-                JOptionPane.showMessageDialog(null,"Ngày bắt đầu phải nhỏ hơn hoặc bằng ngày kết thúc!!");
+        if (dateSqlStart != null && dateSqlEnd != null) {
+            if (dateSqlStart.after(dateEnd)) {
+                JOptionPane.showMessageDialog(null, "Ngày bắt đầu phải nhỏ hơn hoặc bằng ngày kết thúc!!");
                 return;
             }
         }
-        ArrayList<Discount> listResult = discountService.listDiscountsSearch(dateSqlStart,dateSqlEnd);
-        if(listResult.isEmpty()){
-            JOptionPane.showMessageDialog(null,"Không tìm thấy chương trình giảm giá!!");
+        ArrayList<Discount> listResult = discountService.listDiscountsSearch(dateSqlStart, dateSqlEnd);
+        if (listResult.isEmpty()) {
+            JOptionPane.showMessageDialog(null, "Không tìm thấy chương trình giảm giá!!");
             view.getTableModelTop().setRowCount(0);
-        }else{
+        } else {
             updateAllTable(listResult);
         }
     }
@@ -190,17 +200,16 @@ public class DiscountController implements ActionListener {
         view.getDateChooserStart().setDate(null);
         view.getDateChooserEnd().setDate(null);
     }
-
     //thao tac them su kien cho table
     public void addListenerTableDiscount() {
         view.getTableTop().getSelectionModel().addListSelectionListener(e -> {
                     int selectRow = view.getTableTop().getSelectedRow();
                     if (selectRow >= 0) {
-                        String discountID = (String) view.getTableTop().getValueAt(selectRow,0);
-                        String discountName = (String) view.getTableTop().getValueAt(selectRow,1);
-                        String discountType = (String) view.getTableTop().getValueAt(selectRow,2);
-                        Date startDate = (Date) view.getTableTop().getValueAt(selectRow,3);
-                        Date endDate = (Date) view.getTableTop().getValueAt(selectRow,4);
+                        String discountID = (String) view.getTableTop().getValueAt(selectRow, 0);
+                        String discountName = (String) view.getTableTop().getValueAt(selectRow, 1);
+                        String discountType = (String) view.getTableTop().getValueAt(selectRow, 2);
+                        Date startDate = (Date) view.getTableTop().getValueAt(selectRow, 3);
+                        Date endDate = (Date) view.getTableTop().getValueAt(selectRow, 4);
                         view.getTextFieldDiscountId().setText(discountID);
                         view.getTextFieldProgramName().setText(discountName);
                         view.getTextFieldProgramType().setText(discountType);
@@ -210,59 +219,54 @@ public class DiscountController implements ActionListener {
                 }
         );
     }
-    public void updateAllTable(ArrayList<Discount> listDiscount) {
-        view.getTableModelTop().setRowCount(0);
-        for(Discount discount : listDiscount) {
-            Object[] row = {discount.getDiscountID(),discount.getNameDiscount(),discount.getTypeDiscount(),discount.getStartDate(),discount.getEndDate()};
-            view.getTableModelTop().addRow(row);
-        }
-    }
     //thao tac them mot cot vao
     public void updateTableDiscount(Discount discount) {
-        Object[] row = {discount.getDiscountID(),discount.getNameDiscount(),discount.getTypeDiscount(),discount.getStartDate(),discount.getEndDate()};
+        Object[] row = {discount.getDiscountID(), discount.getNameDiscount(), discount.getTypeDiscount(), discount.getStartDate(), discount.getEndDate()};
         view.getTableModelTop().addRow(row);
     }
-    public void setComboBox(LinkedHashMap<String,String> mapDiscount) {
+
+    public void setComboBox(LinkedHashMap<String, String> mapDiscount) {
         //xoa toan bo combobox cu, them combobox moi vao
         view.getComboBoxNameDiscount().removeAllItems();
         view.getComboBoxNameDiscount().addItem("Chọn chương trình");
-        for(Map.Entry<String,String> entry : mapDiscount.entrySet()){
+        for (Map.Entry<String, String> entry : mapDiscount.entrySet()) {
             view.getComboBoxNameDiscount().addItem(entry.getValue());
         }
     }
+
     //lay du lieu tu form view phan chi tiet giam gia
-    public ArrayList<DiscountDetails> getDataFormDiscountDetail () throws Exception{
+    public ArrayList<DiscountDetails> getDataFormDiscountDetail() throws Exception {
         int index = view.getComboBoxNameDiscount().getSelectedIndex();
-        if(index<=0) {
+        if (index <= 0) {
             throw new Exception("Vui lòng chọn chương trình giảm giá!!");
         }
         ArrayList<Discount> listDiscount = discountService.getAllDiscounts();
         Discount discount = listDiscount.get(index);
         System.out.println(discount.getDiscountID());
-        if(listBook.isEmpty()){
+        if (listBook.isEmpty()) {
             throw new Exception("Vui lòng chọn sách giảm giá!!");
         }
-        for(Books book : listBook){
+        for (Books book : listBook) {
             System.out.println(book.getBookID());
         }
         String percent = view.getTextFieldDiscountPercent().getText().trim();
-        if(percent.isEmpty() || percent.equals("null")){
+        if (percent.isEmpty() || percent.equals("null")) {
             throw new Exception("Vui lòng nhập phần trăm!!");
         }
         double percentDouble = 0;
         try {
-            percentDouble = ValidateForm.isDouble(percent,"Phần trăm");
-            if(percentDouble < 0 || percentDouble > 100){
+            percentDouble = ValidateForm.isDouble(percent, "Phần trăm");
+            if (percentDouble < 0 || percentDouble > 100) {
                 throw new Exception("Phần trăm phải nằm trong khoảng từ 0 đến 100");
             }
         } catch (Exception e) {
             e.printStackTrace();
-            JOptionPane.showMessageDialog(null,e.getMessage());
+            JOptionPane.showMessageDialog(null, e.getMessage());
         }
 
         ArrayList<DiscountDetails> listDiscountDetails = new ArrayList<>();
         for (Books books : listBook) {
-            DiscountDetails x = new DiscountDetails(discount,percentDouble,books);
+            DiscountDetails x = new DiscountDetails(discount, percentDouble, books);
             listDiscountDetails.add(x);
         }
         for (DiscountDetails x : listDiscountDetails) {
@@ -271,9 +275,21 @@ public class DiscountController implements ActionListener {
         return listDiscountDetails;
     }
 
+    public void updateAllTable(ArrayList<Discount> listDiscount) {
+        view.getTableModelTop().setRowCount(0);
+        for (Discount discount : listDiscount) {
+            Object[] row = {discount.getDiscountID(), discount.getNameDiscount(), discount.getTypeDiscount(), discount.getStartDate(), discount.getEndDate()};
+            view.getTableModelTop().addRow(row);
+        }
+    }
     //phan chi tiet chuong trinh giam gia
-
-
+    public void updateAllTableDetails(ArrayList<DiscountDetails> listDiscountDetails) {
+        view.getTableModelDetails().setRowCount(0);
+        for (DiscountDetails x : listDiscountDetails) {
+            Object[] row = {x.getDiscount().getDiscountID(), x.getPercent(), x.getBook().getBookID()};
+            view.getTableModelDetails().addRow(row);
+        }
+    }
 
 
 }
@@ -387,13 +403,13 @@ public class DiscountController implements ActionListener {
 //        }
 //
 //        // Lưu vào cơ sở dữ liệu
-////        boolean success = discountService.addDiscountDetails(discountDetails);
-////        if (success) {
-////            JOptionPane.showMessageDialog(view, "Thêm chi tiết giảm giá thành công!", "Thành công", JOptionPane.INFORMATION_MESSAGE);
-////            clearDetailForm();
-////        } else {
-////            throw new Exception("Lỗi khi thêm chi tiết giảm giá!");
-////        }
+/// /        boolean success = discountService.addDiscountDetails(discountDetails);
+/// /        if (success) {
+/// /            JOptionPane.showMessageDialog(view, "Thêm chi tiết giảm giá thành công!", "Thành công", JOptionPane.INFORMATION_MESSAGE);
+/// /            clearDetailForm();
+/// /        } else {
+/// /            throw new Exception("Lỗi khi thêm chi tiết giảm giá!");
+/// /        }
 //        for (DiscountDetails discountDetail : discountDetails) {
 //            System.out.println(discountDetail.getDiscount().getDiscountID()+" "+discountDetail.getPercent()+" "+discountDetail.getBook().getBookID());
 //        }

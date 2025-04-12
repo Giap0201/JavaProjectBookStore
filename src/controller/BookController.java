@@ -49,7 +49,7 @@ public class BookController implements ActionListener {
             updateTable(allBooks);
             statistical(allBooks);
             clearForm();
-        } else if(e.getSource() == bookView.getBtnSaveFile()){
+        } else if (e.getSource() == bookView.getBtnSaveFile()) {
             exportToCSV();
         }
     }
@@ -316,6 +316,7 @@ public class BookController implements ActionListener {
             }
         }
     }
+
     //chuc nang tu dong thong ke du lieu sau khi tim kiem
     public void statistical(ArrayList<Books> listBook) {
         //neu danh sach rong thi 0 het
