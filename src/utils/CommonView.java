@@ -7,7 +7,7 @@ import javax.swing.table.*;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 
-public class CommonView {
+public final class CommonView {
     public static JButton createButton(String title, Color color){
         Font font = new Font("Tahoma", Font.BOLD, 15);
         JButton button = new JButton(title);
@@ -61,5 +61,30 @@ public class CommonView {
             table.getColumnModel().getColumn(i).setCellRenderer(defaultTableCellRenderer);
         }
         return table;
+    }
+    public static void showInfoMessage(JComponent parent, String message) {
+        JOptionPane.showMessageDialog(parent, message, "Thông báo", JOptionPane.INFORMATION_MESSAGE);
+    }
+
+    /**
+     * Hiển thị thông báo lỗi.
+     *
+     * @param parent  Thành phần cha của hộp thoại (có thể null)
+     * @param message Thông điệp lỗi cần hiển thị
+     */
+    public static void showErrorMessage(JComponent parent, String message) {
+        JOptionPane.showMessageDialog(parent, message, "Lỗi", JOptionPane.ERROR_MESSAGE);
+    }
+
+    /**
+     * Hiển thị hộp thoại xác nhận hành động.
+     *
+     * @param parent  Thành phần cha của hộp thoại (có thể null)
+     * @param message Thông điệp xác nhận
+     * @return true nếu người dùng chọn "Yes", false nếu chọn "No"
+     */
+    public static boolean confirmAction(JComponent parent, String message) {
+        return JOptionPane.showConfirmDialog(parent, message, "Xác nhận",
+                JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION;
     }
 }

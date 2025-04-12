@@ -19,4 +19,7 @@ public class DiscountDetailService {
     public ArrayList<DiscountDetails> getAllDiscountDetails() {
         return discountDetailsDTO.getAllDiscountDetails();
     }
+    public boolean deleteDiscountDetails(String discountID, String bookID) {
+        return discountDetailsDTO.deleteDiscountDetails(discountID,bookID)>0;
+    }
 }

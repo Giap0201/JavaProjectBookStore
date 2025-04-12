@@ -5,17 +5,17 @@ import controller.DiscountController;
 import utils.CommonView;
 
 import javax.swing.*;
-import javax.swing.table.*;
+import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 
 
-public class DiscountProgramView extends JPanel{
+public class DiscountProgramView extends JPanel {
     private JTextField textFieldProgramType, textFieldProgramName, textFieldDiscountId;
     private JDateChooser dateChooserStart, dateChooserEnd, dateStartSearch, dateEndSearch;
     private JButton btnAdd, btnEdit, btnDelete, btnDisableAll, dateSearch, btnAddDetail, btnDeleteDetail;
     private DefaultTableModel tableModelTop, tableModelDetails;
     private JTable tableTop, tableDetails;
-    private JButton btnEditDetail,buttonClick;
+    private JButton btnEditDetail, buttonClick;
     private JTextField textFieldDiscountPercent;
     private JComboBox<String> comboBoxNameDiscount;
 
@@ -47,7 +47,7 @@ public class DiscountProgramView extends JPanel{
         // Bảng hiển thị trong inputPanel
         String[] columnNamesTop = {"Mã chương trình", "Tên chương trình", "Loại khuyến mãi", "Ngày BĐ", "Ngày KT"};
         tableModelTop = new DefaultTableModel();
-        tableTop = CommonView.createTable(tableModelTop,columnNamesTop);
+        tableTop = CommonView.createTable(tableModelTop, columnNamesTop);
         JScrollPane scrollPaneTop = new JScrollPane(tableTop);
         scrollPaneTop.setBounds(450, 10, 800, 350); // Đặt ở góc bên phải trong inputPanel
         inputPanel.add(scrollPaneTop);
@@ -173,72 +173,63 @@ public class DiscountProgramView extends JPanel{
         discountDetailsPanel.add(labelDiscountDetails);
 
         // Bảng chi tiết chương trình giảm giá
-        String[] columnNames = {"Mã GG", "% Giảm giá", "Mã sách"};
+        String[] columnNames = {"Mã CT", "Tên CT", "Mã sách", "Tên sách", "Thể loại", "% Giảm"};
         tableModelDetails = new DefaultTableModel();
         tableDetails = CommonView.createTable(tableModelDetails, columnNames);
         JScrollPane scrollPane = new JScrollPane(tableDetails);
-        scrollPane.setBounds(30, 30, 460, 200);
+        scrollPane.setBounds(30, 30, 460 + 350, 200);
         discountDetailsPanel.add(scrollPane);
 
         JLabel labelDiscountName = new JLabel("Chọn chương trình");
         labelDiscountName.setFont(new Font("Tahoma", Font.BOLD, 15));
-        labelDiscountName.setBounds(520, 30, 150, 30); // ✅ dịch phải thêm 50px
+        labelDiscountName.setBounds(520 + 350, 30, 150, 30);
         discountDetailsPanel.add(labelDiscountName);
 
         comboBoxNameDiscount = new JComboBox<>();
-        comboBoxNameDiscount.setBounds(670, 30, 200, 30); // giữ cách đều với label
+        comboBoxNameDiscount.setBounds(670 + 350, 30, 200, 30);
         discountDetailsPanel.add(comboBoxNameDiscount);
         comboBoxNameDiscount.setFont(new Font("Tahoma", Font.PLAIN, 14));
 
         JLabel labelBookName = new JLabel("Chọn sách giảm");
         labelBookName.setFont(new Font("Tahoma", Font.BOLD, 15));
-        labelBookName.setBounds(520, 75, 150, 30);
+        labelBookName.setBounds(520 + 350, 75, 150, 30);
         discountDetailsPanel.add(labelBookName);
 
         buttonClick = CommonView.createButton("Chọn sách", new Color(0x984C8C));
-        buttonClick.setBounds(670, 75, 200, 30);
+        buttonClick.setBounds(670 + 350, 75, 200, 30);
         discountDetailsPanel.add(buttonClick);
 
         JLabel labelDiscountPercent = new JLabel("Phần trăm giảm");
         labelDiscountPercent.setFont(new Font("Tahoma", Font.BOLD, 15));
-        labelDiscountPercent.setBounds(520, 120, 150, 30);
+        labelDiscountPercent.setBounds(520 + 350, 120, 150, 30);
         discountDetailsPanel.add(labelDiscountPercent);
 
         textFieldDiscountPercent = new JTextField();
         textFieldDiscountPercent.setFont(font1);
-        textFieldDiscountPercent.setBounds(670, 120, 200, 30); 
+        textFieldDiscountPercent.setBounds(670 + 350, 120, 200, 30);
         discountDetailsPanel.add(textFieldDiscountPercent);
 
         btnAddDetail = CommonView.createButton("THÊM", new Color(32, 204, 35));
-        btnAddDetail.setBounds(520, 170, 100, 40); // Dưới input
+        btnAddDetail.setBounds(520 + 350, 170, 100, 40); // Dưới input
         discountDetailsPanel.add(btnAddDetail);
 
         btnDeleteDetail = CommonView.createButton("XÓA", new Color(255, 0, 0));
-        btnDeleteDetail.setBounds(640, 170, 100, 40);
+        btnDeleteDetail.setBounds(640 + 350, 170, 100, 40);
         discountDetailsPanel.add(btnDeleteDetail);
 
-        btnEditDetail = CommonView.createButton("SỬA",new Color(0, 0, 255));
-        btnEditDetail.setBounds(760, 170, 100, 40);
+        btnEditDetail = CommonView.createButton("SỬA", new Color(0, 0, 255));
+        btnEditDetail.setBounds(760 + 350, 170, 100, 40);
         discountDetailsPanel.add(btnEditDetail);
 
 
 // Hình ảnh giảm giá
-        ImageIcon discount2 = CommonView.scaleImage("images/discount.png", 300, 200);
-        JLabel lblDiscount2 = new JLabel(discount2);
-        lblDiscount2.setBounds(940, 40, discount2.getIconWidth(), discount2.getIconHeight()); // dịch phải thêm 20
-        discountDetailsPanel.add(lblDiscount2);
+//        ImageIcon discount2 = CommonView.scaleImage("images/discount.png", 300, 200);
+//        JLabel lblDiscount2 = new JLabel(discount2);
+//        lblDiscount2.setBounds(940, 40, discount2.getIconWidth(), discount2.getIconHeight()); // dịch phải thêm 20
+//        discountDetailsPanel.add(lblDiscount2);
 
         //them cac su kien vao view
         DiscountController controller = new DiscountController(this);
-        btnAdd.addActionListener(controller);
-        btnDelete.addActionListener(controller);
-        btnDeleteDetail.addActionListener(controller);
-        btnEdit.addActionListener(controller);
-        btnDisableAll.addActionListener(controller);
-        btnAddDetail.addActionListener(controller);
-        dateSearch.addActionListener(controller);
-        buttonClick.addActionListener(controller);
-        btnEditDetail.addActionListener(controller);
         return panelContent;
     }
 

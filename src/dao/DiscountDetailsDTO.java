@@ -53,6 +53,18 @@ public class DiscountDetailsDTO {
             e.printStackTrace();
         }
         return listDiscountDetails;
-
+    }
+    public int deleteDiscountDetails(String discountID,String bookID) {
+        String query = "delete from discountdetails where discountID=? and bookID=?";
+        int result = 0;
+        try (Connection conn = JDBCUtil.getConnection();
+        PreparedStatement ps = conn.prepareStatement(query)){
+            ps.setString(1,discountID);
+            ps.setString(2,bookID);
+            result = ps.executeUpdate();
+        }catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return result;
     }
 }
