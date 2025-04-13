@@ -19,10 +19,8 @@ public class BookDAO implements IBookDAO {
     public int insert(Books books) {
         int result = 0;
         String sql = "INSERT INTO books(bookID, bookName, author, yearPublished, price, quantity, categoryID) VALUES (?, ?, ?, ?, ?, ?, ?)";
-
         try (Connection conn = JDBCUtil.getConnection();
-                PreparedStatement ps = conn.prepareStatement(sql)) {
-
+             PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setString(1, books.getBookID());
             ps.setString(2, books.getBookName());
             ps.setString(3, books.getAuthor());
@@ -30,9 +28,7 @@ public class BookDAO implements IBookDAO {
             ps.setDouble(5, books.getPrice());
             ps.setInt(6, books.getQuantity());
             ps.setString(7, books.getCategory().getCategoryID());
-
             result = ps.executeUpdate();
-
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -44,13 +40,10 @@ public class BookDAO implements IBookDAO {
     public ArrayList<Books> getAll() {
         ArrayList<Books> listBooks = new ArrayList<>();
         String sql = "SELECT * FROM books";
-
         try (Connection conn = JDBCUtil.getConnection();
-                PreparedStatement ps = conn.prepareStatement(sql);
-                ResultSet rs = ps.executeQuery()) {
-
+             PreparedStatement ps = conn.prepareStatement(sql);
+             ResultSet rs = ps.executeQuery()) {
             ArrayList<Category> categories = new CategoryService().getCategory();
-
             while (rs.next()) {
                 String bookID = rs.getString("bookID");
                 String bookName = rs.getString("bookName");
@@ -65,16 +58,15 @@ public class BookDAO implements IBookDAO {
                 for (Category c : categories) {
                     if (c.getCategoryID().equals(categoryID)) {
                         category = c;
+                        break;
                     }
                 }
                 Books book = new Books(bookID, bookName, author, yearPublished, price, quantity, category);
                 listBooks.add(book);
             }
-
         } catch (SQLException e) {
             e.printStackTrace();
         }
-
         return listBooks;
     }
 
@@ -83,7 +75,7 @@ public class BookDAO implements IBookDAO {
         int result = 0;
         String query = "UPDATE books SET bookName = ?,author = ?,yearPublished = ?,price = ?,quantity = ?,categoryID = ? WHERE bookID = ?";
         try (Connection conn = JDBCUtil.getConnection();
-                PreparedStatement ps = conn.prepareStatement(query)) {
+             PreparedStatement ps = conn.prepareStatement(query)) {
             ps.setString(1, books.getBookName());
             ps.setString(2, books.getAuthor());
             ps.setInt(3, books.getYearPublished());
@@ -103,15 +95,15 @@ public class BookDAO implements IBookDAO {
         int result = 0;
         String query = "DELETE FROM books WHERE bookID = ?";
         try (Connection conn = JDBCUtil.getConnection();
-                PreparedStatement ps = conn.prepareStatement(query)) {
+             PreparedStatement ps = conn.prepareStatement(query)) {
             ps.setString(1, books.getBookID());
             result = ps.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
         }
         return result;
-
     }
+
     @Override
     public ArrayList<Books> listSearchBooks(BookSearch condition) {
         ArrayList<Books> listBooks = new ArrayList<>();
@@ -120,7 +112,7 @@ public class BookDAO implements IBookDAO {
         ArrayList<Object> params = new ArrayList<>();
 
         // xay dung cac dieu kien tim kiem
-        if(condition.getBookID() != null && !condition.getBookID().isEmpty()){
+        if (condition.getBookID() != null && !condition.getBookID().isEmpty()) {
             query.append(" and bookID like ?");
             params.add("%" + condition.getBookID() + "%");
         }
@@ -153,7 +145,7 @@ public class BookDAO implements IBookDAO {
             params.add(condition.getCategoryName());
         }
         try (Connection conn = JDBCUtil.getConnection();
-                PreparedStatement ps = conn.prepareStatement(query.toString())) {
+             PreparedStatement ps = conn.prepareStatement(query.toString())) {
 
             // gan gia tri cho ?
             for (int i = 0; i < params.size(); i++) {

@@ -31,7 +31,6 @@ public class BookController implements ActionListener {
         addTableSelectionListener();
         updateTable(bookService.getAllBooks());
         statistical(bookService.getAllBooks());
-
     }
 
     // cac su kien cua cac nut bam thuc hien chuc nang
@@ -47,9 +46,10 @@ public class BookController implements ActionListener {
             searchBooks();
         } else if (e.getSource() == bookView.getBtnReset()) {
             ArrayList<Books> allBooks = bookService.getAllBooks();
+            updateTable(allBooks);
             statistical(allBooks);
             clearForm();
-        } else if(e.getSource() == bookView.getBtnSaveFile()){
+        } else if (e.getSource() == bookView.getBtnSaveFile()) {
             exportToCSV();
         }
     }
@@ -123,7 +123,6 @@ public class BookController implements ActionListener {
                 } else {
                     JOptionPane.showMessageDialog(bookView, "Lỗi");
                 }
-
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -317,6 +316,7 @@ public class BookController implements ActionListener {
             }
         }
     }
+
     //chuc nang tu dong thong ke du lieu sau khi tim kiem
     public void statistical(ArrayList<Books> listBook) {
         //neu danh sach rong thi 0 het

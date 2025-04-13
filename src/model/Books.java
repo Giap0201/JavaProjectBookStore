@@ -9,8 +9,6 @@ public class Books {
     private double price;
     private int quantity;
     private Category category;
-    private Discount discount;
-
     public Books() {
     }
     public Books(String bookID, String bookName, String author, int yearPublished, double price, int quantity, Category category) {
@@ -21,24 +19,6 @@ public class Books {
         this.price = price;
         this.quantity = quantity;
         this.category = category;
-    }
-
-    public Books(String bookID, String bookName, String author, int yearPublished, double price, int quantity, Category category, Discount discount) {
-        this.bookID = bookID;
-        this.bookName = bookName;
-        this.author = author;
-        this.yearPublished = yearPublished;
-        this.price = price;
-        this.quantity = quantity;
-        this.category = category;
-        this.discount = discount;
-    }
-    public Discount getDiscount() {
-        return discount;
-    }
-
-    public void setDiscount(Discount discount) {
-        this.discount = discount;
     }
 
     public String getBookID() {
