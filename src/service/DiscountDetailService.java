@@ -1,6 +1,7 @@
 package service;
 
 import dao.DiscountDetailsDTO;
+import model.Discount;
 import model.DiscountDetails;
 
 import java.util.ArrayList;
@@ -21,5 +22,8 @@ public class DiscountDetailService {
     }
     public boolean deleteDiscountDetails(String discountID, String bookID) {
         return discountDetailsDTO.deleteDiscountDetails(discountID,bookID)>0;
+    }
+    public ArrayList<DiscountDetails> getDiscountDetailsByID(Discount discount) {
+        return discountDetailsDTO.getDiscountDetailsByID(discount);
     }
 }

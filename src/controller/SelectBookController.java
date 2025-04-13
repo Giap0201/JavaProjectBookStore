@@ -69,9 +69,9 @@ public class SelectBookController implements ActionListener {
                 int quantity = (Integer) view.getTable().getValueAt(row, 5);
                 Books book = new Books(bookID, bookName, author, year, priceDouble, quantity, categoryResult);
                 listBook.add(book);
-                CommonView.showInfoMessage(null, "Đã thêm sách thành công!!");
                 view.dispose();
             }
+            CommonView.showInfoMessage(null, "Đã thêm sách thành công!!");
         }
     }
     private void addDataToTable(ArrayList<Books> books) {

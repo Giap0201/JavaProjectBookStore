@@ -67,4 +67,27 @@ public class DiscountDetailsDTO {
         }
         return result;
     }
+    public ArrayList<DiscountDetails> getDiscountDetailsByID(Discount discount) {
+        ArrayList<DiscountDetails> listDiscountDetails = new ArrayList<>();
+        String query = "select * from discountdetails join discount on discountdetails.discountID=discount.discountID \n" +
+                "join books on books.bookID=discountdetails.bookID join category on category.categoryID = books.categoryID where discount.discountID=?";
+        try (Connection conn = JDBCUtil.getConnection();
+        PreparedStatement ps = conn.prepareStatement(query)){
+            ps.setString(1,discount.getDiscountID());
+            ResultSet rs = ps.executeQuery();
+            while(rs.next()){
+                Category category = new Category(rs.getString("categoryID"), rs.getString("categoryName"));
+                Books book = new Books(rs.getString("bookID"), rs.getString("bookName"), rs.getString("author"),
+                        rs.getInt("yearPublished"), rs.getDouble("price"), rs.getInt("quantity"), category);
+                Discount discount_result = new Discount(rs.getString("discountID"), rs.getString("nameDiscount"), rs.getString("typeDiscount"),
+                        rs.getDate("startDate"), rs.getDate("endDate"));
+                double percent = rs.getDouble("percent");
+                DiscountDetails discountDetails = new DiscountDetails(discount, percent, book);
+                listDiscountDetails.add(discountDetails);
+            }
+        }catch (SQLException e){
+            e.printStackTrace();
+        }
+        return listDiscountDetails;
+    }
 }

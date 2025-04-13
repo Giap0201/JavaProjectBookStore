@@ -48,6 +48,7 @@ public class DiscountController implements ActionListener {
         view.getBtnAddDetail().addActionListener(this);
         view.getButtonClick().addActionListener(this);
         view.getBtnDisableAll().addActionListener(this);
+        view.getBtnEditDetail().addActionListener(this);
     }
 
     @Override
@@ -69,12 +70,30 @@ public class DiscountController implements ActionListener {
                 openSelectBookView();
             } else if (e.getSource() == view.getBtnDisableAll()) {
                 refreshView();
+            } else if(e.getSource() == view.getBtnEditDetail()) {
+                searchDiscountDetalis();
             }
         } catch (IllegalArgumentException ex) {
             CommonView.showErrorMessage(view, ex.getMessage());
         } catch (Exception ex) {
             CommonView.showErrorMessage(view, "Lỗi hệ thống: " + ex.getMessage());
         }
+    }
+    //chuc nang tim kiem sach giam gia khi co chuong trinh
+    private void searchDiscountDetalis(){
+        int index = view.getComboBoxNameDiscount().getSelectedIndex();
+        if(index <= 0) throw  new IllegalArgumentException("Vui lòng chọn chương trình giảm giá cần lọc!!");
+        ArrayList<Discount> listDiscounts = discountService.getAllDiscounts();
+        if(index > listDiscounts.size()){
+            throw new IllegalArgumentException("Chương trình giảm giá không hợp lệ!!");
+        }
+        Discount discount = listDiscounts.get(index-1);
+        ArrayList<DiscountDetails> listDiscountDetails = discountDetailService.getDiscountDetailsByID(discount);
+        if(listDiscountDetails.isEmpty()){
+            CommonView.showInfoMessage(view,"Không tìm thấy sách có trong chương trình!");
+        }
+        updateAllTableDetails(listDiscountDetails);
+        clearFormDiscountDetails();
     }
 
     //chuc nang them mot chuong trinh giam gia moi

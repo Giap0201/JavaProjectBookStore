@@ -217,8 +217,8 @@ public class DiscountProgramView extends JPanel {
         btnDeleteDetail.setBounds(640 + 350, 170, 100, 40);
         discountDetailsPanel.add(btnDeleteDetail);
 
-        btnEditDetail = CommonView.createButton("SỬA", new Color(0, 0, 255));
-        btnEditDetail.setBounds(760 + 350, 170, 100, 40);
+        btnEditDetail = CommonView.createButton("TÌM KIẾM", new Color(0, 0, 255));
+        btnEditDetail.setBounds(760 + 350, 170, 120, 40);
         discountDetailsPanel.add(btnEditDetail);
 
 
