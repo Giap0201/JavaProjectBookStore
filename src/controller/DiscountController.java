@@ -196,7 +196,7 @@ public class DiscountController implements ActionListener {
         clearFormDiscount();
         clearFormDiscountDetails();
         updateAllTable(discountService.getAllDiscounts());
-        updateAllTableDetails(discountDetailService.getAllDiscountDetails());
+//        updateAllTableDetails(discountDetailService.getAllDiscountDetails());
         setComboBox(discountService.listMapDiscount());
     }
 
