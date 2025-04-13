@@ -1,6 +1,7 @@
 package view;
 
 import com.toedter.calendar.JDateChooser;
+import controller.InvoiceController;
 import utils.CommonView;
 
 import javax.swing.*;
@@ -79,10 +80,10 @@ public class ManageInvoiceView extends JPanel {
         jComboBoxTT.addItem("Chọn trạng thái");
         jComboBoxTT.addItem("Đã thanh toán");
         jComboBoxTT.addItem("Chưa thanh toán");
+        jComboBoxTT.addItem("Đã huỷ");
         jComboBoxTT.setBounds(100, 175, 270, 25); // Rộng hơn
         panelContent1.add(jComboBoxTT);
 
-        // Các nút chức năng (2 hàng, mỗi hàng 3 nút)
         btnDelete = CommonView.createButton("Xoá", new Color(246, 4, 60));
         btnDelete.setBounds(20, 210, 100, 30);
         panelContent1.add(btnDelete);
@@ -114,11 +115,11 @@ public class ManageInvoiceView extends JPanel {
         JPanel panelContent2 = new JPanel();
         panelContent2.setLayout(null);
 
-        String[] columns = {"Mã HĐ", "Mã KH", "Mã NV", "Ngày lập", "Tổng tiền", "Trạng thái"};
+        String[] columns = {"Mã HĐ", "Họ KH","Tên KH", "Nhân viên", "Ngày lập", "Trạng thái"};
         tableModelInvoice = new DefaultTableModel();
         tableInvoice = CommonView.createTable(tableModelInvoice, columns);
         JScrollPane scrollPane = new JScrollPane(tableInvoice);
-        scrollPane.setBounds(10, 10, 780, 200); // Mở rộng bảng
+        scrollPane.setBounds(10, 10, 780, 200);
         panelContent2.add(scrollPane);
 
         JLabel labelTotalInvoices = createLabel("Số lượng hoá đơn: ", font1);
@@ -148,7 +149,7 @@ public class ManageInvoiceView extends JPanel {
         JLabel labelTitleDetails = new JLabel("CHI TIẾT HOÁ ĐƠN");
         labelTitleDetails.setFont(new Font("Tahoma", Font.BOLD, 16));
         labelTitleDetails.setForeground(new Color(2, 62, 150));
-        labelTitleDetails.setBounds(550, 5, 200, 25); // Căn giữa tiêu đề
+        labelTitleDetails.setBounds(550, 5, 200, 25);
         panelContent3.add(labelTitleDetails);
 
         // Bảng chi tiết hóa đơn
@@ -177,7 +178,6 @@ public class ManageInvoiceView extends JPanel {
         lblTotalPriceValue.setBounds(220, 330, 150, 25);
         panelContent3.add(lblTotalPriceValue);
 
-        // Các nút chức năng (bên phải)
         btnChange2 = CommonView.createButton("Sửa", new Color(44, 134, 3));
         btnChange2.setBounds(1000, 300, 100, 30);
         panelContent3.add(btnChange2);
@@ -214,16 +214,18 @@ public class ManageInvoiceView extends JPanel {
         // Panel 2: Bảng hóa đơn (bên phải)
         JPanel panelContent2 = createPanel2();
         panelContent2.setLayout(null);
-        panelContent2.setBounds(420, 50, 800, 280); // Bên phải, mở rộng chiều rộng
+        panelContent2.setBounds(420, 50, 800, 280);
         panelContent2.setBackground(new Color(245, 248, 214));
         panelContent.add(panelContent2);
 
         // Panel 3: Chi tiết hóa đơn (bên dưới)
         JPanel panelContent3 = createPanel3();
         panelContent3.setLayout(null);
-        panelContent3.setBounds(10, 370, 1210, 370); // Chiếm toàn bộ chiều ngang
+        panelContent3.setBounds(10, 370, 1210, 370);
         panelContent3.setBackground(new Color(245, 248, 214));
         panelContent.add(panelContent3);
+        InvoiceController invoiceController = new InvoiceController(this);
+
 
         return panelContent;
     }
