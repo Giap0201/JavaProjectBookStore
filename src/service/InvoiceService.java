@@ -13,12 +13,16 @@ public class InvoiceService {
     public InvoiceService(InvoiceDAO invoiceDAO) {
         this.invoiceDAO = invoiceDAO;
     }
-
-     public boolean deleteInvoice(String invoiceId) {
+    public boolean deleteInvoice(String invoiceId) {
         return invoiceDAO.deleteInvoice(invoiceId) > 0;
     }
-
     public ArrayList<Invoice> getAllInvoice(){
         return invoiceDAO.getAllInvoice();
+    }
+    public boolean updateInvoice(Invoice invoice) {
+        return invoiceDAO.updateInvoice(invoice) > 0;
+    }
+    public Invoice getInvoiceByID(String invoiceID){
+        return invoiceDAO.getInvoiceByID(invoiceID);
     }
 }

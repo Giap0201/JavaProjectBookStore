@@ -3,6 +3,7 @@ package dao;
 import database.JDBCUtil;
 import model.Employees;
 import utils.ConvertDate;
+import utils.ResultMapper;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -174,6 +175,25 @@ public class EmployeeDAO implements InterfaceDAO{
         }
         return employee;
     }
+    //ham tim kiem nhan vien theo ten
+    public ArrayList<Employees> searchByName(String name){
+        ArrayList<Employees> listEmployees = new ArrayList<>();
+        String query = "SELECT * FROM employees WHERE firstName LIKE ?";
+        try(Connection conn = JDBCUtil.getConnection();
+        PreparedStatement ps = conn.prepareStatement(query)){
+            String search = "%" + name + "%";
+            ps.setString(1,search);
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()){
+                Employees employees = ResultMapper.mapResultSetToEmployee(rs);
+                listEmployees.add(employees);
+            }
+        }catch (SQLException e){
+            e.printStackTrace();
+            throw new RuntimeException(e);
+        }
+        return listEmployees;
+    }
 
     //Lấy nhân viên các hàng trong resultSet
     private Employees mapResultSetToEmployee(ResultSet rs) throws SQLException {
@@ -189,7 +209,6 @@ public class EmployeeDAO implements InterfaceDAO{
         java.sql.Date dateOfBirthSql = rs.getDate("dateOfBirth");
         employee.setDateOfBirth(dateOfBirthSql != null ? new java.util.Date(dateOfBirthSql.getTime()) : null);
         employee.setGender(rs.getString("gender"));
-
         return employee;
     }
 

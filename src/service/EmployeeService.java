@@ -64,6 +64,12 @@ public class EmployeeService {
         String trimmedSalaryTo = (salaryToValue!=null)?salaryToValue.trim():"";
         return employeeDAO.Search(field,trimmedValue,trimmedSalaryFrom,trimmedSalaryTo);
     }
+    public ArrayList<Employees> searchEmployeeByName(String name){
+        if (name == null || name.trim().isEmpty()) {
+            return new ArrayList<>();
+        }
+        return employeeDAO.searchByName(name);
+    }
 
 
 }

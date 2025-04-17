@@ -2,6 +2,7 @@ package dao;
 
 import database.JDBCUtil;
 import model.Customers;
+import utils.ResultMapper;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -207,6 +208,25 @@ public class CustomerDAO {
         // Hoặc bạn có thể phân tích chuỗi condition phức tạp ở đây (không khuyến khích)
         System.out.println("selectbyCondition(String) is deprecated, use search() instead.");
         return new ArrayList<>(); // Trả về danh sách rỗng
+    }
+    //tim kiem khach hang theo ten, dung liKe de loc khach hang co tenn nhu vay
+    public ArrayList<Customers> searchByName(String name){
+        ArrayList<Customers> listCustomers = new ArrayList<>();
+        String query = "SELECT * FROM customer WHERE firstName LIKE ?";
+        try(Connection conn = JDBCUtil.getConnection();
+        PreparedStatement ps = conn.prepareStatement(query)){
+            String search = "%" + name + "%";
+            ps.setString(1,search);
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()){
+                Customers customer = ResultMapper.mapResultSetToCustomer(rs);
+                listCustomers.add(customer);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            throw new RuntimeException(e);
+        }
+        return listCustomers;
     }
 
     // Phương thức tiện ích để map ResultSet sang đối tượng Customers

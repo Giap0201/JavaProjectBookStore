@@ -1,5 +1,7 @@
 package view;
 
+import controller.SelectCustomerController; // Đảm bảo bạn có controller này
+import model.Customers;
 import utils.CommonView;
 
 import javax.swing.*;
@@ -11,10 +13,10 @@ public class SelectCustomerView extends JDialog {
     private DefaultTableModel tableModel;
     private JButton selectButton;
     private JButton searchButton;
+    private JButton allButton; // << Khai báo biến
     private JTextField searchField;
-
+    private Customers customers;
     public SelectCustomerView() {
-        // Tạo một dialog không có cửa sổ cha, tiêu đề là "Chọn khách hàng", và sẽ chặn toàn bộ các cửa sổ khác cho đến khi người dùng đóng nó lại.
         super((Frame) null, "Chọn khách hàng", ModalityType.APPLICATION_MODAL);
         setSize(1000, 500);
         setLocationRelativeTo(null);
@@ -24,29 +26,43 @@ public class SelectCustomerView extends JDialog {
 
     public void display() {
         // Tạo bảng hiển thị danh sách khách hàng
-        String[] columnNames = { "Mã KH", "Tên KH", "Số điện thoại", "Email", "Địa chỉ" };
-        tableModel = new DefaultTableModel();
+        String[] columnNames = {"Mã KH", "Họ", "Tên", "Giới tính", "Số ĐT", "Email", "Ngày sinh", "Tổng chi tiêu", "Ngày lập thẻ", "Note"};
+        tableModel = new DefaultTableModel(columnNames, 0) {
+            @Override
+            public boolean isCellEditable(int row, int column) {
+                return false;
+            }
+        };
         table = CommonView.createTable(tableModel, columnNames);
-        table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION); // Chỉ cho phép chọn một dòng
+        table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         JScrollPane scrollPane = new JScrollPane(table);
         add(scrollPane, BorderLayout.CENTER);
 
         // Tạo panel tìm kiếm
         JPanel searchPanel = new JPanel();
-        searchPanel.setLayout(null); // Sử dụng layout null để căn chỉnh thủ công
+        searchPanel.setLayout(null);
         searchPanel.setPreferredSize(new Dimension(1000, 50));
 
         JLabel searchLabel = new JLabel("Tìm kiếm:");
-        searchLabel.setBounds(20, 10, 70, 30); // Căn chỉnh vị trí label
+        searchLabel.setBounds(20, 10, 70, 30);
         searchPanel.add(searchLabel);
 
         searchField = new JTextField();
-        searchField.setBounds(100, 10, 700, 30); // Trường nhập liệu rộng hơn
+        // Vẫn giảm chiều rộng searchField để có đủ chỗ cho 2 nút bên phải
+        searchField.setBounds(100, 10, 550, 30); // << Điều chỉnh chiều rộng nếu cần
         searchPanel.add(searchField);
 
+        // Đặt nút "Tìm kiếm" trước
         searchButton = CommonView.createButton("Tìm kiếm", new Color(0x4CAF50));
-        searchButton.setBounds(820, 10, 120, 30); // Nút tìm kiếm căn bên phải
+        // Vị trí nút "Tìm kiếm" ngay sau trường tìm kiếm
+        searchButton.setBounds(670, 10, 120, 30); // << Đặt vị trí cho nút tìm kiếm
         searchPanel.add(searchButton);
+
+        // Khởi tạo và đặt nút "Tất cả" bên phải nút "Tìm kiếm"
+        allButton = CommonView.createButton("Tất cả", new Color(0x2196F3));
+        // Vị trí nút "Tất cả" bên phải nút "Tìm kiếm", có khoảng cách (ví dụ: 10px)
+        allButton.setBounds(800, 10, 120, 30); // << Đặt vị trí cho nút tất cả (760 + 100 + 10 = 870)
+        searchPanel.add(allButton);
 
         add(searchPanel, BorderLayout.NORTH);
 
@@ -55,9 +71,11 @@ public class SelectCustomerView extends JDialog {
         selectButton = CommonView.createButton("Xác nhận", new Color(0xE755D0));
         buttonPanel.add(selectButton);
         add(buttonPanel, BorderLayout.SOUTH);
+
+        SelectCustomerController controller = new SelectCustomerController(this);
     }
 
-    // Getter và Setter
+    // --- Getters ---
     public JTable getTable() {
         return table;
     }
@@ -74,12 +92,26 @@ public class SelectCustomerView extends JDialog {
         return searchButton;
     }
 
+    public JButton getAllButton() {
+        return allButton;
+    }
+
     public JTextField getSearchField() {
         return searchField;
     }
 
+    public Customers getCustomers() {
+        return customers;
+    }
+
+    public void setCustomers(Customers customers) {
+        this.customers = customers;
+    }
+
     public static void main(String[] args) {
-        SelectCustomerView s = new SelectCustomerView();
-        s.setVisible(true);
+        SwingUtilities.invokeLater(() -> {
+            SelectCustomerView s = new SelectCustomerView();
+            s.setVisible(true);
+        });
     }
 }

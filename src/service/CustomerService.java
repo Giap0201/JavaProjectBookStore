@@ -98,5 +98,12 @@ public class CustomerService {
 
         return customerDAO.search(field, trimmedValue, trimmedGender);
     }
+    public ArrayList<Customers> searchCustomerByName(String firstName) {
+        if (firstName == null || firstName.trim().isEmpty()) {
+            System.err.println("Lỗi Service: Trường tìm kiếm " + firstName +" không hợp lệ.");
+            return new ArrayList<>();
+        }
+        return customerDAO.searchByName(firstName);
+    }
 
 }

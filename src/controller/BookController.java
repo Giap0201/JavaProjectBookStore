@@ -295,6 +295,7 @@ public class BookController implements ActionListener {
                     new OutputStreamWriter(new FileOutputStream(filePath), "UTF-8"))) {
 
                 // Ghi tiêu đề
+                writer.write("\uFEFF");
                 writer.println("Mã sách,Thể loại,Tên sách,Tác giả,Năm xuất bản,Số lượng,Giá");
 
                 // Ghi từng dòng dữ liệu từ bảng

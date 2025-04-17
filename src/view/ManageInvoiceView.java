@@ -11,7 +11,7 @@ import java.awt.*;
 public class ManageInvoiceView extends JPanel {
     private static final Font font1 = new Font("Tahoma", Font.BOLD, 15);
     private static final Font font2 = new Font("Tahoma", Font.PLAIN, 15);
-    private JButton btnDelete2, btnChange2, btnSearch, btnLoad, btnSave, btnChange, btnDelete;
+    private JButton btnDelete2, btnChange2, btnSearch, btnLoad, btnSave, btnChange, btnDelete,btnSearchCustomer,btnSearchEmployee;
     private JDateChooser date;
     private DefaultTableModel tableModelInvoice, tableModelDetails;
     private JTable tableInvoice, tabelDetails;
@@ -41,7 +41,7 @@ public class ManageInvoiceView extends JPanel {
         textFieldCustomerId.setBounds(100, 55, 190, 25); // Rộng hơn
         panelContent1.add(textFieldCustomerId);
 
-        JButton btnSearchCustomer = CommonView.createButton("Tìm", new Color(56, 46, 211));
+        btnSearchCustomer = CommonView.createButton("Tìm", new Color(56, 46, 211));
         btnSearchCustomer.setBounds(300, 55, 70, 25);
         // btnSearchCustomer.addActionListener(e -> openCustomerSelectionDialog());
         panelContent1.add(btnSearchCustomer);
@@ -55,7 +55,7 @@ public class ManageInvoiceView extends JPanel {
         textFieldEmployee.setBounds(100, 95, 190, 25); // Rộng hơn
         panelContent1.add(textFieldEmployee);
 
-        JButton btnSearchEmployee = CommonView.createButton("Tìm", new Color(56, 46, 211));
+        btnSearchEmployee = CommonView.createButton("Tìm", new Color(56, 46, 211));
         btnSearchEmployee.setBounds(300, 95, 70, 25);
         // btnSearchEmployee.addActionListener(e -> openEmployeeSelectionDialog());
         panelContent1.add(btnSearchEmployee);
@@ -321,5 +321,13 @@ public class ManageInvoiceView extends JPanel {
 
     public JComboBox<String> getjComboBoxTT() {
         return jComboBoxTT;
+    }
+
+    public JButton getBtnSearchCustomer() {
+        return btnSearchCustomer;
+    }
+
+    public JButton getBtnSearchEmployee() {
+        return btnSearchEmployee;
     }
 }
