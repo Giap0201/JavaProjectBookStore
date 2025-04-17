@@ -23,6 +23,12 @@ public class InvoiceService {
         return invoiceDAO.updateInvoice(invoice) > 0;
     }
     public Invoice getInvoiceByID(String invoiceID){
-        return invoiceDAO.getInvoiceByID(invoiceID);
+        if(invoiceID != null && !invoiceID.isEmpty()){
+            return invoiceDAO.getInvoiceByID(invoiceID);
+        }
+        return null;
+    }
+    public ArrayList<Invoice> getInvoiceSearch(Invoice invoice) {
+        return invoiceDAO.listSearchInvoice(invoice);
     }
 }

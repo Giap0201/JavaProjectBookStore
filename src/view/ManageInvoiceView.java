@@ -115,7 +115,7 @@ public class ManageInvoiceView extends JPanel {
         JPanel panelContent2 = new JPanel();
         panelContent2.setLayout(null);
 
-        String[] columns = {"Mã HĐ", "Họ KH","Tên KH", "Nhân viên", "Ngày lập", "Trạng thái"};
+        String[] columns = {"Mã HĐ","Tên KH","SDT", "Mã NV","Tên NV", "Ngày lập", "Trạng thái"};
         tableModelInvoice = new DefaultTableModel();
         tableInvoice = CommonView.createTable(tableModelInvoice, columns);
         JScrollPane scrollPane = new JScrollPane(tableInvoice);
