@@ -7,18 +7,21 @@ import service.CustomerService;
 import service.EmployeeService;
 import service.InvoiceService;
 import utils.CommonView;
-import view.ManageInvoiceView;
-import view.SelectCustomerView;
-import view.SelectEmployeeView;
+import view.*;
 
+import javax.swing.*;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 public class InvoiceController implements ActionListener {
+    private App app;
     private final ManageInvoiceView manageInvoiceView;
     private final InvoiceService invoiceService;
     private final CustomerService customerService;
@@ -28,8 +31,9 @@ public class InvoiceController implements ActionListener {
     private Customers customersResult;
     private Employees employeesResult;
 
-    public InvoiceController(ManageInvoiceView manageInvoiceView) {
+    public InvoiceController(App app,ManageInvoiceView manageInvoiceView) {
         this.manageInvoiceView = manageInvoiceView;
+        this.app = app;
         invoiceService = new InvoiceService();
         customerService = new CustomerService();
         employeeService = new EmployeeService();
@@ -40,6 +44,7 @@ public class InvoiceController implements ActionListener {
         updateTableInvoice(invoiceService.getAllInvoice());
         registerButtonListeners();
         setEnabledFiled();
+        statistacal(invoiceService.getAllInvoice());
         addTableSelectionListener();
     }
 
@@ -56,6 +61,7 @@ public class InvoiceController implements ActionListener {
         manageInvoiceView.getBtnChange().addActionListener(this);
         manageInvoiceView.getBtnLoad().addActionListener(this);
         manageInvoiceView.getBtnSearch().addActionListener(this);
+        manageInvoiceView.getBtnAdd().addActionListener(this);
     }
 
     private void resetFrom() {
@@ -69,6 +75,7 @@ public class InvoiceController implements ActionListener {
     private void resetAll() {
         resetFrom();
         refreshInvoiceTable();
+        statistacal(invoiceService.getAllInvoice());
     }
 
     @Override
@@ -86,8 +93,12 @@ public class InvoiceController implements ActionListener {
                 resetAll();
             } else if (e.getSource() == manageInvoiceView.getBtnSave()) {
 
-            } else if (e.getSource() == manageInvoiceView.getBtnSearch()){
+            } else if (e.getSource() == manageInvoiceView.getBtnSearch()) {
                 searchInvoice();
+            } else if(e.getSource() == manageInvoiceView.getBtnAdd()){
+                CreateInvoiceView createInvoiceView = new CreateInvoiceView();
+                JPanel createInvoicePanel = createInvoiceView.initCustomerInvoiceView();
+                CommonView.replacePanel(app, createInvoicePanel);
             }
         } catch (IllegalArgumentException ex) {
             CommonView.showErrorMessage(manageInvoiceView, ex.getMessage());
@@ -95,6 +106,13 @@ public class InvoiceController implements ActionListener {
             CommonView.showErrorMessage(manageInvoiceView, "Lỗi không xác định: " + ex.getMessage());
             ex.printStackTrace();
         }
+    }
+
+
+    private void addInvoice(){
+        manageInvoiceView.setVisible(false);
+        CreateInvoiceView createInvoiceView = new CreateInvoiceView();
+
     }
 
     //thao tac cap nhat hoa don
@@ -109,6 +127,7 @@ public class InvoiceController implements ActionListener {
                 resetFrom();
             }
         }
+        statistacal(invoiceService.getAllInvoice());
     }
 
     //phuong thuc lay du lieu tim kiem tu from, du lieu nay co the null, thuc hien tim kiem
@@ -118,15 +137,14 @@ public class InvoiceController implements ActionListener {
         String customerId = manageInvoiceView.getTextFieldCustomerId().getText().trim();
         String employeeId = manageInvoiceView.getTextFieldEmployee().getText().trim();
         java.util.Date date = manageInvoiceView.getDate().getDate();
-        if(invoiceId.isEmpty() && customerId.isEmpty() && employeeId.isEmpty()  &&
-                manageInvoiceView.getjComboBoxTT().getSelectedIndex()<=0 && date == null){
+        if (invoiceId.isEmpty() && customerId.isEmpty() && employeeId.isEmpty() &&
+                manageInvoiceView.getjComboBoxTT().getSelectedIndex() <= 0 && date == null) {
             throw new IllegalArgumentException("Vui lòng thêm điều kiện tìm kiếm!");
         }
         Customers customer = null;
         if (!customerId.isEmpty()) {
             customer = customerService.getCustomerById(customerId);
         }
-//        System.out.println(customer.getCustomerID());
         Employees employee = null;
         if (!employeeId.isEmpty()) {
             employee = employeeService.getEmployeeByID(employeeId);
@@ -137,21 +155,23 @@ public class InvoiceController implements ActionListener {
         }
         String status = null;
         int index = manageInvoiceView.getjComboBoxTT().getSelectedIndex();
-        if(index > 0){
+        if (index > 0) {
             status = (String) manageInvoiceView.getjComboBoxTT().getSelectedItem();
         }
-       return new Invoice(invoiceId, sqlDate, customer, employee, status);
+        return new Invoice(invoiceId, sqlDate, customer, employee, status);
     }
 
+    //chuc nang tim kiem hoa don
     private void searchInvoice() {
         Invoice invoice = getSearchInvoice();
         ArrayList<Invoice> listInvoice = invoiceService.getInvoiceSearch(invoice);
-        if(!listInvoice.isEmpty()){
+        if (!listInvoice.isEmpty()) {
             updateTableInvoice(listInvoice);
-        }else {
+        } else {
             updateTableInvoice(null);
-            CommonView.showInfoMessage(manageInvoiceView,"Không tìm thấy!");
+            CommonView.showInfoMessage(manageInvoiceView, "Không tìm thấy!");
         }
+        statistacal(listInvoice);
     }
 
     //phuong thuc lay du lieu tu form va thuc hien thao tac sua,luu thay doi trong db, khong cho null
@@ -180,7 +200,7 @@ public class InvoiceController implements ActionListener {
         return new Invoice(invoiceId, sqlDate, customer, employee, status);
     }
 
-    // Kiểm tra dữ liệu form
+    // Kiểm tra dữ liệu form de sua hoa don
     private void validateFormData(String invoiceId, String customerId, String employeeId, java.util.Date date) {
         if (invoiceId.isEmpty() || customerId.isEmpty() || employeeId.isEmpty()) {
             throw new IllegalArgumentException("Vui lòng điền đầy đủ thông tin hóa đơn!");
@@ -249,67 +269,68 @@ public class InvoiceController implements ActionListener {
         }
     }
 
-    // Xóa hóa đơn
-    private void deleteInvoice() {
-        String textFieldId = manageInvoiceView.getTextFieldInvoiceId().getText().trim();
+    //chuc nang xoa hoa don, co the xoa 1 hoa don hoac nhieu hoa don
+    private void deleteInvoice(){
+        String invoiceID = manageInvoiceView.getTextFieldInvoiceId().getText().trim();
         List<String> selectedIds = getInvoiceTable();
-        if (textFieldId.isEmpty() && selectedIds.isEmpty()) {
-            CommonView.showErrorMessage(manageInvoiceView, "Vui lòng nhập ID hóa đơn hoặc chọn từ bảng!");
+        if(!selectedIds.isEmpty()){
+            deleteMultipleInvoice(selectedIds);
+        }else if(!invoiceID.isEmpty()){
+            deleteSingleInvoice(invoiceID);
+        }else {
+            CommonView.showErrorMessage(manageInvoiceView,"Vui lòng chọn hóa đơn trong bảng hoặc nhập ID để xóa!");
+        }
+        refreshInvoiceTable();
+        resetFrom();
+        statistacal(invoiceService.getAllInvoice());
+    }
+
+    private void deleteMultipleInvoice(List<String> ids) {
+        if (!CommonView.confirmAction(manageInvoiceView, "Bạn có chắc chắn muốn xóa " + ids.size() + " hóa đơn đã chọn?")) {
             return;
         }
-        // Bước 2: Xác định ID cần xóa và thông báo xác nhận
-        List<String> invoiceIdsToDelete = new ArrayList<>();
-        String confirmationMessage;
-
-        if (!textFieldId.isEmpty()) {
-            invoiceIdsToDelete.add(textFieldId);
-            confirmationMessage = String.format("Bạn có chắc chắn muốn xóa hóa đơn có ID: %s?", textFieldId);
-        } else {
-            invoiceIdsToDelete.addAll(selectedIds);
-            confirmationMessage = String.format("Bạn có chắc chắn muốn xóa %d hóa đơn đã chọn?", selectedIds.size());
-        }
-        if (!CommonView.confirmAction(manageInvoiceView, confirmationMessage)) {
-            return;
-        }
-        List<String> failedDeletions = new ArrayList<>();
-        int successfulDeletions = 0;
-
-        for (String invoiceId : invoiceIdsToDelete) {
-            try {
-                Invoice invoice = invoiceService.getInvoiceByID(invoiceId);
-                if (invoice == null) {
-                    failedDeletions.add(String.format("%s (Không có hóa đơn này)", invoiceId));
-                    continue;
+        List<String> failed = new ArrayList<>();
+        int success = 0;
+        for (String id: ids){
+            try{
+                if(invoiceService.deleteInvoice(id)){
+                    success++;
+                }else {
+                    failed.add(id + " (Không thể xoá)");
                 }
-                if (invoiceService.deleteInvoice(invoiceId)) {
-                    successfulDeletions++;
-                } else {
-                    failedDeletions.add(String.format("%s (Không thể xóa)", invoiceId));
-                }
-            } catch (RuntimeException ex) {
-                failedDeletions.add(String.format("%s (%s)", invoiceId, ex.getMessage()));
+            }catch (RuntimeException ex) {
+                failed.add(id + " (" + ex.getMessage() + ")");
             }
         }
-
-        // Bước 5: Hiển thị kết quả
-        StringBuilder resultMessage = new StringBuilder();
-        if (successfulDeletions > 0) {
-            resultMessage.append(String.format("Đã xóa thành công %d hóa đơn.\n", successfulDeletions));
-            refreshInvoiceTable();
-            manageInvoiceView.getTextFieldInvoiceId().setText("");
+        showDeleteResult(success,failed);
+    }
+    private void deleteSingleInvoice(String id) {
+        if (!CommonView.confirmAction(manageInvoiceView, "Bạn có chắc chắn muốn xóa hóa đơn có ID: " + id + "?")) {
+            return;
         }
-        if (!failedDeletions.isEmpty()) {
-            resultMessage.append("Không thể xóa các hóa đơn sau:\n").append(String.join("\n", failedDeletions));
-        }
-
-        if (!resultMessage.isEmpty()) {
-            if (successfulDeletions > 0 && failedDeletions.isEmpty()) {
-                CommonView.showInfoMessage(manageInvoiceView, resultMessage.toString().trim());
+        try {
+            if (invoiceService.deleteInvoice(id)) {
+                CommonView.showInfoMessage(manageInvoiceView, "Xóa hóa đơn thành công!");
             } else {
-                CommonView.showErrorMessage(manageInvoiceView, resultMessage.toString().trim());
+                CommonView.showErrorMessage(manageInvoiceView, "Không thể xóa hóa đơn!");
             }
+        } catch (RuntimeException ex) {
+            CommonView.showErrorMessage(manageInvoiceView, "Lỗi: " + ex.getMessage());
         }
     }
+
+    private void showDeleteResult(int success, List<String> failed) {
+        StringBuilder msg = new StringBuilder();
+        if (success > 0) msg.append("Đã xóa thành công ").append(success).append(" hóa đơn.\n");
+        if (!failed.isEmpty()) {
+            msg.append("Không thể xóa các hóa đơn sau:\n").append(String.join("\n", failed));
+            CommonView.showErrorMessage(manageInvoiceView, msg.toString().trim());
+        } else {
+            CommonView.showInfoMessage(manageInvoiceView, msg.toString().trim());
+        }
+    }
+
+
 
     private void refreshInvoiceTable() {
         try {
@@ -359,16 +380,36 @@ public class InvoiceController implements ActionListener {
             @Override
             public void valueChanged(ListSelectionEvent e) {
                 if (!e.getValueIsAdjusting()) {
-                    try {
-                        loadInvoiceToForm(null);
-                    } catch (IllegalArgumentException ex) {
-                        // Chỉ hiển thị lỗi khi người dùng thực sự tương tác, không hiển thị khi làm mới bảng
-                        if (manageInvoiceView.getTableInvoice().getSelectedRow() != -1) {
-                            CommonView.showErrorMessage(manageInvoiceView, ex.getMessage());
+                    int[] selectedRows = manageInvoiceView.getTableInvoice().getSelectedRows();
+                    if (selectedRows.length > 1) {
+                        // Nếu chọn nhiều dòng => clear hoặc ẩn TextField
+                        resetFrom();
+                        manageInvoiceView.getTextFieldInvoiceId().setEnabled(false);
+                    } else {
+                        // Nếu chọn đúng 1 dòng => load dữ liệu vào form
+                        manageInvoiceView.getTextFieldInvoiceId().setEnabled(true);
+                        try {
+                            loadInvoiceToForm(null);
+                        } catch (IllegalArgumentException ex) {
+                            if (manageInvoiceView.getTableInvoice().getSelectedRow() != -1) {
+                                CommonView.showErrorMessage(manageInvoiceView, ex.getMessage());
+                            }
                         }
                     }
                 }
             }
         });
     }
+
+
+    //xu li hien label tu dong thong ke
+    private void statistacal(ArrayList<Invoice> invoiceList) {
+        manageInvoiceView.getLabeltotal().setText(invoiceList.size() + "");
+        Set<String> customerID = new HashSet<>();
+        for (Invoice invoice : invoiceList) {
+            customerID.add(invoice.getCustomer().getCustomerID());
+        }
+        manageInvoiceView.getLabelMonney().setText(customerID.size() + "");
+    }
+
 }

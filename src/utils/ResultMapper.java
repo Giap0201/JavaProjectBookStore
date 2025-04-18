@@ -20,23 +20,21 @@ public class ResultMapper {
         employee.setGender(rs.getString("e_gender"));
         java.sql.Date dateOfBirthSql = rs.getDate("e_dateOfBirth");
         employee.setDateOfBirth(dateOfBirthSql != null ? new java.util.Date(dateOfBirthSql.getTime()) : null);
+        employee.setGender(rs.getString("e_gender"));
         return employee;
     }
 
+
+    // Phương thức tiện ích để map ResultSet sang đối tượng Customers
     public static Customers mapResultSetToCustomer(ResultSet rs) throws SQLException {
         Customers customer = new Customers();
         customer.setCustomerID(rs.getString("c_customerID"));
         customer.setFirstName(rs.getString("c_firstName"));
         customer.setLastName(rs.getString("c_lastName"));
-        // Chuyển đổi gender từ TINYINT sang String
-        int genderValue = rs.getInt("c_gender");
-        if (!rs.wasNull()) {
-            customer.setGender(genderValue == 1 ? "Male" : "Female");
-        } else {
-            customer.setGender(null);
-        }
+        customer.setGender(rs.getString("c_gender"));
         customer.setPhoneNumber(rs.getString("c_phoneNumber"));
         customer.setEmail(rs.getString("c_email"));
+        // Lấy Date từ ResultSet và chuyển đổi sang java.util.Date
         java.sql.Date dateOfBirthSql = rs.getDate("c_dateOfBirth");
         customer.setDateOfBirth(dateOfBirthSql != null ? new java.util.Date(dateOfBirthSql.getTime()) : null);
         customer.setTotalMoney(rs.getDouble("c_totalMoney"));

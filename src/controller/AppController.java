@@ -10,6 +10,7 @@ import java.util.ArrayList;
 
 import javax.swing.JPanel;
 
+import utils.CommonView;
 import view.App;
 import view.BookView;
 import view.CreateInvoiceView;
@@ -24,7 +25,7 @@ public class AppController implements MouseListener {
     private JPanel viewEmployee = new EmployeeView().initEmployeeView();
     private JPanel viewCustomers = new CustomerView().initCustomerView();
     private JPanel viewSales = new CreateInvoiceView().initCustomerInvoiceView();
-    private JPanel viewManageInvoice = new ManageInvoiceView().initManageInvoiceView();
+    private JPanel viewManageInvoice = new ManageInvoiceView(app).initManageInvoiceView();
     private JPanel viewDiscount = new DiscountProgramView().initDiscountProgramView();
     private ArrayList<JPanel> listSidebar;
 
@@ -50,22 +51,22 @@ public class AppController implements MouseListener {
     public void mouseClicked(MouseEvent e) {
         addJpanelList();
         if (e.getSource() == app.getPanelBooks()) {
-            replacePanel(viewBooks);
+            CommonView.replacePanel(app, viewBooks);
             app.changeBackground(app.getPanelBooks());
         } else if (e.getSource() == app.getPanelEmployee()) {
-            replacePanel(viewEmployee);
+            CommonView.replacePanel(app,viewEmployee);
             app.changeBackground(app.getPanelEmployee());
         } else if (e.getSource() == app.getPanelCustomer()) {
-            replacePanel(viewCustomers);
+            CommonView.replacePanel(app,viewCustomers);
             app.changeBackground(app.getPanelCustomer());
         } else if (e.getSource() == app.getPanelInvoice()) {
-            replacePanel(viewManageInvoice);
+            CommonView.replacePanel(app,viewManageInvoice);
             app.changeBackground(app.getPanelInvoice());
         } else if (e.getSource() == app.getPanelDiscount()) {
-            replacePanel(viewDiscount);
+            CommonView.replacePanel(app,viewDiscount);
             app.changeBackground(app.getPanelDiscount());
         } else if (e.getSource() == app.getPanelSale()) {
-            replacePanel(viewSales);
+            CommonView.replacePanel(app,viewSales);
             app.changeBackground(app.getPanelSale());
         }
     }
@@ -90,17 +91,4 @@ public class AppController implements MouseListener {
 
     }
 
-    // ham thay the panel trong Jpanel
-    private void replacePanel(JPanel panel) {
-        // lay contenpane cua JFrame
-        Container container = app.getContentPane();
-        // lay component hien tai trong BorderLayout.Center
-        Component currentPanel = ((BorderLayout) container.getLayout()).getLayoutComponent(BorderLayout.CENTER);
-        if (currentPanel != null) {
-            container.remove(currentPanel);
-        }
-        container.add(panel, BorderLayout.CENTER);
-        container.revalidate();// cap nhat lai layout
-        container.repaint();// ve lai UI
-    }
 }

@@ -1,6 +1,7 @@
 package utils;
 
 import com.toedter.calendar.JDateChooser;
+import view.App;
 
 import javax.swing.*;
 import javax.swing.table.*;
@@ -86,5 +87,15 @@ public final class CommonView {
     public static boolean confirmAction(JComponent parent, String message) {
         return JOptionPane.showConfirmDialog(parent, message, "Xác nhận",
                 JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION;
+    }
+    public static void replacePanel(App app, JPanel panel) {
+        Container container = app.getContentPane();
+        Component currentPanel = ((BorderLayout) container.getLayout()).getLayoutComponent(BorderLayout.CENTER);
+        if (currentPanel != null) {
+            container.remove(currentPanel);
+        }
+        container.add(panel, BorderLayout.CENTER);
+        container.revalidate();
+        container.repaint();
     }
 }
