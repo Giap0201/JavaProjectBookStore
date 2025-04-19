@@ -126,6 +126,25 @@ public class CustomerDAO {
         return customers;
     }
 
+    public Customers getCustomerByPhoneNumber(String phoneNumber) {
+        Customers customer = null;
+        String sql = "SELECT * FROM customer WHERE phoneNumber=?";
+        try{
+            Connection conn = JDBCUtil.getConnection();
+            PreparedStatement ps = conn.prepareStatement(sql);
+
+            ps.setString(1, phoneNumber);
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) {
+                customer = mapResultSetToCustomer(rs);
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return customer;
+    }
+
     // Thay đổi tham số hoặc tạo hàm mới để chọn theo ID
     public Customers selectById(String customerId) {
         Customers customer = null;

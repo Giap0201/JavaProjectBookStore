@@ -10,10 +10,11 @@ public class Books {
     private int quantity;
     private Category category;
     private Discount discount;
+    private String urlImage ;
 
     public Books() {
     }
-    public Books(String bookID, String bookName, String author, int yearPublished, double price, int quantity, Category category) {
+    public Books(String bookID, String bookName, String author, int yearPublished, double price, int quantity, Category category,String urlImage) {
         this.bookID = bookID;
         this.bookName = bookName;
         this.author = author;
@@ -21,6 +22,7 @@ public class Books {
         this.price = price;
         this.quantity = quantity;
         this.category = category;
+        this.urlImage = urlImage;
     }
 
     public Books(String bookID, String bookName, String author, int yearPublished, double price, int quantity, Category category, Discount discount) {
@@ -94,5 +96,13 @@ public class Books {
 
     public void setCategory(Category category) {
         this.category = category;
+    }
+
+    public String getUrlImage() {
+        return urlImage;
+    }
+
+    public void setUrlImage(String urlImage) {
+        this.urlImage = urlImage;
     }
 }

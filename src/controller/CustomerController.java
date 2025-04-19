@@ -125,18 +125,6 @@ public class CustomerController implements ActionListener {
         Object value = model.getValueAt(row, col);
         return (value == null) ? "" : value.toString();
     }
-    // Hàm tiện ích lấy Double từ model, xử lý null/lỗi cast
-    private double getDoubleValueFromModel(DefaultTableModel model, int row, int col) {
-        Object value = model.getValueAt(row, col);
-        if (value instanceof Number) {
-            return ((Number) value).doubleValue();
-        }
-        try {
-            return (value == null) ? 0.0 : Double.parseDouble(value.toString());
-        } catch (NumberFormatException e){
-            return 0.0; // Hoặc giá trị mặc định khác
-        }
-    }
 
     // Hàm tiện ích để đặt lại trạng thái nút và trường nhập liệu
     private void resetInputFieldsState() {
@@ -438,7 +426,7 @@ public class CustomerController implements ActionListener {
     } // Đóng phương thức showCalendar
 
 
-    private Customers createCustomerFromInput() throws ParseException, IllegalArgumentException {
+    public Customers createCustomerFromInput() throws ParseException, IllegalArgumentException {
         // --- Lấy dữ liệu (dùng trim) ---
         String customerId = customerView.getTextFieldCustomerId().getText().trim();
         String firstName = customerView.getTextFieldFirstName().getText().trim();

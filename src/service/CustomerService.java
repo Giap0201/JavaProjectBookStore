@@ -99,4 +99,18 @@ public class CustomerService {
         return customerDAO.search(field, trimmedValue, trimmedGender);
     }
 
+    public Customers getCustomerByPhoneNumber(String phoneNumber){
+        if (phoneNumber == null || phoneNumber.trim().isEmpty()) {
+            return null;
+        }
+        return customerDAO.getCustomerByPhoneNumber(phoneNumber);
+    }
+
+    public Customers getCustomerByCustomerId(String customerId){
+        if (customerId == null || customerId.trim().isEmpty()) {
+            return null;
+        }
+        return customerDAO.selectById(customerId);
+    }
+
 }

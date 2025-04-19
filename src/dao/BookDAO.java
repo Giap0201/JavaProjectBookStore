@@ -6,11 +6,20 @@ import model.Books;
 import model.Category;
 import service.CategoryService;
 
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.InvalidPathException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.stream.Stream;
 
 public class BookDAO implements IBookDAO {
 
@@ -18,7 +27,7 @@ public class BookDAO implements IBookDAO {
     @Override
     public int insert(Books books) {
         int result = 0;
-        String sql = "INSERT INTO books(bookID, bookName, author, yearPublished, price, quantity, categoryID) VALUES (?, ?, ?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO books(bookID, bookName, author, yearPublished, price, quantity, categoryID,urlImage) VALUES (?, ?, ?, ?, ?, ?, ?,?)";
 
         try (Connection conn = JDBCUtil.getConnection();
                 PreparedStatement ps = conn.prepareStatement(sql)) {
@@ -30,6 +39,7 @@ public class BookDAO implements IBookDAO {
             ps.setDouble(5, books.getPrice());
             ps.setInt(6, books.getQuantity());
             ps.setString(7, books.getCategory().getCategoryID());
+            ps.setString(8, books.getUrlImage());
 
             result = ps.executeUpdate();
 
@@ -59,6 +69,8 @@ public class BookDAO implements IBookDAO {
                 double price = rs.getDouble("price");
                 int quantity = rs.getInt("quantity");
                 String categoryID = rs.getString("categoryID");
+                String urlImage = rs.getString("urlImage");
+
 
                 // Tìm Category theo ID
                 Category category = new Category();
@@ -67,7 +79,7 @@ public class BookDAO implements IBookDAO {
                         category = c;
                     }
                 }
-                Books book = new Books(bookID, bookName, author, yearPublished, price, quantity, category);
+                Books book = new Books(bookID, bookName, author, yearPublished, price, quantity, category,urlImage);
                 listBooks.add(book);
             }
 
@@ -78,10 +90,52 @@ public class BookDAO implements IBookDAO {
         return listBooks;
     }
 
+    public Books getBookByID(String bookID) {
+        Books book = null; // Khởi tạo book là null, không phải một đối tượng rỗng
+        String sql = "SELECT * FROM books WHERE bookId = ?";
+
+        try (Connection conn = JDBCUtil.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setString(1, bookID);
+
+            try (ResultSet rs = ps.executeQuery()) {
+                ArrayList<Category> categories = new CategoryService().getCategory();
+
+                // Dùng Map để cải thiện việc tìm kiếm Category
+                Map<String, Category> categoryMap = new HashMap<>();
+                for (Category category : categories) {
+                    categoryMap.put(category.getCategoryID(), category);
+                }
+
+                if (rs.next()) {
+                    String bookId = rs.getString("bookID");
+                    String bookName = rs.getString("bookName");
+                    String author = rs.getString("author");
+                    int yearPublished = rs.getInt("yearPublished");
+                    double price = rs.getDouble("price");
+                    int quantity = rs.getInt("quantity");
+                    String categoryID = rs.getString("categoryID");
+                    String urlImage = rs.getString("urlImage");
+
+                    // Tìm Category theo ID từ Map
+                    Category category = categoryMap.get(categoryID);
+
+                    // Tạo đối tượng book chỉ khi có dữ liệu từ database
+                    book = new Books(bookId, bookName, author, yearPublished, price, quantity, category,urlImage);
+                }
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return book;
+    }
+
     @Override
     public int update(Books books) {
         int result = 0;
-        String query = "UPDATE books SET bookName = ?,author = ?,yearPublished = ?,price = ?,quantity = ?,categoryID = ? WHERE bookID = ?";
+        String query = "UPDATE books SET bookName = ?,author = ?,yearPublished = ?,price = ?,quantity = ?,categoryID = ?,urlImage=? WHERE bookID = ?";
         try (Connection conn = JDBCUtil.getConnection();
                 PreparedStatement ps = conn.prepareStatement(query)) {
             ps.setString(1, books.getBookName());
@@ -90,7 +144,8 @@ public class BookDAO implements IBookDAO {
             ps.setDouble(4, books.getPrice());
             ps.setInt(5, books.getQuantity());
             ps.setString(6, books.getCategory().getCategoryID());
-            ps.setString(7, books.getBookID());
+            ps.setString(7,books.getUrlImage());
+            ps.setString(8, books.getBookID());
             result = ps.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
@@ -102,16 +157,89 @@ public class BookDAO implements IBookDAO {
     public int delete(Books books) {
         int result = 0;
         String query = "DELETE FROM books WHERE bookID = ?";
+        String sqlSelectUrl = "SELECT urlImage FROM books WHERE bookID = ?";
+
         try (Connection conn = JDBCUtil.getConnection();
-                PreparedStatement ps = conn.prepareStatement(query)) {
-            ps.setString(1, books.getBookID());
-            result = ps.executeUpdate();
+             PreparedStatement p = conn.prepareStatement(sqlSelectUrl)) {
+
+            // Set parameter cho p
+            p.setString(1, books.getBookID());
+
+            // Thực hiện truy vấn
+            try (ResultSet rs = p.executeQuery()) {
+                while (rs.next()) {
+                    String imageUrl = rs.getString("urlImage");
+                    deleteSinglePhysicalImageFile(imageUrl);
+                }
+            }
+
+            // Sau khi lấy xong ảnh, thực hiện xóa sách
+            try (PreparedStatement ps = conn.prepareStatement(query)) {
+                ps.setString(1, books.getBookID());
+                result = ps.executeUpdate();
+            }
+
         } catch (SQLException e) {
             e.printStackTrace();
         }
         return result;
-
     }
+
+    private void deleteSinglePhysicalImageFile(String relativeUrl) {
+        if (relativeUrl == null || relativeUrl.trim().isEmpty()) return;
+
+        try {
+            Path imagePath = Paths.get(System.getProperty("user.dir"), relativeUrl.replace("/", File.separator));
+            Path parentDir = imagePath.getParent();
+
+            if (Files.deleteIfExists(imagePath)) {
+                System.out.println("Đã xóa ảnh: " + imagePath);
+
+                if (parentDir != null && Files.exists(parentDir) && isDirEmpty(parentDir)) {
+                    Files.delete(parentDir);
+                    System.out.println("Đã xóa thư mục rỗng: " + parentDir);
+                }
+            }
+        } catch (IOException | SecurityException | InvalidPathException e) {
+            System.err.println("Lỗi khi xóa ảnh/thư mục: " + e.getMessage());
+        }
+    }
+
+    private boolean isDirEmpty(Path directory) throws IOException {
+        try (Stream<Path> dirStream = Files.list(directory)) {
+            return !dirStream.findAny().isPresent();
+        }
+    }
+
+    public boolean updateImageUrl(String bookId, String newUrlImage) {
+        if (bookId == null || bookId.trim().isEmpty()) return false;
+
+        String sql = "UPDATE Books SET urlImage = ? WHERE bookID = ?";
+        try (Connection conn = JDBCUtil.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+
+            if (newUrlImage == null || newUrlImage.trim().isEmpty()) {
+                ps.setNull(1, java.sql.Types.VARCHAR);
+            } else {
+                ps.setString(1, newUrlImage.trim());
+            }
+
+            ps.setString(2, bookId);
+            int rowsAffected = ps.executeUpdate();
+
+            if (rowsAffected == 0) {
+                System.out.println("Không tìm thấy sách để cập nhật urlImage cho bookID: " + bookId);
+            }
+
+            return rowsAffected > 0;
+        } catch (SQLException e) {
+            System.err.println("Lỗi SQL khi cập nhật urlImage: " + e.getMessage());
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+
     @Override
     public ArrayList<Books> listSearchBooks(BookSearch condition) {
         ArrayList<Books> listBooks = new ArrayList<>();
@@ -175,7 +303,8 @@ public class BookDAO implements IBookDAO {
                 double price = rs.getDouble("price");
                 int yearPublished = rs.getInt("yearPublished");
                 int quantity = rs.getInt("quantity");
-                Books bookResult = new Books(bookID, bookName, author, yearPublished, price, quantity, category);
+                String urlImage = rs.getString("urlImage");
+                Books bookResult = new Books(bookID, bookName, author, yearPublished, price, quantity, category,urlImage);
                 listBooks.add(bookResult);
             }
         } catch (SQLException e) {

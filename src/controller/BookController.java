@@ -1,26 +1,29 @@
 package controller;
 
-import model.BookSearch;
-import model.Books;
-import model.Category;
+import model.*;
 import service.BookService;
 import service.CategoryService;
+import utils.ImageUtils;
 import utils.ValidateForm;
 import view.BookView;
 
 import javax.swing.*;
+import javax.swing.filechooser.FileNameExtensionFilter;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.*;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.Set;
+import java.nio.file.*;
+import java.util.*;
+import java.util.stream.Stream;
 
 public class BookController implements ActionListener {
     private BookView bookView;
     private BookService bookService;
     private CategoryService categoryService;
     private ArrayList<Category> categories;
+
+    // ===> BIẾN TẠM ĐỂ LƯU ẢNH ĐÃ CHỌN KHI THÊM MỚI <===
+    private File selectedImageFileForNewBook = null; // Hoặc dùng Path
 
     public BookController(BookView bookView) {
         this.bookView = bookView;
@@ -51,111 +54,324 @@ public class BookController implements ActionListener {
             clearForm();
         } else if(e.getSource() == bookView.getBtnSaveFile()){
             exportToCSV();
+        } else if(e.getSource() == bookView.getBtnUploadImage()){
+            selectImageForNewBook();
         }
     }
 
-    // chuc nang them sach
+    private void selectImageForNewBook() {
+        JFileChooser chooser = new JFileChooser();
+        chooser.setDialogTitle("Chọn ảnh cho sách mới");
+        FileNameExtensionFilter filter = new FileNameExtensionFilter("Hình ảnh (jpg,png,gif,jpeg)", "jpg", "png", "gif", "jpeg");
+        chooser.setFileFilter(filter);
+        chooser.setAcceptAllFileFilterUsed(false);
+
+        int result = chooser.showOpenDialog(bookView);
+        if (result == JFileChooser.APPROVE_OPTION) {
+            selectedImageFileForNewBook = chooser.getSelectedFile();
+
+            // Thay đổi kích thước và lấy icon xem trước bằng ImageUtils
+            ImageIcon previewIcon = ImageUtils.scaleImageFromFile(
+                    selectedImageFileForNewBook.getAbsolutePath(),
+                    ImageUtils.DEFAULT_IMAGE_WIDTH, // Dùng hằng số
+                    ImageUtils.DEFAULT_IMAGE_HEIGHT // Dùng hằng số
+            );
+
+            // Đặt ảnh xem trước trong view thông qua phương thức mới
+            bookView.setPreviewImage(previewIcon); // Gọi setter mới của view
+
+            System.out.println("Đã chọn ảnh để thêm mới: " + selectedImageFileForNewBook.getName());
+        } else {
+            System.out.println("Người dùng đã hủy chọn file ảnh.");
+            // Tùy chọn: Đặt lại ảnh xem trước về mặc định nếu người dùng hủy
+            // bookView.setPreviewImage(null); // Truyền null, phương thức sẽ tự xử lý
+        }
+    }
+
+
+    // chuc nang them sach (Không thay đổi nhiều, nhưng urlImage sẽ là null ban đầu)
     public void addBook() {
+        Books book = null; // Sách lấy từ form
+        Path copiedImagePath = null; // Đường dẫn file đã copy (để xóa nếu lỗi DB)
+        String urlPathForDb = null; // URL lưu vào DB
+
         try {
-            Books book = getBookInForm();
-            boolean check = bookService.addBook(book);
-            if (check) {
+            // 1. Lấy thông tin sách từ form (chưa có urlImage)
+            book = getBookInForm(); // Hàm này có thể ném Exception nếu validate lỗi
+
+            // 2. Xử lý ảnh đã chọn (nếu có) - Thực hiện trước khi lưu DB
+            if (selectedImageFileForNewBook != null) {
+                System.out.println("Đang xử lý ảnh đã chọn: " + selectedImageFileForNewBook.getName());
+                // Tạo thư mục đích
+                String projectDir = System.getProperty("user.dir");
+                Path imageDirPath = Paths.get(projectDir, "images", book.getBookID()); // Dùng bookID vừa lấy từ form
+                Files.createDirectories(imageDirPath);
+
+                // Tạo tên file đích
+                String originalFileName = selectedImageFileForNewBook.getName();
+                String fileExtension = "";
+                int lastIndex = originalFileName.lastIndexOf('.');
+                if (lastIndex > 0 && lastIndex < originalFileName.length() - 1) {
+                    fileExtension = originalFileName.substring(lastIndex);
+                }
+                // Sử dụng tên sách từ đối tượng 'book' vừa lấy được
+                String cleanBookName = book.getBookName().replaceAll("[^a-zA-Z0-9.\\-]", "_");
+                String destinationFileName = cleanBookName + fileExtension;
+                copiedImagePath = imageDirPath.resolve(destinationFileName); // Đường dẫn tuyệt đối file mới
+
+                // Sao chép file
+                Files.copy(selectedImageFileForNewBook.toPath(), copiedImagePath, StandardCopyOption.REPLACE_EXISTING);
+                System.out.println("Đã sao chép ảnh tới: " + copiedImagePath);
+
+                // Tạo URL tương đối để lưu DB
+                urlPathForDb = "images" + "/" + book.getBookID() + "/" + destinationFileName;
+            } else {
+                System.out.println("Không có ảnh nào được chọn để thêm.");
+                urlPathForDb = null; // Đảm bảo là null nếu không có ảnh
+            }
+
+            // 3. Gán URL ảnh vào đối tượng sách (có thể là null)
+            book.setUrlImage(urlPathForDb);
+
+            // 4. Gọi service/DAO để thêm sách vào DB
+            boolean check1=bookService.addBook(book);
+            boolean check = bookService.updateImageUrl(book.getBookID(), book.getUrlImage()); // Gọi service
+
+            // 5. Xử lý kết quả
+            if (check && check1) {
                 JOptionPane.showMessageDialog(bookView, "Thêm sách thành công!");
                 updateTable(bookService.getAllBooks());
                 statistical(bookService.getAllBooks());
-                clearForm();
+                clearForm(); // Clear form sẽ xóa cả selectedImageFileForNewBook
             } else {
                 JOptionPane.showMessageDialog(bookView, "Không thể thêm sách. Có thể mã sách đã tồn tại.");
+                // *** QUAN TRỌNG: Xóa file vừa copy nếu thêm sách vào DB thất bại ***
+                if (copiedImagePath != null) {
+                    try { Files.deleteIfExists(copiedImagePath); System.out.println("Đã xóa file ảnh vừa copy do thêm sách lỗi DB: "+copiedImagePath);}
+                    catch (IOException ioex) { System.err.println("Lỗi khi xóa file tạm: "+ioex.getMessage());}
+                }
             }
-        } catch (Exception ex) {
-            ex.printStackTrace();// nhung loi khong bat duoc se hien thi trong consolog
-            JOptionPane.showMessageDialog(bookView, ex.getMessage());
+            selectedImageFileForNewBook = null;
+        } catch (IOException ex) { // Bắt lỗi IO (ví dụ: không copy được file)
+            ex.printStackTrace();
+            JOptionPane.showMessageDialog(bookView, "Lỗi khi xử lý file ảnh:\n" + ex.getMessage(), "Lỗi File IO", JOptionPane.ERROR_MESSAGE);
+            // Không cần xóa file tạm vì lỗi xảy ra trước khi/trong khi copy
+        } catch (Exception ex) { // Bắt lỗi từ getBookInForm hoặc lỗi khác
+            ex.printStackTrace();
+            JOptionPane.showMessageDialog(bookView, "Lỗi khi thêm sách: " + ex.getMessage());
+            // Không cần xóa file tạm vì lỗi xảy ra trước khi copy
         }
     }
 
-    // chuc nang cap nhat sach
+    // chuc nang cap nhat sach (Cần xử lý đổi tên file ảnh nếu tên sách đổi)
     public void updateBook() {
         String bookID = bookView.getTextFieldBookId().getText().trim();
-        if (bookID.equals("") || bookID == null) {
+        String bookName = bookView.getTextFieldBookName().getText().trim();
+
+        if (bookID.isEmpty()) {
             JOptionPane.showMessageDialog(bookView, "Vui lòng chọn sách cần sửa!!");
             return;
         }
-        int confirm = JOptionPane.showConfirmDialog(bookView, "Bạn có muốn cập nhập thông tin sách không?",
-                "Xác nhận sửa", JOptionPane.YES_NO_OPTION);
-        if (confirm == JOptionPane.YES_OPTION) {
-            try {
-                // lay du lieu tu form
-                Books book = getBookInForm();
-                boolean check = bookService.updateBook(book);
-                if (check) {
-                    JOptionPane.showMessageDialog(bookView, "Sửa sách thành công!");
-                    updateTable(bookService.getAllBooks()); // cap nhat lai table
-                    statistical(bookService.getAllBooks());
-                    clearForm(); // lam trong form
-                } else {
-                    JOptionPane.showMessageDialog(bookView, "Không thể sửa sách. Vui lòng thử lại.");
+
+        if (bookName.isEmpty()) {
+            JOptionPane.showMessageDialog(bookView, "Vui lòng nhập Tên sách (dùng để đặt tên file ảnh).", "Thiếu thông tin", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+
+        Books oldBook = bookService.getBookByID(bookID);
+        if (oldBook == null) {
+            JOptionPane.showMessageDialog(bookView, "Không tìm thấy sách với Mã sách: " + bookID, "Lỗi", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+
+        String oldImageUrl = oldBook.getUrlImage();
+
+        int confirm = JOptionPane.showConfirmDialog(bookView, "Bạn có muốn cập nhật thông tin sách không?", "Xác nhận sửa", JOptionPane.YES_NO_OPTION);
+        if (confirm != JOptionPane.YES_OPTION) {
+            System.out.println("Người dùng đã hủy thao tác sửa sách.");
+            return;
+        }
+
+        try {
+            Books newBookFromForm = getBookInForm(); // Lấy dữ liệu mới từ form
+            newBookFromForm.setBookID(bookID); // Đảm bảo đúng ID
+
+            // === XỬ LÝ ẢNH MỚI (NẾU CÓ) ===
+            if (selectedImageFileForNewBook != null) {
+                try {
+                    String projectDir = System.getProperty("user.dir");
+                    String fileExtension = "";
+
+                    String originalFileName = selectedImageFileForNewBook.getName();
+                    int lastDot = originalFileName.lastIndexOf('.');
+                    if (lastDot > 0 && lastDot < originalFileName.length() - 1) {
+                        fileExtension = originalFileName.substring(lastDot);
+                    }
+
+                    String cleanBookName = bookName.replaceAll("[^a-zA-Z0-9.\\-]", "_");
+                    String newFileName = cleanBookName + fileExtension;
+
+                    Path newImagePath = Paths.get(projectDir, "images", bookID, newFileName);
+                    Path newImageDir = newImagePath.getParent();
+
+                    if (!Files.exists(newImageDir)) {
+                        Files.createDirectories(newImageDir);
+                    }
+
+                    // Xóa ảnh cũ nếu tồn tại
+                    if (oldImageUrl != null && !oldImageUrl.trim().isEmpty()) {
+                        Path oldImagePath = Paths.get(projectDir, oldImageUrl.replace("/", File.separator));
+                        if (Files.exists(oldImagePath)) {
+                            Files.delete(oldImagePath);
+                            System.out.println("Đã xóa ảnh cũ: " + oldImagePath);
+                        }
+                    }
+
+                    // Sao chép ảnh mới vào thư mục
+                    Files.copy(selectedImageFileForNewBook.toPath(), newImagePath, StandardCopyOption.REPLACE_EXISTING);
+                    System.out.println("Đã lưu ảnh mới: " + newImagePath);
+
+                    // Cập nhật URL ảnh trong đối tượng sách
+                    String newUrl = "images/" + bookID + "/" + newFileName;
+                    newBookFromForm.setUrlImage(newUrl);
+                } catch (IOException ioEx) {
+                    ioEx.printStackTrace();
+                    JOptionPane.showMessageDialog(bookView, "Lỗi khi lưu ảnh mới:\n" + ioEx.getMessage(), "Lỗi ảnh", JOptionPane.ERROR_MESSAGE);
+                    newBookFromForm.setUrlImage(oldImageUrl); // fallback về ảnh cũ nếu lỗi
                 }
-            } catch (Exception ex) {
-                ex.printStackTrace();
-                JOptionPane.showMessageDialog(bookView, ex.getMessage());
+            } else {
+                // Không có ảnh mới => giữ ảnh cũ
+                newBookFromForm.setUrlImage(oldImageUrl);
             }
+            selectedImageFileForNewBook = null;
+
+            // === CẬP NHẬT VÀ HIỂN THỊ ===
+            boolean bookUpdateSuccess = bookService.updateBook(newBookFromForm);
+            if (bookUpdateSuccess) {
+                JOptionPane.showMessageDialog(bookView, "Sửa sách thành công!", "Thành công", JOptionPane.INFORMATION_MESSAGE);
+                updateTable(bookService.getAllBooks());
+                statistical(bookService.getAllBooks());
+                clearForm();
+                // handleTableRowSelection(bookID); // Bật nếu bạn muốn reload ảnh mới luôn
+            } else {
+                JOptionPane.showMessageDialog(bookView, "Không thể sửa sách trong CSDL. Vui lòng thử lại.", "Lỗi Cập nhật", JOptionPane.ERROR_MESSAGE);
+            }
+
+        } catch (IllegalArgumentException ex) {
+            JOptionPane.showMessageDialog(bookView, "Dữ liệu nhập không hợp lệ:\n" + ex.getMessage(), "Lỗi nhập liệu", JOptionPane.ERROR_MESSAGE);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            JOptionPane.showMessageDialog(bookView, "Đã xảy ra lỗi khi cập nhật:\n" + ex.getMessage(), "Lỗi hệ thống", JOptionPane.ERROR_MESSAGE);
         }
     }
+
+
+
 
     // chuc nang xoa sach
     public void deleteBook() {
         String bookID = bookView.getTextFieldBookId().getText().trim();
-        if (bookID.equals("") || (bookID == null)) {
+        if (bookID.isEmpty()) { // Sửa điều kiện kiểm tra
             JOptionPane.showMessageDialog(bookView, "Vui lòng chọn sách cần xoá!!");
             return;
         }
-        int confirm = JOptionPane.showConfirmDialog(bookView, "Bạn có chắc chắn muốn xoá sách ?",
-                "Xác nhận xoá", JOptionPane.YES_NO_OPTION);
+        int confirm = JOptionPane.showConfirmDialog(bookView, "Bạn có chắc chắn muốn xoá sách '" + bookID + "'?\nẢnh liên quan (file) cũng sẽ bị xóa.", // Thông báo rõ hơn
+                "Xác nhận xoá", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE); // Thêm icon cảnh báo
+
         if (confirm == JOptionPane.YES_OPTION) {
             try {
                 Books book = getBookInForm();
-                boolean check = bookService.deleteBook(book);
-                if (check == true) {
-                    JOptionPane.showMessageDialog(bookView, "Xoá thành công!!");
-                    updateTable(bookService.getAllBooks());
-                    statistical(bookService.getAllBooks());
-                    clearForm();
-                } else {
-                    JOptionPane.showMessageDialog(bookView, "Lỗi");
-                }
+                // Gọi thẳng DAO hoặc Service để xóa bằng ID
+                // boolean check = bookService.deleteBookById(bookID); // Nếu service có hàm này
+                boolean check = bookService.deleteBook(book); // Gọi trực tiếp DAO (đã xử lý file)
 
-            } catch (Exception e) {
+                if (check) { // DAO trả về true nếu xóa DB thành công
+                    JOptionPane.showMessageDialog(bookView, "Xoá thành công!!");
+                    updateTable(bookService.getAllBooks()); // Cập nhật bảng
+                    statistical(bookService.getAllBooks()); // Cập nhật thống kê
+                    clearForm(); // Xóa form
+                } else {
+                    // DAO trả về false có thể do sách không tồn tại hoặc lỗi DB (đã log trong DAO)
+                    JOptionPane.showMessageDialog(bookView, "Xóa sách thất bại.\nCó thể sách không tồn tại hoặc có lỗi xảy ra.", "Lỗi", JOptionPane.ERROR_MESSAGE);
+                    // Vẫn có thể clear form nếu sách không tồn tại
+                    if (bookService.deleteBook(book)) {
+                        clearForm();
+                    }
+                }
+            } catch (Exception e) { // Bắt các lỗi không mong muốn từ DAO
                 e.printStackTrace();
+                JOptionPane.showMessageDialog(bookView, "Đã xảy ra lỗi không mong muốn khi xóa:\n" + e.getMessage(), "Lỗi hệ thống", JOptionPane.ERROR_MESSAGE);
             }
         }
     }
+
+
 
     // them su kien cho bang table
     public void addTableSelectionListener() {
         bookView.getTable().getSelectionModel().addListSelectionListener(e -> {
-            int selectRow = bookView.getTable().getSelectedRow();
-            if (selectRow >= 0) {
-                String bookID = (String) bookView.getTable().getValueAt(selectRow, 0);
-                String categoryName = (String) bookView.getTable().getValueAt(selectRow, 1);
-                String bookName = (String) bookView.getTable().getValueAt(selectRow, 2);
-                String author = (String) bookView.getTable().getValueAt(selectRow, 3);
-                int yearPublished = (int) bookView.getTable().getValueAt(selectRow, 4);
-                int quantity = (int) bookView.getTable().getValueAt(selectRow, 5);
-                double price = (double) bookView.getTable().getValueAt(selectRow, 6);
+            // Kiểm tra để tránh xử lý nhiều lần và khi không có dòng nào được chọn
+            if (!e.getValueIsAdjusting() && bookView.getTable().getSelectedRow() != -1) {
+                int selectedRowView = bookView.getTable().getSelectedRow();
+                // Chuyển chỉ số view sang model (quan trọng nếu có sort/filter)
+                int selectedRowModel = bookView.getTable().convertRowIndexToModel(selectedRowView);
 
-                bookView.getTextFieldBookId().setText(bookID);
-                bookView.getComboBoxCategory().setSelectedItem(categoryName);
-                bookView.getTextFieldBookName().setText(bookName);
-                bookView.getTextFieldAuthor().setText(author);
-                bookView.getTextFieldYearPublished().setText(String.valueOf(yearPublished));
-                bookView.getTextFieldQuantity().setText(String.valueOf(quantity));
-                bookView.getTextFieldPrice().setText(String.valueOf(price));
+                // Lấy bookID từ model
+                String bookID = bookView.getTableModel().getValueAt(selectedRowModel, 0).toString();
+
+                // Lấy đối tượng sách đầy đủ từ DAO
+                Books selectedBook = bookService.getBookByID(bookID);
+
+                if (selectedBook != null) {
+                    // Hiển thị ảnh
+                    String imageUrl = selectedBook.getUrlImage();
+                    ImageIcon bookIcon = null;
+                    if (imageUrl != null && !imageUrl.trim().isEmpty()) {
+                        String absolutePath = ImageUtils.getAbsolutePathFromRelative(imageUrl);
+                        if (absolutePath != null && Files.exists(Paths.get(absolutePath))) {
+                            bookIcon = ImageUtils.scaleImageFromFile(absolutePath,ImageUtils.DEFAULT_IMAGE_WIDTH,ImageUtils.DEFAULT_IMAGE_HEIGHT);
+                        } else {
+                            System.err.println("Ảnh không tìm thấy tại: " + absolutePath);
+                        }
+                    } else {
+                        System.err.println("URL ảnh không hợp lệ hoặc không thể chuyển đổi: " + imageUrl);
+                        // URL không hợp lệ -> bookIcon vẫn là null
+                    }
+
+                    bookView.setPreviewImage(bookIcon);
+
+                    // Điền thông tin vào form
+                    bookView.getTextFieldBookId().setText(selectedBook.getBookID());
+                    bookView.getTextFieldBookName().setText(selectedBook.getBookName());
+                    bookView.getTextFieldAuthor().setText(selectedBook.getAuthor());
+                    bookView.getTextFieldYearPublished().setText(String.valueOf(selectedBook.getYearPublished()));
+                    bookView.getTextFieldQuantity().setText(String.valueOf(selectedBook.getQuantity()));
+                    // Giả sử getPrice() trả về giá gốc hoặc giá đã giảm tùy thuộc vào model/logic
+                    bookView.getTextFieldPrice().setText(String.valueOf(selectedBook.getPrice()));
+                    // Xử lý ComboBox Category
+                    String categoryName = selectedBook.getCategory() != null ? selectedBook.getCategory().getCategoryName() : ""; // Lấy tên Category nếu đối tượng tồn tại
+                    // Tìm và chọn đúng item trong ComboBox
+                    ComboBoxModel<String> model = bookView.getComboBoxCategory().getModel();
+                    for (int i = 0; i < model.getSize(); i++) {
+                        if (model.getElementAt(i).equals(categoryName)) {
+                            bookView.getComboBoxCategory().setSelectedIndex(i);
+                            break;
+                        }
+                    }
+                    if (bookView.getComboBoxCategory().getSelectedIndex() == -1 && !categoryName.isEmpty()){
+                        System.err.println("Không tìm thấy thể loại '"+categoryName+"' trong ComboBox.");
+                        // Có thể thêm vào ComboBox nếu cần hoặc để trống
+                    }
+
+
+                } else {
+                    System.err.println("Không thể lấy thông tin chi tiết cho sách ID: " + bookID);
+                    clearForm(); // Xóa form nếu không lấy được sách
+                }
             }
         });
     }
 
-    // phuong thuc nay co the nem ra loi trong qua trinh chay, phai xu li trong try
-    // catch
     public Books getBookInForm() throws Exception {
         //thao tac lay du lieu tu view
         String bookID = bookView.getTextFieldBookId().getText().trim();
@@ -183,7 +399,16 @@ public class BookController implements ActionListener {
         if (choiceCategory <= 0)
             throw new Exception("Vui lòng chọn thể loại!!");
         Category category = categories.get(choiceCategory - 1);
-        return new Books(bookID, bookName, author, yearPublished, price, quantity, category);
+        Books book = new Books();
+        book.setBookID(bookID);
+        book.setBookName(bookName);
+        book.setAuthor(author);
+        book.setYearPublished(yearPublished);
+        book.setPrice(price);
+        book.setQuantity(quantity);
+        book.setCategory(category);
+
+        return book;
     }
 
     public BookSearch getFormBookSearch() throws Exception {
@@ -265,6 +490,9 @@ public class BookController implements ActionListener {
         bookView.getTextFieldQuantity().setText("");
         bookView.getTextFieldYearPublished().setText("");
         bookView.getComboBoxCategory().setSelectedIndex(0);
+        bookView.setPreviewImage(null);
+
+        selectedImageFileForNewBook =null;
     }
 
     // ham cap nhat lai bang
