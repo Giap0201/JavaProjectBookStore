@@ -3,6 +3,7 @@ package controller;
 import model.Customers;
 import model.Employees;
 import model.Invoice;
+import model.InvoiceDetails;
 import service.CustomerService;
 import service.EmployeeService;
 import service.InvoiceService;
@@ -31,7 +32,7 @@ public class InvoiceController implements ActionListener {
     private Customers customersResult;
     private Employees employeesResult;
 
-    public InvoiceController(App app,ManageInvoiceView manageInvoiceView) {
+    public InvoiceController(App app, ManageInvoiceView manageInvoiceView) {
         this.manageInvoiceView = manageInvoiceView;
         this.app = app;
         invoiceService = new InvoiceService();
@@ -62,6 +63,7 @@ public class InvoiceController implements ActionListener {
         manageInvoiceView.getBtnLoad().addActionListener(this);
         manageInvoiceView.getBtnSearch().addActionListener(this);
         manageInvoiceView.getBtnAdd().addActionListener(this);
+        manageInvoiceView.getBtnAddDetails().addActionListener(this);
     }
 
     private void resetFrom() {
@@ -95,10 +97,8 @@ public class InvoiceController implements ActionListener {
 
             } else if (e.getSource() == manageInvoiceView.getBtnSearch()) {
                 searchInvoice();
-            } else if(e.getSource() == manageInvoiceView.getBtnAdd()){
-                CreateInvoiceView createInvoiceView = new CreateInvoiceView();
-                JPanel createInvoicePanel = createInvoiceView.initCustomerInvoiceView();
-                CommonView.replacePanel(app, createInvoicePanel);
+            } else if (e.getSource() == manageInvoiceView.getBtnAdd() || e.getSource() == manageInvoiceView.getBtnAddDetails()) {
+                addInvoice();
             }
         } catch (IllegalArgumentException ex) {
             CommonView.showErrorMessage(manageInvoiceView, ex.getMessage());
@@ -109,10 +109,12 @@ public class InvoiceController implements ActionListener {
     }
 
 
-    private void addInvoice(){
-        manageInvoiceView.setVisible(false);
+    private void addInvoice() {
         CreateInvoiceView createInvoiceView = new CreateInvoiceView();
-
+        JPanel createInvoicePanel = createInvoiceView.initCustomerInvoiceView();
+        CommonView.replacePanel(app, createInvoicePanel);
+        app.getPanelSale().setBackground(new Color(220, 152, 129));
+        app.getPanelInvoice().setBackground(new Color(27, 53, 68));
     }
 
     //thao tac cap nhat hoa don
@@ -270,40 +272,43 @@ public class InvoiceController implements ActionListener {
     }
 
     //chuc nang xoa hoa don, co the xoa 1 hoa don hoac nhieu hoa don
-    private void deleteInvoice(){
+    private void deleteInvoice() {
         String invoiceID = manageInvoiceView.getTextFieldInvoiceId().getText().trim();
         List<String> selectedIds = getInvoiceTable();
-        if(!selectedIds.isEmpty()){
+        if (!selectedIds.isEmpty()) {
             deleteMultipleInvoice(selectedIds);
-        }else if(!invoiceID.isEmpty()){
+        } else if (!invoiceID.isEmpty()) {
             deleteSingleInvoice(invoiceID);
-        }else {
-            CommonView.showErrorMessage(manageInvoiceView,"Vui lòng chọn hóa đơn trong bảng hoặc nhập ID để xóa!");
+        } else {
+            CommonView.showErrorMessage(manageInvoiceView, "Vui lòng chọn hóa đơn trong bảng hoặc nhập ID để xóa!");
         }
         refreshInvoiceTable();
         resetFrom();
         statistacal(invoiceService.getAllInvoice());
     }
 
+    //xoa nhieu hoa don chon tu bang
     private void deleteMultipleInvoice(List<String> ids) {
         if (!CommonView.confirmAction(manageInvoiceView, "Bạn có chắc chắn muốn xóa " + ids.size() + " hóa đơn đã chọn?")) {
             return;
         }
         List<String> failed = new ArrayList<>();
         int success = 0;
-        for (String id: ids){
-            try{
-                if(invoiceService.deleteInvoice(id)){
+        for (String id : ids) {
+            try {
+                if (invoiceService.deleteInvoice(id)) {
                     success++;
-                }else {
+                } else {
                     failed.add(id + " (Không thể xoá)");
                 }
-            }catch (RuntimeException ex) {
+            } catch (RuntimeException ex) {
                 failed.add(id + " (" + ex.getMessage() + ")");
             }
         }
-        showDeleteResult(success,failed);
+        showDeleteResult(success, failed);
     }
+
+    //xoa 1 hoa don
     private void deleteSingleInvoice(String id) {
         if (!CommonView.confirmAction(manageInvoiceView, "Bạn có chắc chắn muốn xóa hóa đơn có ID: " + id + "?")) {
             return;
@@ -319,6 +324,7 @@ public class InvoiceController implements ActionListener {
         }
     }
 
+    //show thong bao khi xoa
     private void showDeleteResult(int success, List<String> failed) {
         StringBuilder msg = new StringBuilder();
         if (success > 0) msg.append("Đã xóa thành công ").append(success).append(" hóa đơn.\n");
@@ -331,7 +337,7 @@ public class InvoiceController implements ActionListener {
     }
 
 
-
+    //load lai table
     private void refreshInvoiceTable() {
         try {
             List<Invoice> invoiceList = invoiceService.getAllInvoice();
@@ -341,6 +347,7 @@ public class InvoiceController implements ActionListener {
         }
     }
 
+    //load lai table
     private void updateTableInvoice(List<Invoice> invoiceList) {
         manageInvoiceView.getTableModelInvoice().setRowCount(0);
         if (invoiceList != null) {
@@ -375,6 +382,7 @@ public class InvoiceController implements ActionListener {
         return invoiceIds;
     }
 
+    //ham them su kien vao trong table giup load de lieu len form
     private void addTableSelectionListener() {
         manageInvoiceView.getTableInvoice().getSelectionModel().addListSelectionListener(new ListSelectionListener() {
             @Override
@@ -411,5 +419,38 @@ public class InvoiceController implements ActionListener {
         }
         manageInvoiceView.getLabelMonney().setText(customerID.size() + "");
     }
+
+
+    //thuc hien phan chi tiet hoa don cac thao tac
+
+    //ham load du lieu len table
+    private void updateTableDetails(ArrayList<InvoiceDetails> listDetails) {
+        manageInvoiceView.getTableModelDetails().setRowCount(0);
+        if (listDetails != null) {
+            for (InvoiceDetails details : listDetails) {
+                Object[] row = {
+                        details.getInvoice().getInvoiceID(),
+                        details.getBooks().getBookID(),
+                        details.getBooks().getBookName(),
+                        details.getQuantity(),
+                        details.getPrice(),
+                        details.getDiscount(),
+                        details.getTotalMoney()
+                };
+                manageInvoiceView.getTableModelDetails().addRow(row);
+            }
+        }
+    }
+
+    //refreshInvoiceDetails
+    private void refreshInvoiceDetails(){
+        try {
+            List<InvoiceDetails> invoiceDetailsList = invoiceDetailService.getAllInvoiceDetails();
+            updateTableDetails(invoiceDetailsList);
+        } catch (Exception e) {
+            CommonView.showErrorMessage(manageInvoiceView, "Lỗi khi tải lại danh sách chi tiết hoá đơn: " + e.getMessage());
+        }
+    }
+
 
 }

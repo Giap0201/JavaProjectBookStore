@@ -1,41 +1,42 @@
 package controller;
 
-import java.awt.BorderLayout;
-import java.awt.Color;
-import java.awt.Component;
-import java.awt.Container;
+import utils.CommonView;
+import view.*;
+
+import javax.swing.*;
+import java.awt.*;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.util.ArrayList;
 
-import javax.swing.JPanel;
-
-import utils.CommonView;
-import view.App;
-import view.BookView;
-import view.CreateInvoiceView;
-import view.CustomerView;
-import view.DiscountProgramView;
-import view.EmployeeView;
-import view.ManageInvoiceView;
-
 public class AppController implements MouseListener {
     private App app;
-    private JPanel viewBooks = new BookView().initBookView();
-    private JPanel viewEmployee = new EmployeeView().initEmployeeView();
-    private JPanel viewCustomers = new CustomerView().initCustomerView();
-    private JPanel viewSales = new CreateInvoiceView().initCustomerInvoiceView();
-    private JPanel viewManageInvoice = new ManageInvoiceView(app).initManageInvoiceView();
-    private JPanel viewDiscount = new DiscountProgramView().initDiscountProgramView();
+    private JPanel viewBooks;
+    private JPanel viewEmployee;
+    private JPanel viewCustomers;
+    private JPanel viewSales;
+    private JPanel viewManageInvoice;
+    private JPanel viewDiscount;
     private ArrayList<JPanel> listSidebar;
 
     public AppController(App app) {
         this.app = app;
         listSidebar = new ArrayList<>();
+        initialize();
+    }
+
+    private void initialize() {
+        viewBooks = new BookView().initBookView();
+        viewEmployee = new EmployeeView().initEmployeeView();
+        viewCustomers = new CustomerView().initCustomerView();
+        viewSales = new CreateInvoiceView().initCustomerInvoiceView();
+        viewManageInvoice = new ManageInvoiceView(app).initManageInvoiceView();
+        viewDiscount = new DiscountProgramView().initDiscountProgramView();
     }
 
     // phai them vao list de khi di chuot hay click moi tu dong thay doi mau nen
     public void addJpanelList() {
+        listSidebar.clear();
         listSidebar.add(app.getPanelSale());
         listSidebar.add(app.getPanelBooks());
         listSidebar.add(app.getPanelEmployee());
@@ -54,19 +55,19 @@ public class AppController implements MouseListener {
             CommonView.replacePanel(app, viewBooks);
             app.changeBackground(app.getPanelBooks());
         } else if (e.getSource() == app.getPanelEmployee()) {
-            CommonView.replacePanel(app,viewEmployee);
+            CommonView.replacePanel(app, viewEmployee);
             app.changeBackground(app.getPanelEmployee());
         } else if (e.getSource() == app.getPanelCustomer()) {
-            CommonView.replacePanel(app,viewCustomers);
+            CommonView.replacePanel(app, viewCustomers);
             app.changeBackground(app.getPanelCustomer());
         } else if (e.getSource() == app.getPanelInvoice()) {
-            CommonView.replacePanel(app,viewManageInvoice);
+            CommonView.replacePanel(app, viewManageInvoice);
             app.changeBackground(app.getPanelInvoice());
         } else if (e.getSource() == app.getPanelDiscount()) {
-            CommonView.replacePanel(app,viewDiscount);
+            CommonView.replacePanel(app, viewDiscount);
             app.changeBackground(app.getPanelDiscount());
         } else if (e.getSource() == app.getPanelSale()) {
-            CommonView.replacePanel(app,viewSales);
+            CommonView.replacePanel(app, viewSales);
             app.changeBackground(app.getPanelSale());
         }
     }

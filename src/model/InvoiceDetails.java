@@ -5,15 +5,19 @@ public class InvoiceDetails {
     private Books books;
     private int quantity;
     private double price;
+    private double discount;
+    private double totalMoney;
 
-    public InvoiceDetails(Invoice invoice, Books books, int quantity, double price) {
+    public InvoiceDetails() {
+    }
+
+    public InvoiceDetails(Invoice invoice, Books books, int quantity, double price, double discount) {
         this.invoice = invoice;
         this.books = books;
         this.quantity = quantity;
         this.price = price;
-    }
-
-    public InvoiceDetails() {
+        this.discount = discount;
+        this.totalMoney = this.price * this.quantity * this.discount;
     }
 
     public Invoice getInvoice() {
@@ -46,6 +50,22 @@ public class InvoiceDetails {
 
     public void setPrice(double price) {
         this.price = price;
+    }
+
+    public double getDiscount() {
+        return discount;
+    }
+
+    public void setDiscount(double discount) {
+        this.discount = discount;
+    }
+
+    public double getTotalMoney() {
+        return totalMoney;
+    }
+
+    public void setTotalMoney(double totalMoney) {
+        this.totalMoney = totalMoney;
     }
 }
 
