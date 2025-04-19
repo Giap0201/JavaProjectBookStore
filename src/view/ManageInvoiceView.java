@@ -6,26 +6,28 @@ import utils.CommonView;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
-import javax.swing.table.TableRowSorter;
 import java.awt.*;
+import java.util.List;
 
 public class ManageInvoiceView extends JPanel {
     private App app;
     private static final Font font1 = new Font("Tahoma", Font.BOLD, 15);
     private static final Font font2 = new Font("Tahoma", Font.PLAIN, 15);
-    private JButton btnAdd,btnDelete2, btnChange2, btnSearch, btnLoad, btnSave, btnChange, btnDelete, btnSearchCustomer, btnSearchEmployee;
-    private JButton btnAddDetails, btnRefreshDetails, btnSearchDetails;
+    private JButton btnAdd, btnDelete, btnChange, btnSearch, btnLoad, btnSave, btnSearchCustomer, btnSearchEmployee;
     private JDateChooser date;
     private DefaultTableModel tableModelInvoice, tableModelDetails;
-    private JTable tableInvoice, tabelDetails;
+    private JTable tableInvoice, tableDetails;
     private JLabel labeltotal, labelMonney, lblTotalItemsValue, lblTotalPriceValue;
-    private JTextField textFieldInvoiceId, textFieldCustomerId, textFieldEmployee, textFieldSearchDetails;
-    private JLabel lblBookIdValue, lblBookNameValue, lblQuantityValue, lblUnitPriceValue, lblDiscountValue, lblSubtotalValue;
+    private JTextField textFieldInvoiceId, textFieldCustomerId, textFieldEmployee;
     private JComboBox<String> jComboBoxTT;
+    private JLabel lblOrderIdValue, lblDayOfEstablishmentValue, lblStatusValue;
+    private JLabel lblCustomerIdValue, lblCustomerNameValue, lblCustomerPhoneValue, lblCustomerAddressValue;
+    private JLabel lblEmployeeIdValue, lblEmployeeNameValue;
 
     public ManageInvoiceView(App app) {
         this.app = app;
     }
+
     public JPanel createPanel1() {
         JPanel panelContent1 = new JPanel();
         panelContent1.setLayout(null);
@@ -148,158 +150,95 @@ public class ManageInvoiceView extends JPanel {
 
     private JPanel createPanel3() {
         JPanel panelContent3 = new JPanel();
-        panelContent3.setLayout(null);
+        panelContent3.setLayout(new BorderLayout());
         panelContent3.setBackground(new Color(157, 239, 227));
 
         // Tiêu đề
         JLabel labelTitleDetails = new JLabel("CHI TIẾT HOÁ ĐƠN", SwingConstants.CENTER);
         labelTitleDetails.setFont(new Font("Tahoma", Font.BOLD, 18));
         labelTitleDetails.setForeground(new Color(2, 62, 150));
-        labelTitleDetails.setBounds(0, 10, 1190, 30);
-        panelContent3.add(labelTitleDetails);
+        labelTitleDetails.setBorder(BorderFactory.createEmptyBorder(10, 0, 10, 0));
+        panelContent3.add(labelTitleDetails, BorderLayout.NORTH);
 
-        // Bên trái: Bảng chi tiết hóa đơn và chức năng
-        JPanel tablePanel = new JPanel();
-        tablePanel.setLayout(null);
-        tablePanel.setBounds(10, 50, 800, 340); // Rộng hơn
-        tablePanel.setBackground(new Color(157, 239, 227));
+        // Thông tin hóa đơn, khách hàng, nhân viên (bên trái, cột dọc)
+        JPanel infoPanel = new JPanel();
+        infoPanel.setLayout(new GridLayout(10, 2, 10, 5));
+        infoPanel.setBackground(new Color(157, 239, 227));
+        infoPanel.setBorder(BorderFactory.createTitledBorder("Thông tin hóa đơn"));
+        infoPanel.setPreferredSize(new Dimension(400, 0));
 
-        // Tìm kiếm
-        JLabel lblSearch = createLabel("Tìm kiếm:", font1);
-        lblSearch.setBounds(0, 0, 80, 30);
-        tablePanel.add(lblSearch);
+        // Thông tin hóa đơn
+        infoPanel.add(createLabel("Mã Hóa Đơn:", font1));
+        lblOrderIdValue = createLabel("", font2);
+        lblOrderIdValue.setBorder(BorderFactory.createLineBorder(Color.LIGHT_GRAY));
+        infoPanel.add(lblOrderIdValue);
 
-        textFieldSearchDetails = createTextField(font2);
-        textFieldSearchDetails.setBounds(80, 0, 620, 30);
-        textFieldSearchDetails.setToolTipText("Nhập mã sách hoặc tên sách để tìm kiếm");
-        tablePanel.add(textFieldSearchDetails);
+        infoPanel.add(createLabel("Ngày Lập:", font1));
+        lblDayOfEstablishmentValue = createLabel("", font2);
+        lblDayOfEstablishmentValue.setBorder(BorderFactory.createLineBorder(Color.LIGHT_GRAY));
+        infoPanel.add(lblDayOfEstablishmentValue);
 
-        btnSearchDetails = CommonView.createButton("Tìm", new Color(56, 46, 211));
-        btnSearchDetails.setBounds(700, 0, 100, 30);
-        btnSearchDetails.setToolTipText("Tìm kiếm chi tiết hóa đơn");
-        tablePanel.add(btnSearchDetails);
+        infoPanel.add(createLabel("Trạng Thái:", font1));
+        lblStatusValue = createLabel("", font2);
+        lblStatusValue.setBorder(BorderFactory.createLineBorder(Color.LIGHT_GRAY));
+        infoPanel.add(lblStatusValue);
 
-        // Bảng
-        String[] columnDetails = {"Mã HĐ", "Mã Sách", "Tên Sách", "Số lượng", "Đơn Giá", "Giảm giá", "Thành tiền"};
+        // Thông tin khách hàng
+        infoPanel.add(createLabel("Mã Khách Hàng:", font1));
+        lblCustomerIdValue = createLabel("", font2);
+        lblCustomerIdValue.setBorder(BorderFactory.createLineBorder(Color.LIGHT_GRAY));
+        infoPanel.add(lblCustomerIdValue);
+
+        infoPanel.add(createLabel("Tên Khách Hàng:", font1));
+        lblCustomerNameValue = createLabel("", font2);
+        lblCustomerNameValue.setBorder(BorderFactory.createLineBorder(Color.LIGHT_GRAY));
+        infoPanel.add(lblCustomerNameValue);
+
+        infoPanel.add(createLabel("Số Điện Thoại:", font1));
+        lblCustomerPhoneValue = createLabel("", font2);
+        lblCustomerPhoneValue.setBorder(BorderFactory.createLineBorder(Color.LIGHT_GRAY));
+        infoPanel.add(lblCustomerPhoneValue);
+
+        infoPanel.add(createLabel("Địa Chỉ:", font1));
+        lblCustomerAddressValue = createLabel("", font2);
+        lblCustomerAddressValue.setBorder(BorderFactory.createLineBorder(Color.LIGHT_GRAY));
+        infoPanel.add(lblCustomerAddressValue);
+
+        // Thông tin nhân viên
+        infoPanel.add(createLabel("Mã Nhân Viên:", font1));
+        lblEmployeeIdValue = createLabel("", font2);
+        lblEmployeeIdValue.setBorder(BorderFactory.createLineBorder(Color.LIGHT_GRAY));
+        infoPanel.add(lblEmployeeIdValue);
+
+        infoPanel.add(createLabel("Tên Nhân Viên:", font1));
+        lblEmployeeNameValue = createLabel("", font2);
+        lblEmployeeNameValue.setBorder(BorderFactory.createLineBorder(Color.LIGHT_GRAY));
+        infoPanel.add(lblEmployeeNameValue);
+
+        panelContent3.add(infoPanel, BorderLayout.WEST);
+
+        // Danh sách sách (bên phải, dạng bảng)
+        JPanel booksPanel = new JPanel();
+        booksPanel.setLayout(new BorderLayout());
+        booksPanel.setBackground(new Color(157, 239, 227));
+        booksPanel.setBorder(BorderFactory.createTitledBorder("Danh sách sách"));
+
+        // Tạo bảng
+        String[] columns = {"Mã Sách", "Tên Sách", "Số lượng", "Đơn Giá", "Giảm giá", "Thành tiền"};
         tableModelDetails = new DefaultTableModel();
-        tabelDetails = CommonView.createTable(tableModelDetails, columnDetails);
-        tabelDetails.setRowHeight(25);
-        TableRowSorter<DefaultTableModel> sorter = new TableRowSorter<>(tableModelDetails);
-        tabelDetails.setRowSorter(sorter);
+        tableDetails = CommonView.createTable(tableModelDetails, columns);
+        tableDetails.setRowHeight(25);
 
-        JScrollPane scrollPaneDetails = new JScrollPane(tabelDetails);
-        scrollPaneDetails.setBounds(0, 40, 800, 260);
+        JScrollPane scrollPaneDetails = new JScrollPane(tableDetails);
         scrollPaneDetails.setBorder(BorderFactory.createLineBorder(Color.GRAY));
-        tablePanel.add(scrollPaneDetails);
+        booksPanel.add(scrollPaneDetails, BorderLayout.CENTER);
 
-        // Chức năng
-        JPanel buttonPanel = new JPanel();
-        buttonPanel.setLayout(new FlowLayout(FlowLayout.LEFT, 10, 0));
-        buttonPanel.setBounds(0, 310, 800, 30);
-        buttonPanel.setBackground(new Color(157, 239, 227));
-
-        btnAddDetails = CommonView.createButton("Thêm", new Color(60, 197, 71));
-        btnAddDetails.setPreferredSize(new Dimension(100, 30));
-        btnAddDetails.setToolTipText("Thêm chi tiết hóa đơn mới");
-        buttonPanel.add(btnAddDetails);
-
-        btnChange2 = CommonView.createButton("Sửa", new Color(1, 131, 85));
-        btnChange2.setPreferredSize(new Dimension(100, 30));
-        btnChange2.setToolTipText("Cập nhật chi tiết hóa đơn");
-        buttonPanel.add(btnChange2);
-
-        btnDelete2 = CommonView.createButton("Xóa", new Color(246, 4, 60));
-        btnDelete2.setPreferredSize(new Dimension(100, 30));
-        btnDelete2.setToolTipText("Xóa chi tiết hóa đơn được chọn");
-        buttonPanel.add(btnDelete2);
-
-        btnRefreshDetails = CommonView.createButton("Làm mới", new Color(211, 99, 167));
-        btnRefreshDetails.setPreferredSize(new Dimension(100, 30));
-        btnRefreshDetails.setToolTipText("Tải lại chi tiết hóa đơn");
-        buttonPanel.add(btnRefreshDetails);
-
-        JButton btnExport = CommonView.createButton("Xuất Excel", new Color(56, 46, 211));
-        btnExport.setPreferredSize(new Dimension(120, 30));
-        btnExport.setToolTipText("Xuất chi tiết hóa đơn ra Excel");
-        buttonPanel.add(btnExport);
-
-        tablePanel.add(buttonPanel);
-
-        panelContent3.add(tablePanel);
-
-        // Bên phải: Thông tin chi tiết (chỉ label)
-        JPanel detailPanel = new JPanel();
-        detailPanel.setLayout(null);
-        detailPanel.setBounds(820, 50, 380, 340); // Hẹp hơn
-        detailPanel.setBackground(new Color(157, 239, 227));
-        detailPanel.setBorder(BorderFactory.createTitledBorder("Thông tin chi tiết"));
-
-        // Mã sách
-        JLabel lblBookId = createLabel("Mã Sách:", font1);
-        lblBookId.setBounds(20, 20, 80, 25);
-        detailPanel.add(lblBookId);
-
-        lblBookIdValue = createLabel("", font2);
-        lblBookIdValue.setBounds(100, 20, 260, 25);
-        lblBookIdValue.setBorder(BorderFactory.createLineBorder(Color.LIGHT_GRAY));
-        detailPanel.add(lblBookIdValue);
-
-        // Tên sách
-        JLabel lblBookName = createLabel("Tên Sách:", font1);
-        lblBookName.setBounds(20, 60, 80, 25);
-        detailPanel.add(lblBookName);
-
-        lblBookNameValue = createLabel("", font2);
-        lblBookNameValue.setBounds(100, 60, 260, 25);
-        lblBookNameValue.setBorder(BorderFactory.createLineBorder(Color.LIGHT_GRAY));
-        detailPanel.add(lblBookNameValue);
-
-        // Số lượng
-        JLabel lblQuantity = createLabel("Số lượng:", font1);
-        lblQuantity.setBounds(20, 100, 80, 25);
-        detailPanel.add(lblQuantity);
-
-        lblQuantityValue = createLabel("", font2);
-        lblQuantityValue.setBounds(100, 100, 260, 25);
-        lblQuantityValue.setBorder(BorderFactory.createLineBorder(Color.LIGHT_GRAY));
-        detailPanel.add(lblQuantityValue);
-
-        // Đơn giá
-        JLabel lblUnitPrice = createLabel("Đơn Giá:", font1);
-        lblUnitPrice.setBounds(20, 140, 80, 25);
-        detailPanel.add(lblUnitPrice);
-
-        lblUnitPriceValue = createLabel("", font2);
-        lblUnitPriceValue.setBounds(100, 140, 260, 25);
-        lblUnitPriceValue.setBorder(BorderFactory.createLineBorder(Color.LIGHT_GRAY));
-        detailPanel.add(lblUnitPriceValue);
-
-        // Giảm giá
-        JLabel lblDiscount = createLabel("Giảm giá:", font1);
-        lblDiscount.setBounds(20, 180, 80, 25);
-        detailPanel.add(lblDiscount);
-
-        lblDiscountValue = createLabel("", font2);
-        lblDiscountValue.setBounds(100, 180, 260, 25);
-        lblDiscountValue.setBorder(BorderFactory.createLineBorder(Color.LIGHT_GRAY));
-        detailPanel.add(lblDiscountValue);
-
-        // Thành tiền
-        JLabel lblSubtotal = createLabel("Thành tiền:", font1);
-        lblSubtotal.setBounds(20, 220, 80, 25);
-        detailPanel.add(lblSubtotal);
-
-        lblSubtotalValue = createLabel("", font2);
-        lblSubtotalValue.setBounds(100, 220, 260, 25);
-        lblSubtotalValue.setBorder(BorderFactory.createLineBorder(Color.LIGHT_GRAY));
-        detailPanel.add(lblSubtotalValue);
-
-        panelContent3.add(detailPanel);
+        panelContent3.add(booksPanel, BorderLayout.CENTER);
 
         // Thống kê
         JPanel statsPanel = new JPanel();
         statsPanel.setLayout(null);
-        statsPanel.setBounds(10, 400, 1190, 60);
+        statsPanel.setPreferredSize(new Dimension(0, 60));
         statsPanel.setBackground(new Color(200, 240, 227));
         statsPanel.setBorder(BorderFactory.createTitledBorder("Thống kê"));
 
@@ -319,11 +258,10 @@ public class ManageInvoiceView extends JPanel {
         lblTotalPriceValue.setBounds(400, 20, 150, 25);
         statsPanel.add(lblTotalPriceValue);
 
-        panelContent3.add(statsPanel);
+        panelContent3.add(statsPanel, BorderLayout.SOUTH);
 
         return panelContent3;
     }
-
     public JPanel initManageInvoiceView() {
         JPanel panelContent = new JPanel();
         panelContent.setLayout(null);
@@ -345,11 +283,11 @@ public class ManageInvoiceView extends JPanel {
         panelContent.add(panelContent2);
 
         JPanel panelContent3 = createPanel3();
-        panelContent3.setBounds(10, 340, 1210, 460); // Điều chỉnh vị trí do panel2 rộng hơn
+        panelContent3.setBounds(10, 340, 1210, 460);
         panelContent3.setBackground(new Color(157, 239, 227));
         panelContent.add(panelContent3);
 
-        InvoiceController controller  = new InvoiceController(app,this);
+        InvoiceController controller = new InvoiceController(app, this);
 
         return panelContent;
     }
@@ -367,56 +305,7 @@ public class ManageInvoiceView extends JPanel {
         return label;
     }
 
-    // Getter cho các thành phần mới
-    public JButton getBtnAddDetails() {
-        return btnAddDetails;
-    }
-
-    public JButton getBtnRefreshDetails() {
-        return btnRefreshDetails;
-    }
-
-    public JButton getBtnSearchDetails() {
-        return btnSearchDetails;
-    }
-
-    public JTextField getTextFieldSearchDetails() {
-        return textFieldSearchDetails;
-    }
-
-    public JLabel getLblBookIdValue() {
-        return lblBookIdValue;
-    }
-
-    public JLabel getLblBookNameValue() {
-        return lblBookNameValue;
-    }
-
-    public JLabel getLblQuantityValue() {
-        return lblQuantityValue;
-    }
-
-    public JLabel getLblUnitPriceValue() {
-        return lblUnitPriceValue;
-    }
-
-    public JLabel getLblDiscountValue() {
-        return lblDiscountValue;
-    }
-
-    public JLabel getLblSubtotalValue() {
-        return lblSubtotalValue;
-    }
-
-    // Getter cho các thành phần hiện có
-    public JButton getBtnDelete2() {
-        return btnDelete2;
-    }
-
-    public JButton getBtnChange2() {
-        return btnChange2;
-    }
-
+    // Getter cho các thành phần
     public JButton getBtnSearch() {
         return btnSearch;
     }
@@ -445,16 +334,16 @@ public class ManageInvoiceView extends JPanel {
         return tableModelInvoice;
     }
 
-    public DefaultTableModel getTableModelDetails() {
-        return tableModelDetails;
-    }
-
     public JTable getTableInvoice() {
         return tableInvoice;
     }
 
-    public JTable getTabelDetails() {
-        return tabelDetails;
+    public DefaultTableModel getTableModelDetails() {
+        return tableModelDetails;
+    }
+
+    public JTable getTableDetails() {
+        return tableDetails;
     }
 
     public JLabel getLabeltotal() {
@@ -497,36 +386,47 @@ public class ManageInvoiceView extends JPanel {
         return btnSearchEmployee;
     }
 
-    // Xóa getter không còn sử dụng
-    public JButton getBtnSearchBook() {
-        return null; // Không còn nút tìm sách
-    }
-
-    public JTextField getTextFieldBookId() {
-        return null; // Không còn text field
-    }
-
-    public JTextField getTextFieldBookName() {
-        return null;
-    }
-
-    public JTextField getTextFieldQuantity() {
-        return null;
-    }
-
-    public JTextField getTextFieldUnitPrice() {
-        return null;
-    }
-
-    public JTextField getTextFieldDiscount() {
-        return null;
-    }
-
-    public JTextField getTextFieldSubtotal() {
-        return null;
-    }
-
     public JButton getBtnAdd() {
         return btnAdd;
+    }
+
+    public App getApp() {
+        return app;
+    }
+
+    public JLabel getLblOrderIdValue() {
+        return lblOrderIdValue;
+    }
+
+    public JLabel getLblDayOfEstablishmentValue() {
+        return lblDayOfEstablishmentValue;
+    }
+
+    public JLabel getLblStatusValue() {
+        return lblStatusValue;
+    }
+
+    public JLabel getLblCustomerIdValue() {
+        return lblCustomerIdValue;
+    }
+
+    public JLabel getLblCustomerNameValue() {
+        return lblCustomerNameValue;
+    }
+
+    public JLabel getLblCustomerPhoneValue() {
+        return lblCustomerPhoneValue;
+    }
+
+    public JLabel getLblCustomerAddressValue() {
+        return lblCustomerAddressValue;
+    }
+
+    public JLabel getLblEmployeeIdValue() {
+        return lblEmployeeIdValue;
+    }
+
+    public JLabel getLblEmployeeNameValue() {
+        return lblEmployeeNameValue;
     }
 }

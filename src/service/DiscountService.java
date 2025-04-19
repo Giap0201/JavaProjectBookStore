@@ -1,19 +1,18 @@
 package service;
 
-import dao.DiscountDTO;
+import dao.DiscountDAO;
 import model.Discount;
 
-import java.sql.Array;
 import java.sql.Date;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 
 public class DiscountService {
-    private DiscountDTO discountDTO;
+    private DiscountDAO discountDTO;
     public DiscountService(){
-        this.discountDTO = new DiscountDTO();
+        this.discountDTO = new DiscountDAO();
     }
-    public DiscountService(DiscountDTO discountDTO) {
+    public DiscountService(DiscountDAO discountDTO) {
         this.discountDTO = discountDTO;
     }
     public boolean addDiscount(Discount discount) {

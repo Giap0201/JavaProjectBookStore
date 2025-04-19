@@ -59,6 +59,7 @@ public class DiscountController implements ActionListener {
             } else if (e.getSource() == view.getBtnEdit()) {
                 updateDiscount();
             } else if (e.getSource() == view.getBtnDelete()) {
+//                deleteDiscountDetail();
                 deleteDiscount();
             } else if (e.getSource() == view.getBtnDeleteDetail()) {
                 deleteDiscountDetail();
@@ -122,6 +123,7 @@ public class DiscountController implements ActionListener {
         }
     }
 
+    //bo sung chuc nang xoa, xoa toan bo chi tiet truoc
     //chuc nang xoa chuong trinh giam gia
     private void deleteDiscount() {
         String discountID = getDiscountID();
@@ -129,6 +131,7 @@ public class DiscountController implements ActionListener {
             throw new IllegalArgumentException("Vui lòng chọn chương trình cần xóa!");
         }
         if (CommonView.confirmAction(view, "Bạn có chắc chắn muốn xóa chương trình này?")) {
+            discountDetailService.deleteDiscountDetailsByID(discountID);
             if (!discountService.deleteCondition(discountID)) {
                 throw new IllegalArgumentException("Không thể xóa chương trình.");
             }
@@ -196,7 +199,7 @@ public class DiscountController implements ActionListener {
         clearFormDiscount();
         clearFormDiscountDetails();
         updateAllTable(discountService.getAllDiscounts());
-//        updateAllTableDetails(discountDetailService.getAllDiscountDetails());
+        updateAllTableDetails(discountDetailService.getAllDiscountDetails());
         setComboBox(discountService.listMapDiscount());
     }
 

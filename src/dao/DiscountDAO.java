@@ -6,7 +6,7 @@ import model.Discount;
 import java.sql.*;
 import java.util.ArrayList;
 
-public class DiscountDTO implements IDiscountDTO {
+public class DiscountDAO implements IDiscountDTO {
     @Override
     public int insert(Discount discount) {
         int result = 0;

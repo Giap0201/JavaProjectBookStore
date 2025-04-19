@@ -11,6 +11,12 @@ public class Books {
     private Category category;
     public Books() {
     }
+    //ham nay la sach trong chi tiet hoa don
+    public Books(String bookID, int quantity,double price){
+        this.bookID = bookID;
+        this.quantity = quantity;
+        this.price = price;
+    }
     public Books(String bookID, String bookName, String author, int yearPublished, double price, int quantity, Category category) {
         this.bookID = bookID;
         this.bookName = bookName;

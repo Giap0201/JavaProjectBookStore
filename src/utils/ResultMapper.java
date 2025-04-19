@@ -1,8 +1,6 @@
 package utils;
 
-import model.Customers;
-import model.Employees;
-import model.Invoice;
+import model.*;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -52,5 +50,17 @@ public class ResultMapper {
                 mapResultSetToEmployee(rs),
                 rs.getString("status")
         );
+    }
+
+    public static Category mapResultSetToCategory(ResultSet rs) throws SQLException {
+        return new Category(rs.getString("categoryID"), rs.getString("categoryName"));
+    }
+
+    public static Books mapResultSetToBooks(ResultSet rs) throws SQLException {
+        return new Books(rs.getString("bookID"), rs.getString("bookName"), rs.getString("author")
+                , rs.getInt("yearPublished"), rs.getDouble("price"), rs.getInt("quantity"), mapResultSetToCategory(rs));
+    }
+    public static InvoiceDetails mapResultSetToInvoiceDetails(ResultSet rs) throws SQLException {
+        return new InvoiceDetails(mapResultSetToInvoice(rs),mapResultSetToBooks(rs),rs.getInt("quantity"),rs.getDouble("price"));
     }
 }

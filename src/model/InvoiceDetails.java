@@ -7,10 +7,40 @@ public class InvoiceDetails {
     private double price;
     private double discount;
     private double totalMoney;
+    private String invoiceID;
+    private String bookID;
 
     public InvoiceDetails() {
     }
 
+    public String getInvoiceID() {
+        return invoiceID;
+    }
+
+    public void setInvoiceID(String invoiceID) {
+        this.invoiceID = invoiceID;
+    }
+
+    public String getBookID() {
+        return bookID;
+    }
+
+    public void setBookID(String bookID) {
+        this.bookID = bookID;
+    }
+
+    public InvoiceDetails(String invoiceID, String bookID, int quantity, double price){
+        this.invoiceID = invoiceID;
+        this.bookID = bookID;
+        this.quantity = quantity;
+        this.price = price;
+    }
+    public InvoiceDetails(Invoice invoice, Books books, int quantity, double price){
+        this.invoice = invoice;
+        this.books = books;
+        this.quantity = quantity;
+        this.price = price;
+    }
     public InvoiceDetails(Invoice invoice, Books books, int quantity, double price, double discount) {
         this.invoice = invoice;
         this.books = books;
@@ -66,6 +96,18 @@ public class InvoiceDetails {
 
     public void setTotalMoney(double totalMoney) {
         this.totalMoney = totalMoney;
+    }
+
+    @Override
+    public String toString() {
+        return "InvoiceDetails{" +
+                "invoice=" + invoice +
+                ", books=" + books +
+                ", quantity=" + quantity +
+                ", price=" + price +
+                ", discount=" + discount +
+                ", totalMoney=" + totalMoney +
+                '}';
     }
 }
 

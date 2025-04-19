@@ -1,8 +1,11 @@
 package dao;
 
 import database.JDBCUtil;
+import model.Books;
 import model.Invoice;
+import model.InvoiceDetails;
 import utils.ResultMapper;
+import utils.Search;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -162,4 +165,23 @@ public class InvoiceDAO {
         }
         return listInvoice;
     }
+
+    public ArrayList<InvoiceDetails> listInvoiceDetails(String invoiceID) {
+        ArrayList<InvoiceDetails> listInvoiceDetails = new ArrayList<>();
+        String query = "select * from orderDetails where orderID = ?";
+        try(Connection conn = JDBCUtil.getConnection();PreparedStatement ps = conn.prepareStatement(query)){
+            ps.setString(1,invoiceID);
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()){
+                InvoiceDetails invoiceDetails = new InvoiceDetails(rs.getString("orderID"),rs.getString("bookID"),rs.getInt("quantity"),
+                        rs.getDouble("price"));
+                listInvoiceDetails.add(invoiceDetails);
+            }
+        }catch (SQLException e){
+            e.printStackTrace();
+            throw new RuntimeException(e.getMessage());
+        }
+        return listInvoiceDetails;
+    }
+
 }

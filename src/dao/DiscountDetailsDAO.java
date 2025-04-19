@@ -12,7 +12,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
-public class DiscountDetailsDTO {
+public class DiscountDetailsDAO {
+
     public void insert(ArrayList<DiscountDetails> discountDetails) {
         String query = "insert into discountdetails values(?,?,?)";
         try (Connection conn = JDBCUtil.getConnection();
@@ -53,6 +54,19 @@ public class DiscountDetailsDTO {
             e.printStackTrace();
         }
         return listDiscountDetails;
+    }
+    //ham xoa toan bo chuong trinh giam gia
+    public int deleteAll(String discountId) {
+        String query = "delete from discountdetails where discountID=?";
+        int result = 0;
+        try(Connection conn = JDBCUtil.getConnection();
+        PreparedStatement ps = conn.prepareStatement(query)){
+            ps.setString(1, discountId);
+            result = ps.executeUpdate();
+        }catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return result;
     }
     public int deleteDiscountDetails(String discountID,String bookID) {
         String query = "delete from discountdetails where discountID=? and bookID=?";

@@ -1,18 +1,18 @@
 package service;
 
-import dao.DiscountDetailsDTO;
+import dao.DiscountDetailsDAO;
 import model.Discount;
 import model.DiscountDetails;
 
 import java.util.ArrayList;
 
 public class DiscountDetailService {
-    private DiscountDetailsDTO discountDetailsDTO;
-    public DiscountDetailService(DiscountDetailsDTO discountDetailsDTO) {
+    private DiscountDetailsDAO discountDetailsDTO;
+    public DiscountDetailService(DiscountDetailsDAO discountDetailsDTO) {
         this.discountDetailsDTO = discountDetailsDTO;
     }
     public DiscountDetailService(){
-        this.discountDetailsDTO = new DiscountDetailsDTO();
+        this.discountDetailsDTO = new DiscountDetailsDAO();
     }
     public void insert(ArrayList<DiscountDetails> discountDetails) {
         discountDetailsDTO.insert(discountDetails);
@@ -25,5 +25,8 @@ public class DiscountDetailService {
     }
     public ArrayList<DiscountDetails> getDiscountDetailsByID(Discount discount) {
         return discountDetailsDTO.getDiscountDetailsByID(discount);
+    }
+    public boolean deleteDiscountDetailsByID(String discountID) {
+        return discountDetailsDTO.deleteAll(discountID) > 0;
     }
 }
