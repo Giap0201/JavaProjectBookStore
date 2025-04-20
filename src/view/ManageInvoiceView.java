@@ -199,11 +199,6 @@ public class ManageInvoiceView extends JPanel {
         lblCustomerPhoneValue.setBorder(BorderFactory.createLineBorder(Color.LIGHT_GRAY));
         infoPanel.add(lblCustomerPhoneValue);
 
-        infoPanel.add(createLabel("Địa Chỉ:", font1));
-        lblCustomerAddressValue = createLabel("", font2);
-        lblCustomerAddressValue.setBorder(BorderFactory.createLineBorder(Color.LIGHT_GRAY));
-        infoPanel.add(lblCustomerAddressValue);
-
         // Thông tin nhân viên
         infoPanel.add(createLabel("Mã Nhân Viên:", font1));
         lblEmployeeIdValue = createLabel("", font2);
