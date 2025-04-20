@@ -32,6 +32,14 @@ public class CustomerService {
         return rs > 0; // Trả về true nếu insert thành công (số dòng bị ảnh hưởng > 0)
     }
 
+    public boolean updateSpending(String customerId, double spending){
+        if (customerId == null || customerId.trim().isEmpty()) {
+            return false;
+        }
+        int rs = customerDAO.updateSpending(customerId, spending);
+        return rs > 0;
+    }
+
     public boolean updateCustomer(Customers customer) {
         if (customer == null || customer.getCustomerID() == null || customer.getCustomerID().trim().isEmpty()) {
             System.err.println("Lỗi Service: Customer hoặc CustomerID không hợp lệ để cập nhật.");

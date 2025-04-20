@@ -312,4 +312,22 @@ public class BookDAO implements IBookDAO {
         }
         return listBooks;
     }
+
+    public Books mapResultSetToBook(ResultSet rs) throws SQLException {
+        Books book = new Books();
+
+        book.setBookID(rs.getString("bookID")); // Lấy bookID từ cột 'bookID'
+        book.setBookName(rs.getString("bookName")); // Lấy bookName
+        book.setPrice(rs.getDouble("price"));       // Lấy price
+        book.setQuantity(rs.getInt("quantity"));     // Lấy quantity
+        book.setYearPublished(Integer.parseInt(rs.getString("yearPublished")));
+        book.setAuthor(rs.getString("author"));     // Lấy author (nếu có)
+        book.setUrlImage(rs.getString("urlImage"));
+        String categoryID = rs.getString("categoryID");
+        Category category = new CategoryDAO().getCategory(categoryID);
+        book.setCategory(category);
+
+
+        return book;
+    }
 }

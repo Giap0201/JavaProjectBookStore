@@ -100,15 +100,6 @@ public class CustomerDAO {
         return ketQua;
     }
 
-    // Ghi đè phương thức delete không dùng đến hoặc gọi deleteById
-    public int delete(Customers customers) {
-        if (customers != null && customers.getCustomerID() != null) {
-            return deleteById(customers.getCustomerID());
-        }
-        return 0; // Trả về 0 nếu không có ID
-    }
-
-
     public ArrayList<Customers> getAll() {
         ArrayList<Customers> customers = new ArrayList<>();
         String sql = "SELECT * FROM customer ORDER BY creationDate DESC, customerID ASC"; // Sắp xếp kết quả
@@ -162,6 +153,20 @@ public class CustomerDAO {
             e.printStackTrace();
         }
         return customer;
+    }
+
+    public int updateSpending(String customerId, double spending){
+        int ketQua = 0;
+        String sql = "UPDATE customer SET totalMoney=totalMoney+? WHERE customerID=?";
+        try(Connection connection=JDBCUtil.getConnection()) {
+            PreparedStatement ps = connection.prepareStatement(sql);
+            ps.setDouble(1, spending);
+            ps.setString(2, customerId);
+            ketQua = ps.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return ketQua;
     }
 
 
@@ -219,14 +224,6 @@ public class CustomerDAO {
         return customers;
     }
 
-
-    // Ghi đè phương thức không dùng đến hoặc gọi search
-    public ArrayList<Customers> selectbyCondition(String condition) {
-        // Phương thức này không đủ linh hoạt, nên dùng search() ở trên
-        // Hoặc bạn có thể phân tích chuỗi condition phức tạp ở đây (không khuyến khích)
-        System.out.println("selectbyCondition(String) is deprecated, use search() instead.");
-        return new ArrayList<>(); // Trả về danh sách rỗng
-    }
 
     // Phương thức tiện ích để map ResultSet sang đối tượng Customers
     private Customers mapResultSetToCustomer(ResultSet rs) throws SQLException {

@@ -6,10 +6,14 @@ import utils.CommonView;
 import utils.ImageUtils;
 
 import javax.swing.*;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.JTableHeader;
 import java.awt.*;
+import java.text.NumberFormat;
+import java.util.Locale;
 
 public class CreateInvoiceView extends Component {
     private JTextField textFieldBookId,textFieldUnitPrice;
@@ -37,8 +41,12 @@ public class CreateInvoiceView extends Component {
     private JTextField textFieldCustomerName;
     private DefaultTableModel tableModel;
     private JTable table;
+    private NumberFormat currencyFormatter; // Để định dạng tiền tệ
+    private JLabel labelDiscount;
 
     public JPanel initCustomerInvoiceView() {
+        currencyFormatter = NumberFormat.getCurrencyInstance(new Locale("vi", "VN"));
+
         JPanel panelContent = new JPanel();
         panelContent.setLayout(null);
         panelContent.setBackground(new Color(157, 239, 227));
@@ -146,9 +154,9 @@ public class CreateInvoiceView extends Component {
         panelHeader.add(textFieldDate);
 
         // Create Invoice Button
-        btnCreateInvoice = CommonView.createButton("TẠO HÓA ĐƠN", new Color(34, 139, 34));
-        btnCreateInvoice.setBounds(830, 90, 150, 40);
-        panelHeader.add(btnCreateInvoice);
+//        btnCreateInvoice = CommonView.createButton("TẠO HÓA ĐƠN", new Color(34, 139, 34));
+//        btnCreateInvoice.setBounds(830, 90, 150, 40);
+//        panelHeader.add(btnCreateInvoice);
 
         ImageIcon saleIcon = CommonView.scaleImage("images/icon11.png", 150, 150); // Replace with actual path
         JLabel labelIconImage = new JLabel(saleIcon);
@@ -161,17 +169,6 @@ public class CreateInvoiceView extends Component {
         panelDetails.setBackground(new Color(157, 239, 227));
         panelDetails.setBounds(0, 170, 1450, 800); // Điều chỉnh vị trí và kích thước
 
-//        JButton btnChooseBook = CommonView.createButton("Chọn sách",new Color(207, 181, 38));
-//        btnChooseBook.setFont(font1);
-//        btnChooseBook.setBounds(90,10,150,30);
-//        panelDetails.add(btnChooseBook);
-
-        // Book Image (Placeholder for the book cover)
-//        bookIcon = CommonView.scaleImage("images/pictureX.png", 200, 200); // Replace with actual path
-//        labelBookImage = new JLabel(bookIcon);
-//        labelBookImage.setBounds(80, 10 + 40, 200, 200);
-//        labelBookImage.setBorder(BorderFactory.createLineBorder(Color.BLACK));
-//        panelDetails.add(labelBookImage);
         // Khởi tạo JLabel để hiển thị ảnh (thay thế labelImage6 cũ)
         labelBookImage = new JLabel();
         labelBookImage.setBounds(80, 10 ,200, 200); // Vị trí và kích thước như cũ
@@ -277,10 +274,11 @@ public class CreateInvoiceView extends Component {
         textFieldTotalAmount.setFont(font1);
         textFieldTotalAmount.setBounds(570, 470, 130, 30);
         textFieldTotalAmount.setBackground(new Color(192, 192, 192));
+        textFieldTotalAmount.setHorizontalAlignment(JTextField.RIGHT); // Căn phải cho số tiền
         panelDetails.add(textFieldTotalAmount);
 
         // Discount
-        JLabel labelDiscount = new JLabel("GIẢM GIÁ:");
+        labelDiscount = new JLabel("GIẢM GIÁ:");
         labelDiscount.setFont(font);
         labelDiscount.setBounds(730, 470, 120, 30);
         panelDetails.add(labelDiscount);
@@ -298,9 +296,11 @@ public class CreateInvoiceView extends Component {
 
         textFieldTotalInvoiceAmount = new JTextField("");
         textFieldTotalInvoiceAmount.setFont(font1);
+        textFieldTotalInvoiceAmount.setEditable(false); // Không cho sửa trực tiếp
         textFieldTotalInvoiceAmount.setBounds(1120, 470, 130, 30);
         textFieldTotalInvoiceAmount.setBackground(new Color(192, 192, 192));
-        panelDetails.add(textFieldTotalInvoiceAmount);
+        textFieldTotalInvoiceAmount.setHorizontalAlignment(JTextField.RIGHT); // Căn phải
+        panelDetails.add(textFieldTotalInvoiceAmount)   ;
 
         // Share and Cancel Buttons
         btnCancel = CommonView.createButton("HỦY", new Color(0, 0, 255));
@@ -327,6 +327,7 @@ public class CreateInvoiceView extends Component {
 
         DefaultTableCellRenderer centerRenderer = new DefaultTableCellRenderer();
         centerRenderer.setHorizontalAlignment(JLabel.CENTER);
+
         for (int i = 0; i < table.getColumnCount(); i++) {
             table.getColumnModel().getColumn(i).setCellRenderer(centerRenderer);
         }
@@ -345,7 +346,24 @@ public class CreateInvoiceView extends Component {
         btnEdit.addActionListener(orderController);
         btnDelete.addActionListener(orderController);
         btnReset.addActionListener(orderController);
-        btnCreateInvoice.addActionListener(orderController);
+        btnCancel.addActionListener(orderController);
+        btnConfirm.addActionListener(orderController);
+
+
+        textFieldDiscount.getDocument().addDocumentListener(new DocumentListener() {
+            @Override
+            public void insertUpdate(DocumentEvent e) {
+                orderController.updateInvoiceTotals();
+            }
+            @Override
+            public void removeUpdate(DocumentEvent e) {
+                orderController.updateInvoiceTotals();
+            }
+            @Override
+            public void changedUpdate(DocumentEvent e) {
+                // Plain text components do not fire these events
+            }
+        });
 
         return panelContent;
     }
@@ -369,6 +387,10 @@ public class CreateInvoiceView extends Component {
             }
         }
     }
+    public void setFormattedCurrency(JTextField textField, double value) {
+        textField.setText(currencyFormatter.format(value));
+    }
+
 
     public JTextField getTextFieldBookId() {
         return textFieldBookId;

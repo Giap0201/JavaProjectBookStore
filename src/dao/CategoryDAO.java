@@ -28,4 +28,21 @@ public class CategoryDAO {
         }
         return list;
     }
+
+    public Category getCategory(String categoryID) {
+        Category category = null;
+        String sql = "select * from Category where CategoryID = ?";
+        try(Connection connection=JDBCUtil.getConnection()){
+            PreparedStatement ps = connection.prepareStatement(sql);
+            ps.setString(1, categoryID);
+            ResultSet rs = ps.executeQuery();
+            if(rs.next()){
+                String categoryName = rs.getString("CategoryName");
+                category = new Category(categoryID, categoryName);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return category;
+    }
 }
