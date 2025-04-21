@@ -59,7 +59,8 @@ public class BookController implements ActionListener {
             } else if (e.getSource() == bookView.getBtnReset()) {
                 refreshView();
             } else if (e.getSource() == bookView.getBtnSaveFile()) {
-                exportToCSV();
+//                exportToCSV1();
+                exportToCSV2();
             }
         } catch (IllegalArgumentException ex) {
             CommonView.showErrorMessage(bookView, ex.getMessage());
@@ -138,17 +139,18 @@ public class BookController implements ActionListener {
 //        CommonView.showInfoMessage(bookView, "Đã làm mới danh sách sách!");
     }
 
-    // Chức năng xuất dữ liệu ra file CSV
-    public void exportToCSV() {
-        JFileChooser fileChooser = new JFileChooser();
+    // Chức năng xuất dữ liệu ra file CSV, su dung PriterWriter
+    public void exportToCSV1() {
+        JFileChooser fileChooser = new JFileChooser();//la mot lop trong javaswing de tao hop thoai chon file
         fileChooser.setDialogTitle("Chọn nơi lưu file CSV");
-        int userSelection = fileChooser.showSaveDialog(bookView);
+        int userSelection = fileChooser.showSaveDialog(bookView);//nhan gia tri tra ve tu hop thoai
         if (userSelection != JFileChooser.APPROVE_OPTION) {
             return; // Người dùng hủy thao tác
         }
 
-        File fileToSave = fileChooser.getSelectedFile();
-        String filePath = fileToSave.getAbsolutePath();
+        //lay duong dan file
+        File fileToSave = fileChooser.getSelectedFile();//tra ve doi tuong file dai dien cho file duoc chon
+        String filePath = fileToSave.getAbsolutePath();//lay duong dan tuyet doi cua file
         if (!filePath.endsWith(".csv")) {
             filePath += ".csv";
         }
@@ -156,7 +158,7 @@ public class BookController implements ActionListener {
         try (PrintWriter writer = new PrintWriter(
                 new OutputStreamWriter(new FileOutputStream(filePath), "UTF-8"))) {
             // Ghi tiêu đề
-            writer.write("\uFEFF");
+            writer.write("\uFEFF");//dung de nhan dien duoc, hien thi tieng viet
             writer.println("Mã sách,Thể loại,Tên sách,Tác giả,Năm xuất bản,Số lượng,Giá");
 
             // Ghi từng dòng dữ liệu từ bảng
@@ -176,6 +178,47 @@ public class BookController implements ActionListener {
             throw new RuntimeException("Lỗi khi ghi file CSV: " + ex.getMessage(), ex);
         }
     }
+
+    //cai tien xuat file su dung BufferedWriter
+    private void exportToCSV2() {
+        JFileChooser fileChooser = new JFileChooser();
+        fileChooser.setDialogTitle("Xuất file CSV");
+        int userSelection = fileChooser.showSaveDialog(bookView);
+        if (userSelection != JFileChooser.APPROVE_OPTION) {
+            return;
+        }
+
+        File fileToSave = fileChooser.getSelectedFile();
+        String filePath = fileToSave.getAbsolutePath();
+        if (!filePath.endsWith(".csv")) {
+            filePath += ".csv";
+        }
+        try (BufferedWriter writer = new BufferedWriter(
+                new OutputStreamWriter(new FileOutputStream(filePath), "UTF-8"))) {
+            writer.write("\uFEFF");
+            writer.write("Mã sách,Thể loại,Tên sách,Tác giả,Năm xuất bản,Số lượng,Giá");
+            writer.newLine();
+
+            for (int i = 0; i < bookView.getTableModel().getRowCount(); i++) {
+                StringBuilder sb = new StringBuilder();
+                for (int j = 0; j < bookView.getTableModel().getColumnCount(); j++) {
+                    Object value = bookView.getTableModel().getValueAt(i, j);
+                    if (value != null) sb.append(value.toString());
+                    else sb.append("");
+                    if (j != bookView.getTableModel().getColumnCount() - 1) {
+                        sb.append(",");
+                    }
+                }
+                writer.write(sb.toString());
+                writer.newLine();
+            }
+            CommonView.showInfoMessage(bookView, "Xuất file CSV thành công!");
+        } catch (IOException ex) {
+            CommonView.showErrorMessage(bookView, "Lỗi khi ghi file CSV: " + ex.getMessage());
+            ex.printStackTrace();
+        }
+    }
+
 
     // Thêm sự kiện cho bảng (khi chọn một dòng, điền dữ liệu vào form)
     public void addTableSelectionListener() {
