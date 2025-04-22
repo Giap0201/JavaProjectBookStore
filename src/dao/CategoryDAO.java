@@ -2,6 +2,7 @@ package dao;
 
 import database.JDBCUtil;
 import model.Category;
+import utils.ResultMapper;
 
 import javax.swing.*;
 import java.sql.Connection;

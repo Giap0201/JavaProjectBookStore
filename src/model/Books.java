@@ -25,6 +25,17 @@ public class Books {
         this.urlImage = urlImage;
     }
 
+    public Books(String bookID, String bookName, String author, int yearPublished, double price, int quantity, Category category) {
+        this.bookID = bookID;
+        this.bookName = bookName;
+        this.author = author;
+        this.yearPublished = yearPublished;
+        this.price = price;
+        this.quantity = quantity;
+        this.category = category;
+    }
+
+
     public Books(String bookID, String bookName, String author, int yearPublished, double price, int quantity, Category category, Discount discount) {
         this.bookID = bookID;
         this.bookName = bookName;

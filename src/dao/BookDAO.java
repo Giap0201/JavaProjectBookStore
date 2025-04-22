@@ -186,6 +186,48 @@ public class BookDAO  {
             return false;
         }
     }
+    public Books getBookByID(String bookID) {
+        Books book = null; // Khởi tạo book là null, không phải một đối tượng rỗng
+        String sql = "SELECT * FROM books WHERE bookId = ?";
+
+        try (Connection conn = JDBCUtil.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setString(1, bookID);
+
+            try (ResultSet rs = ps.executeQuery()) {
+                ArrayList<Category> categories = new CategoryService().getCategory();
+
+                // Dùng Map để cải thiện việc tìm kiếm Category
+                Map<String, Category> categoryMap = new HashMap<>();
+                for (Category category : categories) {
+                    categoryMap.put(category.getCategoryID(), category);
+                }
+
+                if (rs.next()) {
+                    String bookId = rs.getString("bookID");
+                    String bookName = rs.getString("bookName");
+                    String author = rs.getString("author");
+                    int yearPublished = rs.getInt("yearPublished");
+                    double price = rs.getDouble("price");
+                    int quantity = rs.getInt("quantity");
+                    String categoryID = rs.getString("categoryID");
+                    String urlImage = rs.getString("urlImage");
+
+                    // Tìm Category theo ID từ Map
+                    Category category = categoryMap.get(categoryID);
+
+                    // Tạo đối tượng book chỉ khi có dữ liệu từ database
+                    book = new Books(bookId, bookName, author, yearPublished, price, quantity, category,urlImage);
+                }
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return book;
+    }
+
 
 
     public ArrayList<Books> listSearchBooks(BookSearch condition) {
