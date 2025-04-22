@@ -5,6 +5,7 @@ import model.BookSearch;
 import model.Books;
 import model.Category;
 import service.CategoryService;
+import utils.ResultMapper;
 
 import java.io.File;
 import java.io.IOException;
@@ -21,17 +22,14 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.stream.Stream;
 
-public class BookDAO implements IBookDAO {
+public class BookDAO  {
 
     // Thêm sách vào CSDL
-    @Override
     public int insert(Books books) {
         int result = 0;
-        String sql = "INSERT INTO books(bookID, bookName, author, yearPublished, price, quantity, categoryID,urlImage) VALUES (?, ?, ?, ?, ?, ?, ?,?)";
-
+        String sql = "INSERT INTO books(bookID, bookName, author, yearPublished, price, quantity, categoryID) VALUES (?, ?, ?, ?, ?, ?, ?)";
         try (Connection conn = JDBCUtil.getConnection();
-                PreparedStatement ps = conn.prepareStatement(sql)) {
-
+             PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setString(1, books.getBookID());
             ps.setString(2, books.getBookName());
             ps.setString(3, books.getAuthor());
@@ -42,7 +40,6 @@ public class BookDAO implements IBookDAO {
             ps.setString(8, books.getUrlImage());
 
             result = ps.executeUpdate();
-
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -50,17 +47,13 @@ public class BookDAO implements IBookDAO {
     }
 
     // Lấy toàn bộ sách từ CSDL
-    @Override
     public ArrayList<Books> getAll() {
         ArrayList<Books> listBooks = new ArrayList<>();
         String sql = "SELECT * FROM books";
-
         try (Connection conn = JDBCUtil.getConnection();
-                PreparedStatement ps = conn.prepareStatement(sql);
-                ResultSet rs = ps.executeQuery()) {
-
+             PreparedStatement ps = conn.prepareStatement(sql);
+             ResultSet rs = ps.executeQuery()) {
             ArrayList<Category> categories = new CategoryService().getCategory();
-
             while (rs.next()) {
                 String bookID = rs.getString("bookID");
                 String bookName = rs.getString("bookName");
@@ -77,62 +70,18 @@ public class BookDAO implements IBookDAO {
                 for (Category c : categories) {
                     if (c.getCategoryID().equals(categoryID)) {
                         category = c;
+                        break;
                     }
                 }
                 Books book = new Books(bookID, bookName, author, yearPublished, price, quantity, category,urlImage);
                 listBooks.add(book);
             }
-
         } catch (SQLException e) {
             e.printStackTrace();
         }
-
         return listBooks;
     }
 
-    public Books getBookByID(String bookID) {
-        Books book = null; // Khởi tạo book là null, không phải một đối tượng rỗng
-        String sql = "SELECT * FROM books WHERE bookId = ?";
-
-        try (Connection conn = JDBCUtil.getConnection();
-             PreparedStatement ps = conn.prepareStatement(sql)) {
-            ps.setString(1, bookID);
-
-            try (ResultSet rs = ps.executeQuery()) {
-                ArrayList<Category> categories = new CategoryService().getCategory();
-
-                // Dùng Map để cải thiện việc tìm kiếm Category
-                Map<String, Category> categoryMap = new HashMap<>();
-                for (Category category : categories) {
-                    categoryMap.put(category.getCategoryID(), category);
-                }
-
-                if (rs.next()) {
-                    String bookId = rs.getString("bookID");
-                    String bookName = rs.getString("bookName");
-                    String author = rs.getString("author");
-                    int yearPublished = rs.getInt("yearPublished");
-                    double price = rs.getDouble("price");
-                    int quantity = rs.getInt("quantity");
-                    String categoryID = rs.getString("categoryID");
-                    String urlImage = rs.getString("urlImage");
-
-                    // Tìm Category theo ID từ Map
-                    Category category = categoryMap.get(categoryID);
-
-                    // Tạo đối tượng book chỉ khi có dữ liệu từ database
-                    book = new Books(bookId, bookName, author, yearPublished, price, quantity, category,urlImage);
-                }
-            }
-
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-
-        return book;
-    }
-
-    @Override
     public int update(Books books) {
         int result = 0;
         String query = "UPDATE books SET bookName = ?,author = ?,yearPublished = ?,price = ?,quantity = ?,categoryID = ?,urlImage=? WHERE bookID = ?";
@@ -153,7 +102,6 @@ public class BookDAO implements IBookDAO {
         return result;
     }
 
-    @Override
     public int delete(Books books) {
         int result = 0;
         String query = "DELETE FROM books WHERE bookID = ?";
@@ -240,7 +188,6 @@ public class BookDAO implements IBookDAO {
     }
 
 
-    @Override
     public ArrayList<Books> listSearchBooks(BookSearch condition) {
         ArrayList<Books> listBooks = new ArrayList<>();
         StringBuilder query = new StringBuilder(
@@ -248,7 +195,7 @@ public class BookDAO implements IBookDAO {
         ArrayList<Object> params = new ArrayList<>();
 
         // xay dung cac dieu kien tim kiem
-        if(condition.getBookID() != null && !condition.getBookID().isEmpty()){
+        if (condition.getBookID() != null && !condition.getBookID().isEmpty()) {
             query.append(" and bookID like ?");
             params.add("%" + condition.getBookID() + "%");
         }
@@ -281,7 +228,7 @@ public class BookDAO implements IBookDAO {
             params.add(condition.getCategoryName());
         }
         try (Connection conn = JDBCUtil.getConnection();
-                PreparedStatement ps = conn.prepareStatement(query.toString())) {
+             PreparedStatement ps = conn.prepareStatement(query.toString())) {
 
             // gan gia tri cho ?
             for (int i = 0; i < params.size(); i++) {
@@ -309,6 +256,25 @@ public class BookDAO implements IBookDAO {
             }
         } catch (SQLException e) {
             e.printStackTrace();
+        }
+        return listBooks;
+    }
+    //phuong thuc tim kiem theo ten
+    public ArrayList<Books> SearchBookByName(String bookName) {
+        ArrayList<Books> listBooks = new ArrayList<>();
+        String query = "select * from books join category on category.categoryID = books.categoryID where bookName like ?";
+        try (Connection conn = JDBCUtil.getConnection();
+             PreparedStatement ps = conn.prepareStatement(query)) {
+            String condition = "%" + bookName + "%";
+            ps.setString(1, condition);
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                Books books = ResultMapper.mapResultSetToBooks(rs);
+                listBooks.add(books);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            throw new RuntimeException(e + e.getMessage());
         }
         return listBooks;
     }

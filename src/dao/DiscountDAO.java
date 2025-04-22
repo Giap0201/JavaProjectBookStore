@@ -6,8 +6,7 @@ import model.Discount;
 import java.sql.*;
 import java.util.ArrayList;
 
-public class DiscountDAO implements IDiscountDTO {
-    @Override
+public class DiscountDAO  {
     public int insert(Discount discount) {
         int result = 0;
         String query = "insert into discount values(?,?,?,?,?)";
@@ -25,7 +24,6 @@ public class DiscountDAO implements IDiscountDTO {
         return result;
     }
 
-    @Override
     public int update(Discount discount) {
         int result = 0;
         String query = "update discount set nameDiscount = ?,typeDiscount = ?,startDate = ?,endDate = ? where discountID = ?";
@@ -43,7 +41,6 @@ public class DiscountDAO implements IDiscountDTO {
         return result;
     }
 
-    @Override
     public int delete(Discount discount) {
         int result = 0;
         String query = "delete from discount where discountID = ?";
@@ -57,7 +54,6 @@ public class DiscountDAO implements IDiscountDTO {
         return result;
     }
 
-    @Override
     public ArrayList<Discount> selectAll() {
         ArrayList<Discount> listDiscounts = new ArrayList<>();
         String query = "select * from discount";
@@ -78,7 +74,6 @@ public class DiscountDAO implements IDiscountDTO {
         }
         return listDiscounts;
     }
-    @Override
     public int deleteCondition(String discountID) {
         int result = 0;
         String query = "delete from discount where discountID = ?";
@@ -92,7 +87,6 @@ public class DiscountDAO implements IDiscountDTO {
         return result;
     }
 
-    @Override
     public ArrayList<Discount> searchCondition(Date startDate, Date endDate){
         ArrayList<Discount> listDiscounts = new ArrayList<>();
         StringBuilder query = new StringBuilder("select * from discount where 1 = 1");

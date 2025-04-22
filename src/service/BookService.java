@@ -8,7 +8,6 @@ import java.util.ArrayList;
 
 
 public class BookService {
-
     private BookDAO bookDAO;
     public BookService() {
         this.bookDAO = new BookDAO();
@@ -30,6 +29,9 @@ public class BookService {
     }
     public ArrayList<Books> listBookSearch(BookSearch condition){
         return bookDAO.listSearchBooks(condition);
+    }
+    public ArrayList<Books> bookSearchByName(String bookName){
+        return bookDAO.SearchBookByName(bookName);
     }
     public Books getBookByID(String bookID){
         return bookDAO.getBookByID(bookID);

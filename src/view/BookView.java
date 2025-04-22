@@ -376,7 +376,6 @@ public class BookView extends JPanel {
         btnReset.addActionListener(bookController);
         btnSaveFile.addActionListener(bookController);
         btnSearch.addActionListener(bookController);
-        btnUploadImage.addActionListener(bookController);
         return panelContent;
     }
 
@@ -390,12 +389,8 @@ public class BookView extends JPanel {
         return button;
     }
 
-    // Thêm phương thức này vào BookView.java
     /**
-     * Đặt ảnh hiển thị trong JLabel xem trước (labelImagePreview).
-     * Xử lý trường hợp icon là null bằng cách hiển thị icon mặc định hoặc thông báo lỗi.
-     *
-     * @param icon ImageIcon cần hiển thị, hoặc null để đặt lại về mặc định/lỗi.
+     * Hàm hỗ trợ scale ảnh
      */
     public void setPreviewImage(ImageIcon icon) {
         if (icon != null) {

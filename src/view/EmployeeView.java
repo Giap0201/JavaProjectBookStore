@@ -1,28 +1,29 @@
 package view;
 
+import controller.EmployeeController;
+import utils.CommonView;
+
 import javax.swing.*;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.JTableHeader;
 import java.awt.*;
 
-import controller.EmployeeController;
-import utils.CommonView;
-
 public class EmployeeView extends JPanel {
 
     private JTextField textFieldEmployeeId = new JTextField();
     private JTextField textFieldLastName;
     private JTextField textFieldFirstName;
-    private JTextField textFieldPhone,textFieldEmail,textFieldPosition,textFieldSalary,textFieldDob;
-    private JRadioButton radioPositionNam,radioPositionNu;
-    private JButton calendarButton, btnReset = CommonView.createButton("LÀM MỚI",new Color(255, 248, 29)),
-            btnDelete = CommonView.createButton("XÓA",new Color(255, 0, 0)),
-            btnUpdate = CommonView.createButton("SỬA",new Color(255, 153, 0)),
-            btnAdd = CommonView.createButton("THÊM",new Color(0, 153, 0));;
-    private JTextField textFieldSearch,textFieldSearchSalaryFrom,textFieldSearchSalaryTo;
+    private JTextField textFieldPhone, textFieldEmail, textFieldPosition, textFieldSalary, textFieldDob;
+    private JRadioButton radioPositionNam, radioPositionNu;
+    private JButton calendarButton, btnReset = CommonView.createButton("LÀM MỚI", new Color(255, 248, 29)),
+            btnDelete = CommonView.createButton("XÓA", new Color(255, 0, 0)),
+            btnUpdate = CommonView.createButton("SỬA", new Color(255, 153, 0)),
+            btnAdd = CommonView.createButton("THÊM", new Color(0, 153, 0));
+    ;
+    private JTextField textFieldSearch, textFieldSearchSalaryFrom, textFieldSearchSalaryTo;
     private JComboBox<String> comboBoxSearch;
-    private JButton btnSearchAll,btnExportExcel;
+    private JButton btnSearchAll, btnExportExcel;
     private DefaultTableModel tableModel;
     private JTable table;
 
@@ -47,7 +48,7 @@ public class EmployeeView extends JPanel {
 
         panelContent.add(inputPanel);
         // Bảng dữ liệu nhân viên
-        String[] columnNames = {"Mã NV", "Họ", "Tên" , "Chức vụ", "Email", "SĐT", "Lương", "Phái", "Ngày sinh"};
+        String[] columnNames = {"Mã NV", "Họ", "Tên", "Chức vụ", "Email", "SĐT", "Lương", "Phái", "Ngày sinh"};
         tableModel = new DefaultTableModel(columnNames, 0);
         table = new JTable(tableModel);
 
@@ -164,8 +165,8 @@ public class EmployeeView extends JPanel {
         inputPanel.add(textFieldDob);
 
         calendarButton = new JButton();
-        calendarButton.setBounds(280,250, 30, 30);
-        ImageIcon icon7=CommonView.scaleImage("images/icon7.png",30,30);
+        calendarButton.setBounds(280, 250, 30, 30);
+        ImageIcon icon7 = CommonView.scaleImage("images/icon7.png", 30, 30);
         calendarButton.setIcon(icon7);
         inputPanel.add(calendarButton);
         calendarButton.addActionListener(action);
@@ -187,12 +188,12 @@ public class EmployeeView extends JPanel {
         panelContent.add(btnReset);
         btnReset.addActionListener(action);
 
-        ImageIcon icon9=CommonView.scaleImage("images/icon10.png",300,200);
+        ImageIcon icon9 = CommonView.scaleImage("images/icon10.png", 300, 200);
         JLabel lblicon9 = new JLabel(icon9);
         lblicon9.setBounds(10, 540, 300, 200);
         panelContent.add(lblicon9);
 
-        ImageIcon imageBackground = CommonView.scaleImage("images/image.jpg",900,200);
+        ImageIcon imageBackground = CommonView.scaleImage("images/image.jpg", 900, 200);
         JLabel imageLabel = new JLabel(imageBackground);
         imageLabel.setBounds(350, 50, imageBackground.getIconWidth(), imageBackground.getIconHeight());
         panelContent.add(imageLabel);
@@ -210,7 +211,7 @@ public class EmployeeView extends JPanel {
         labelSearchTitle.setBounds(10, 10, 200, 20);
         searchPanel.add(labelSearchTitle);
 
-        comboBoxSearch = new JComboBox<>(new String[]{"Mã NV", "Họ", "Tên","SĐT","Chức vụ"});
+        comboBoxSearch = new JComboBox<>(new String[]{"Mã NV", "Họ", "Tên", "SĐT", "Chức vụ"});
         comboBoxSearch.setFont(new Font("Tahoma", Font.PLAIN, 15));
         comboBoxSearch.setBounds(80, 40, 150, 30);
         searchPanel.add(comboBoxSearch);
@@ -241,11 +242,10 @@ public class EmployeeView extends JPanel {
         textFieldSearchSalaryTo.setBounds(310, 70, 100, 30);
         searchPanel.add(textFieldSearchSalaryTo);
 
-        btnSearchAll = CommonView.createButton("Tìm Kiếm",Color.BLACK);
+        btnSearchAll = CommonView.createButton("Tìm Kiếm", Color.BLACK);
         btnSearchAll.setBounds(550, 50, 120, 40);
         searchPanel.add(btnSearchAll);
         btnSearchAll.addActionListener(action);
-
 
 
         // Thiết lập font và chiều cao dòng cho bảng
@@ -271,7 +271,7 @@ public class EmployeeView extends JPanel {
         panelContent.add(scrollPane);
 
 
-        btnExportExcel = CommonView.createButton("Xuất Excel",new Color(237, 16, 159));
+        btnExportExcel = CommonView.createButton("Xuất Excel", new Color(237, 16, 159));
         btnExportExcel.setBounds(1130, 830, 120, 40);
         panelContent.add(btnExportExcel);
 
@@ -461,6 +461,7 @@ public class EmployeeView extends JPanel {
     public void setTable(JTable table) {
         this.table = table;
     }
+
     public void showMessage(String msg) {
         JOptionPane.showMessageDialog(this, msg);
     }

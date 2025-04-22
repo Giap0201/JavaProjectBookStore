@@ -166,6 +166,7 @@ public class InvoiceDAO {
         return listInvoice;
     }
 
+    //lay danh sach chi tiet hoa don tu id hoa don
     public ArrayList<InvoiceDetails> listInvoiceDetails(String invoiceID) {
         ArrayList<InvoiceDetails> listInvoiceDetails = new ArrayList<>();
         String query = "select * from orderDetails where orderID = ?";
@@ -182,6 +183,21 @@ public class InvoiceDAO {
             throw new RuntimeException(e.getMessage());
         }
         return listInvoiceDetails;
+    }
+
+    //ham xoa toan bo chi tiet hoa don co id ... dung cho xoa hoa don co khoa ngoai
+    public int deleteInvoiceDetailsByInvoiceID(String invoiceID) {
+        String query = "delete from orderDetails where orderID = ?";
+        int result = 0;
+        try(Connection conn = JDBCUtil.getConnection();
+        PreparedStatement ps = conn.prepareStatement(query)){
+            ps.setString(1,invoiceID);
+            result = ps.executeUpdate();
+        }catch (SQLException e){
+            e.printStackTrace();
+            throw new RuntimeException(e.getMessage());
+        }
+        return result;
     }
 
 }
