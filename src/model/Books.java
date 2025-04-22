@@ -9,15 +9,12 @@ public class Books {
     private double price;
     private int quantity;
     private Category category;
+    private Discount discount;
+    private String urlImage ;
+
     public Books() {
     }
-    //ham nay la sach trong chi tiet hoa don
-    public Books(String bookID, int quantity,double price){
-        this.bookID = bookID;
-        this.quantity = quantity;
-        this.price = price;
-    }
-    public Books(String bookID, String bookName, String author, int yearPublished, double price, int quantity, Category category) {
+    public Books(String bookID, String bookName, String author, int yearPublished, double price, int quantity, Category category,String urlImage) {
         this.bookID = bookID;
         this.bookName = bookName;
         this.author = author;
@@ -25,6 +22,25 @@ public class Books {
         this.price = price;
         this.quantity = quantity;
         this.category = category;
+        this.urlImage = urlImage;
+    }
+
+    public Books(String bookID, String bookName, String author, int yearPublished, double price, int quantity, Category category, Discount discount) {
+        this.bookID = bookID;
+        this.bookName = bookName;
+        this.author = author;
+        this.yearPublished = yearPublished;
+        this.price = price;
+        this.quantity = quantity;
+        this.category = category;
+        this.discount = discount;
+    }
+    public Discount getDiscount() {
+        return discount;
+    }
+
+    public void setDiscount(Discount discount) {
+        this.discount = discount;
     }
 
     public String getBookID() {
@@ -80,5 +96,13 @@ public class Books {
 
     public void setCategory(Category category) {
         this.category = category;
+    }
+
+    public String getUrlImage() {
+        return urlImage;
+    }
+
+    public void setUrlImage(String urlImage) {
+        this.urlImage = urlImage;
     }
 }

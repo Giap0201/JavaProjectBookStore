@@ -3,11 +3,13 @@ package view;
 import controller.BookController;
 import controller.CategoryController;
 import model.Category;
+import utils.ImageUtils;
 
 import javax.swing.*;
 import javax.swing.table.*;
 import java.awt.*;
 import java.awt.image.BufferedImage;
+import java.io.File;
 import java.util.ArrayList;
 
 public class BookView extends JPanel {
@@ -23,6 +25,9 @@ public class BookView extends JPanel {
     private DefaultTableModel tableModel;
     private JTable table;
     private JLabel labelPriceMinValue,labelPriceMaxValue,labelBookTypeCountValue,labelTotalBooksValue;
+    private JButton btnUploadImage;
+    private JLabel labelImage6;
+    private JLabel labelImagePreview;
 
     public BookView() {
         this.categoryController = new CategoryController();
@@ -113,6 +118,11 @@ public class BookView extends JPanel {
         panelContent.add(textFieldPrice);
 
         // Các nút button
+        btnUploadImage = createButton("UPLOAD Ảnh", new Color(192, 192, 192));
+        btnUploadImage.setBounds(680, 170, 150, 40);
+        panelContent.add(btnUploadImage);
+
+
         btnAdd = createButton("Thêm", new Color(14, 110, 166));
         btnAdd.setBounds(50 + 40, 220, 100, 30);
         panelContent.add(btnAdd);
@@ -137,10 +147,34 @@ public class BookView extends JPanel {
         btnView.setBounds(600 + 40, 220, 100, 30);
         panelContent.add(btnView);
 
-        ImageIcon icon6 = scaleImage("images/icon6.png", 400, 200);
-        JLabel labelImage6 = new JLabel(icon6);
-        labelImage6.setBounds(820, 30, 500, 250);
-        panelContent.add(labelImage6);
+//        ImageIcon icon6 = scaleImage("images/icon6.png", 200, 200);
+//        labelImage6 = new JLabel(icon6);
+//        labelImage6.setBounds(850, 20, 200, 200);
+//        panelContent.add(labelImage6);
+
+        // Khởi tạo JLabel để hiển thị ảnh (thay thế labelImage6 cũ)
+        labelImagePreview = new JLabel();
+        labelImagePreview.setBounds(850, 20, 200, 200); // Vị trí và kích thước như cũ
+        labelImagePreview.setBorder(BorderFactory.createLineBorder(Color.GRAY)); // Thêm đường viền để dễ thấy
+        labelImagePreview.setHorizontalAlignment(JLabel.CENTER); // Căn giữa ảnh
+        labelImagePreview.setText("Chưa có ảnh"); // Text mặc định
+        // Load ảnh mặc định ban đầu (nếu có)
+        // displayBookImage("images/icon6.png"); // Gọi hàm hiển thị ảnh mặc định (nếu cần)
+        // Hoặc set icon mặc định nếu icon6 là resource nội bộ
+        ImageIcon defaultIcon = ImageUtils.getDefaultScaledIcon("images/icon6.png",ImageUtils.DEFAULT_IMAGE_WIDTH,
+                ImageUtils.DEFAULT_IMAGE_HEIGHT);
+        //ImageIcon defaultIcon = scaleImageResource("images/icon6.png", 200, 200); // Dùng hàm riêng cho resource
+        if (defaultIcon != null) {
+            labelImagePreview.setIcon(defaultIcon);
+            labelImagePreview.setText(null); // Xóa text khi có icon
+        }else{
+            labelImagePreview.setIcon(null);
+            labelImagePreview.setText("Chưa có ảnh");
+        }
+        panelContent.add(labelImagePreview);
+
+
+
 
         // tao ra 1 panel moi chua tat ca phan tim kiem
         JPanel searchPanel = new JPanel();
@@ -342,6 +376,7 @@ public class BookView extends JPanel {
         btnReset.addActionListener(bookController);
         btnSaveFile.addActionListener(bookController);
         btnSearch.addActionListener(bookController);
+        btnUploadImage.addActionListener(bookController);
         return panelContent;
     }
 
@@ -355,17 +390,31 @@ public class BookView extends JPanel {
         return button;
     }
 
+    // Thêm phương thức này vào BookView.java
     /**
-     * Hàm hỗ trợ scale ảnh
+     * Đặt ảnh hiển thị trong JLabel xem trước (labelImagePreview).
+     * Xử lý trường hợp icon là null bằng cách hiển thị icon mặc định hoặc thông báo lỗi.
+     *
+     * @param icon ImageIcon cần hiển thị, hoặc null để đặt lại về mặc định/lỗi.
      */
-    private ImageIcon scaleImage(String path, int width, int height) {
-        try {
-            ImageIcon icon = new ImageIcon(ClassLoader.getSystemResource(path));
-            Image img = icon.getImage().getScaledInstance(width, height, Image.SCALE_SMOOTH);
-            return new ImageIcon(img);
-        } catch (Exception e) {
-            System.err.println("No Image: " + path);
-            return new ImageIcon(new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB)); // Trả về ảnh trống
+    public void setPreviewImage(ImageIcon icon) {
+        if (icon != null) {
+            labelImagePreview.setIcon(icon);
+            labelImagePreview.setText(null); // Xóa text nếu có ảnh
+        } else {
+            // Nếu icon là null, thử hiển thị icon mặc định
+            ImageIcon defaultIcon = ImageUtils.getDefaultScaledIcon("images/icon6.png",
+                    ImageUtils.DEFAULT_IMAGE_WIDTH,
+                    ImageUtils.DEFAULT_IMAGE_HEIGHT
+            );
+            if (defaultIcon != null) {
+                labelImagePreview.setIcon(defaultIcon);
+                labelImagePreview.setText(null);
+            } else {
+                // Dự phòng nếu cả icon mặc định/placeholder cũng lỗi
+                labelImagePreview.setIcon(null);
+                labelImagePreview.setText("Lỗi hiển thị ảnh");
+            }
         }
     }
 
@@ -494,10 +543,11 @@ public class BookView extends JPanel {
         return labelTotalBooksValue;
     }
 
-    public static void main(String[] args) {
-        BookView a = new BookView();
-        JPanel panel = a.initBookView();
-        JFrame app = new App();
-        app.add(panel, BorderLayout.CENTER);
+    public JButton getBtnUploadImage() {
+        return btnUploadImage;
+    }
+
+    public void setBtnUploadImage(JButton btnUploadImage) {
+        this.btnUploadImage = btnUploadImage;
     }
 }
