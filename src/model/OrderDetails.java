@@ -16,7 +16,6 @@ public class OrderDetails {
         this.discount = discount;
         this.book = book;
         this.quantity = quantity;
-        // Gọi hàm tính toán riêng thay vì gán trực tiếp trong constructor
         calculateTotal();
     }
 

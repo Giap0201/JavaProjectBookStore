@@ -8,7 +8,6 @@ public class Orders {
     private Customers customer;
     private String status ;
     private Date orderDate;
-    private OrderDetails orderDetails;
 
     public Orders(){}
 
@@ -19,12 +18,11 @@ public class Orders {
         this.status = status;
     }
 
-    public Orders(String orderId, Customers customer, String status, Date orderDate, OrderDetails orderDetails) {
+    public Orders(String orderId, Customers customer, String status, Date orderDate) {
         this.orderId = orderId;
         this.customer = customer;
         this.status = status;
         this.orderDate = orderDate;
-        this.orderDetails = orderDetails;
     }
 
     public String getOrderId() {
@@ -57,13 +55,5 @@ public class Orders {
 
     public void setOrderDate(Date orderDate) {
         this.orderDate = orderDate;
-    }
-
-    public OrderDetails getOrderDetails() {
-        return orderDetails;
-    }
-
-    public void setOrderDetails(OrderDetails orderDetails) {
-        this.orderDetails = orderDetails;
     }
 }

@@ -243,8 +243,7 @@ public class OrderController implements ActionListener {
 
         } else {
             // Nếu người dùng đóng cửa sổ mà không chọn sách
-            // Có thể không cần làm gì hoặc giữ nguyên trạng thái cũ
-            // orderView.getBtnAdd().setEnabled(false); // Tắt nút Add nếu không chọn được sách
+             orderView.getBtnAdd().setEnabled(false); // Tắt nút Add nếu không chọn được sách
         }
     }
 
@@ -366,7 +365,6 @@ public class OrderController implements ActionListener {
         newItem.setBook(currentSelectedBook);
         newItem.setQuantity(quantity);
         newItem.setDiscount(itemDiscountPercent);
-        // newItem.calculateTotal(); // Total được tính tự động trong setter
 
         // 6. Thêm dòng mới vào bảng
         model.addRow(newItem.toTableRow());
@@ -478,6 +476,16 @@ public class OrderController implements ActionListener {
                 totalAmount += ((Number) value).doubleValue();
             }
         }
+
+//        double totalSpending = 0.0;
+//
+//        for (int i = 0; i < model.getRowCount(); i++) {
+//            // Lấy giá trị từ cột "Thành tiền" (cột 5)
+//            Object value = model.getValueAt(i, 5);
+//            if (value instanceof Number) {
+//                totalSpending += ((Number) value).doubleValue();
+//            }
+//        }
 
         // Hiển thị tổng tiền hàng (đã định dạng)
         orderView.setFormattedCurrency(orderView.getTextFieldTotalAmount(), totalAmount);
@@ -613,7 +621,6 @@ public class OrderController implements ActionListener {
             detail.setBook(book);
             detail.setQuantity(quantity);
             detail.setDiscount(discount);
-            // detail.calculateTotal(); // Total được tính tự động
 
             orderDetailsList.add(detail);
         }
@@ -785,58 +792,6 @@ public class OrderController implements ActionListener {
         orderView.setPreviewImage(null);
     }
 
-    public OrderDetails getOrderDetailFromInput() throws ParseException {
-        String orderID = orderView.getTextFieldInvoiceId().getText().trim();
-        String bookID = orderView.getTextFieldBookId().getText().trim();
-        int quantity = Integer.parseInt(orderView.getTextFieldQuantity().getText().trim());
-        System.out.println("quantity : "+ quantity);
-        // 1. Kiểm tra các trường bắt buộc
-        if (orderID.isEmpty()) throw new IllegalArgumentException("Ma order không được để trống.");
-        if (bookID.isEmpty()) throw new IllegalArgumentException("Ma Sach không được để trống.");
-        if (quantity == 0 || quantity < 0) throw new IllegalArgumentException("So luong la so tu nhien");
-        Books book = bookService.getBookByID(bookID);
-        if (book == null) {
-            CommonView.showErrorMessage(null,"Vui long chon sach");
-        }
-        if(quantity > book.getQuantity()){
-            throw new IllegalArgumentException("So luong sach khong du");
-        }
-
-        return new OrderDetails(orderID,0,book,quantity);
-
-    }
-
-    public void updateOrderTable(String orderId){
-        ArrayList<OrderDetails> orderDetailsList = orderService.getAllOrderDetails(orderId);
-        if (orderView == null || orderView.getTableModel() == null) {
-            System.err.println("Lỗi: CustomerView hoặc TableModel chưa được khởi tạo.");
-            return;
-        }
-
-        DefaultTableModel model = orderView.getTableModel();
-        model.setRowCount(0);
-
-        if (orderDetailsList != null) {
-            for (OrderDetails orderDetail : orderDetailsList) {
-                Books book = orderDetail.getBook();
-                int quantity = orderDetail.getQuantity();
-                float discount = orderDetail.getDiscount();
-                double totalPrice = orderDetail.getTotal();
-                System.out.println(quantity+" "+discount);
-                //String[] columnNames = {"Mã sách", "Tên sách", "Số lượng", "Đơn giá", "Giảm giá %", "Thành tiền"};
-
-                model.addRow(new Object[]{
-                        book.getBookID(),
-                        book.getBookName(),
-                        quantity,
-                        book.getPrice(),
-                        discount,
-                        totalPrice
-                });
-            }
-        }
-
-    }
 
 }
 
