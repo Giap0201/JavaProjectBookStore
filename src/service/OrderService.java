@@ -63,20 +63,6 @@ public class OrderService {
         // *** PHẦN NÀY CẦN TRIỂN KHAI TRONG DAO VỚI TRANSACTION ***
         boolean success = orderDAO.saveOrderTransaction(order, orderDetailsList);
 
-        // Nếu lưu thành công, cập nhật tồn kho (có thể làm trong transaction của DAO luôn)
-        // if (success) {
-        //     try {
-        //         for (OrderDetails detail : orderDetailsList) {
-        //             bookService.decreaseBookQuantity(detail.getBook().getBookID(), detail.getQuantity());
-        //         }
-        //     } catch (Exception e) {
-        //          // Xử lý nếu cập nhật tồn kho lỗi (lý tưởng là rollback transaction)
-        //          System.err.println("Lỗi cập nhật tồn kho sau khi lưu đơn hàng: " + e.getMessage());
-        //          // Có thể cần xóa đơn hàng vừa tạo nếu không rollback được
-        //          return false; // Coi như thất bại nếu không cập nhật được tồn kho
-        //     }
-        // }
-
         return success;
     }
 

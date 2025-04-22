@@ -595,7 +595,8 @@ public class OrderController implements ActionListener {
         newOrder.setOrderId(invoiceId);
         newOrder.setCustomer(customer);
         newOrder.setOrderDate(orderDate);
-        newOrder.setStatus("Chưa xử lý"); // Hoặc trạng thái mặc định khác
+        newOrder.setStatus("Chưa xử lý");
+        newOrder.setEmployeeID("NV01");
 
         // 6. Create List<OrderDetails> from Table
         ArrayList<OrderDetails> orderDetailsList = new ArrayList<>();

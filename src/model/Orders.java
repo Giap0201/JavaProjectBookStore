@@ -8,6 +8,7 @@ public class Orders {
     private Customers customer;
     private String status ;
     private Date orderDate;
+    private String employeeID ;
 
     public Orders(){}
 
@@ -55,5 +56,13 @@ public class Orders {
 
     public void setOrderDate(Date orderDate) {
         this.orderDate = orderDate;
+    }
+
+    public String getEmployeeID() {
+        return employeeID;
+    }
+
+    public void setEmployeeID(String employeeID) {
+        this.employeeID = employeeID;
     }
 }

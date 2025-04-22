@@ -105,7 +105,7 @@ public class OrderDAO {
         boolean success = false;
 
         // SQL statements
-        String insertOrderSQL = "INSERT INTO orders(orderID, customerID, dayOfEstablishment, status) VALUES(?,?,?,?)";
+        String insertOrderSQL = "INSERT INTO orders(orderID, customerID, dayOfEstablishment, status,employeeID) VALUES(?,?,?,?,?)";
         String insertDetailSQL = "INSERT INTO orderdetails(orderID, bookID, quantity, price) VALUES(?,?,?,?)";
         String updateStockSQL = "UPDATE books SET quantity = quantity - ? WHERE bookID = ?";
 
@@ -123,6 +123,7 @@ public class OrderDAO {
                     psOrder.setNull(3, Types.DATE);
                 }
                 psOrder.setString(4, order.getStatus());
+                psOrder.setString(5, order.getEmployeeID());
                 int orderResult = psOrder.executeUpdate();
                 if (orderResult == 0) {
                     throw new SQLException("Tạo header hóa đơn thất bại, không có dòng nào được thêm.");

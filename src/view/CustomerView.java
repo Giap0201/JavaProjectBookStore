@@ -46,7 +46,7 @@ public class CustomerView extends JPanel {
 
         // Tiêu đề của panel
         JLabel labelTitle = new JLabel("THÔNG TIN KHÁCH HÀNG");
-        labelTitle.setBounds(500, 10, 300, 30);
+        labelTitle.setBounds(500, 10, 400, 30);
         labelTitle.setFont(new Font("Tahoma", Font.BOLD, 30));
         panelContent.add(labelTitle);
 
