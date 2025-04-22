@@ -22,12 +22,12 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.stream.Stream;
 
-public class BookDAO  {
+public class BookDAO {
 
     // Thêm sách vào CSDL
     public int insert(Books books) {
         int result = 0;
-        String sql = "INSERT INTO books(bookID, bookName, author, yearPublished, price, quantity, categoryID) VALUES (?, ?, ?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO books (bookID, bookName, author, yearPublished, price, quantity, categoryID, urlImage) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
         try (Connection conn = JDBCUtil.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setString(1, books.getBookID());
@@ -37,8 +37,7 @@ public class BookDAO  {
             ps.setDouble(5, books.getPrice());
             ps.setInt(6, books.getQuantity());
             ps.setString(7, books.getCategory().getCategoryID());
-            ps.setString(8, books.getUrlImage());
-
+            ps.setString(8, books.getUrlImage() != null ? books.getUrlImage() : null); // Handle null urlImage
             result = ps.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
@@ -64,7 +63,6 @@ public class BookDAO  {
                 String categoryID = rs.getString("categoryID");
                 String urlImage = rs.getString("urlImage");
 
-
                 // Tìm Category theo ID
                 Category category = new Category();
                 for (Category c : categories) {
@@ -73,7 +71,7 @@ public class BookDAO  {
                         break;
                     }
                 }
-                Books book = new Books(bookID, bookName, author, yearPublished, price, quantity, category,urlImage);
+                Books book = new Books(bookID, bookName, author, yearPublished, price, quantity, category, urlImage);
                 listBooks.add(book);
             }
         } catch (SQLException e) {
@@ -82,18 +80,19 @@ public class BookDAO  {
         return listBooks;
     }
 
+    // Cập nhật sách trong CSDL
     public int update(Books books) {
         int result = 0;
-        String query = "UPDATE books SET bookName = ?,author = ?,yearPublished = ?,price = ?,quantity = ?,categoryID = ?,urlImage=? WHERE bookID = ?";
+        String query = "UPDATE books SET bookName = ?, author = ?, yearPublished = ?, price = ?, quantity = ?, categoryID = ?, urlImage = ? WHERE bookID = ?";
         try (Connection conn = JDBCUtil.getConnection();
-                PreparedStatement ps = conn.prepareStatement(query)) {
+             PreparedStatement ps = conn.prepareStatement(query)) {
             ps.setString(1, books.getBookName());
             ps.setString(2, books.getAuthor());
             ps.setInt(3, books.getYearPublished());
             ps.setDouble(4, books.getPrice());
             ps.setInt(5, books.getQuantity());
             ps.setString(6, books.getCategory().getCategoryID());
-            ps.setString(7,books.getUrlImage());
+            ps.setString(7, books.getUrlImage() != null ? books.getUrlImage() : null); // Handle null urlImage
             ps.setString(8, books.getBookID());
             result = ps.executeUpdate();
         } catch (SQLException e) {
@@ -102,6 +101,7 @@ public class BookDAO  {
         return result;
     }
 
+    // Xóa sách khỏi CSDL
     public int delete(Books books) {
         int result = 0;
         String query = "DELETE FROM books WHERE bookID = ?";
@@ -133,6 +133,7 @@ public class BookDAO  {
         return result;
     }
 
+    // Xóa file ảnh vật lý
     private void deleteSinglePhysicalImageFile(String relativeUrl) {
         if (relativeUrl == null || relativeUrl.trim().isEmpty()) return;
 
@@ -153,16 +154,18 @@ public class BookDAO  {
         }
     }
 
+    // Kiểm tra thư mục rỗng
     private boolean isDirEmpty(Path directory) throws IOException {
         try (Stream<Path> dirStream = Files.list(directory)) {
             return !dirStream.findAny().isPresent();
         }
     }
 
+    // Cập nhật URL ảnh
     public boolean updateImageUrl(String bookId, String newUrlImage) {
         if (bookId == null || bookId.trim().isEmpty()) return false;
 
-        String sql = "UPDATE Books SET urlImage = ? WHERE bookID = ?";
+        String sql = "UPDATE books SET urlImage = ? WHERE bookID = ?";
         try (Connection conn = JDBCUtil.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
 
@@ -186,9 +189,11 @@ public class BookDAO  {
             return false;
         }
     }
+
+    // Lấy sách theo ID
     public Books getBookByID(String bookID) {
-        Books book = null; // Khởi tạo book là null, không phải một đối tượng rỗng
-        String sql = "SELECT * FROM books WHERE bookId = ?";
+        Books book = null;
+        String sql = "SELECT * FROM books WHERE bookID = ?";
 
         try (Connection conn = JDBCUtil.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
@@ -216,8 +221,7 @@ public class BookDAO  {
                     // Tìm Category theo ID từ Map
                     Category category = categoryMap.get(categoryID);
 
-                    // Tạo đối tượng book chỉ khi có dữ liệu từ database
-                    book = new Books(bookId, bookName, author, yearPublished, price, quantity, category,urlImage);
+                    book = new Books(bookId, bookName, author, yearPublished, price, quantity, category, urlImage);
                 }
             }
 
@@ -228,51 +232,50 @@ public class BookDAO  {
         return book;
     }
 
-
-
+    // Tìm kiếm sách theo điều kiện
     public ArrayList<Books> listSearchBooks(BookSearch condition) {
         ArrayList<Books> listBooks = new ArrayList<>();
         StringBuilder query = new StringBuilder(
-                "select * from books join category on category.categoryID = books.categoryID where 1 = 1");
+                "SELECT * FROM books JOIN category ON category.categoryID = books.categoryID WHERE 1 = 1");
         ArrayList<Object> params = new ArrayList<>();
 
-        // xay dung cac dieu kien tim kiem
+        // Xây dựng các điều kiện tìm kiếm
         if (condition.getBookID() != null && !condition.getBookID().isEmpty()) {
-            query.append(" and bookID like ?");
+            query.append(" AND bookID LIKE ?");
             params.add("%" + condition.getBookID() + "%");
         }
         if (condition.getBookName() != null && !condition.getBookName().isEmpty()) {
-            query.append(" and bookName like ?");
+            query.append(" AND bookName LIKE ?");
             params.add("%" + condition.getBookName() + "%");
         }
         if (condition.getAuthor() != null && !condition.getAuthor().isEmpty()) {
-            query.append(" and author like ?");
+            query.append(" AND author LIKE ?");
             params.add("%" + condition.getAuthor() + "%");
         }
         if (condition.getYearStart() != null) {
-            query.append(" and yearPublished >= ?");
+            query.append(" AND yearPublished >= ?");
             params.add(condition.getYearStart());
         }
         if (condition.getYearEnd() != null) {
-            query.append(" and yearPublished <= ?");
+            query.append(" AND yearPublished <= ?");
             params.add(condition.getYearEnd());
         }
         if (condition.getPriceMin() != null) {
-            query.append(" and price >= ?");
+            query.append(" AND price >= ?");
             params.add(condition.getPriceMin());
         }
         if (condition.getPriceMax() != null) {
-            query.append(" and price <= ?");
+            query.append(" AND price <= ?");
             params.add(condition.getPriceMax());
         }
         if (condition.getCategoryName() != null && !condition.getCategoryName().isEmpty()) {
-            query.append(" and categoryName = ?");
+            query.append(" AND categoryName = ?");
             params.add(condition.getCategoryName());
         }
         try (Connection conn = JDBCUtil.getConnection();
              PreparedStatement ps = conn.prepareStatement(query.toString())) {
 
-            // gan gia tri cho ?
+            // Gán giá trị cho ?
             for (int i = 0; i < params.size(); i++) {
                 Object cObject = params.get(i);
                 if (cObject instanceof Integer) {
@@ -293,7 +296,7 @@ public class BookDAO  {
                 int yearPublished = rs.getInt("yearPublished");
                 int quantity = rs.getInt("quantity");
                 String urlImage = rs.getString("urlImage");
-                Books bookResult = new Books(bookID, bookName, author, yearPublished, price, quantity, category,urlImage);
+                Books bookResult = new Books(bookID, bookName, author, yearPublished, price, quantity, category, urlImage);
                 listBooks.add(bookResult);
             }
         } catch (SQLException e) {
@@ -301,10 +304,11 @@ public class BookDAO  {
         }
         return listBooks;
     }
-    //phuong thuc tim kiem theo ten
+
+    // Tìm kiếm sách theo tên
     public ArrayList<Books> SearchBookByName(String bookName) {
         ArrayList<Books> listBooks = new ArrayList<>();
-        String query = "select * from books join category on category.categoryID = books.categoryID where bookName like ?";
+        String query = "SELECT * FROM books JOIN category ON category.categoryID = books.categoryID WHERE bookName LIKE ?";
         try (Connection conn = JDBCUtil.getConnection();
              PreparedStatement ps = conn.prepareStatement(query)) {
             String condition = "%" + bookName + "%";
@@ -321,20 +325,20 @@ public class BookDAO  {
         return listBooks;
     }
 
+    // Ánh xạ ResultSet thành Books
     public Books mapResultSetToBook(ResultSet rs) throws SQLException {
         Books book = new Books();
 
-        book.setBookID(rs.getString("bookID")); // Lấy bookID từ cột 'bookID'
-        book.setBookName(rs.getString("bookName")); // Lấy bookName
-        book.setPrice(rs.getDouble("price"));       // Lấy price
-        book.setQuantity(rs.getInt("quantity"));     // Lấy quantity
-        book.setYearPublished(Integer.parseInt(rs.getString("yearPublished")));
-        book.setAuthor(rs.getString("author"));     // Lấy author (nếu có)
+        book.setBookID(rs.getString("bookID"));
+        book.setBookName(rs.getString("bookName"));
+        book.setPrice(rs.getDouble("price"));
+        book.setQuantity(rs.getInt("quantity"));
+        book.setYearPublished(rs.getInt("yearPublished"));
+        book.setAuthor(rs.getString("author"));
         book.setUrlImage(rs.getString("urlImage"));
         String categoryID = rs.getString("categoryID");
         Category category = new CategoryDAO().getCategory(categoryID);
         book.setCategory(category);
-
 
         return book;
     }
