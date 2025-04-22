@@ -788,14 +788,6 @@ public class OrderController implements ActionListener {
         orderView.getTextFieldBookName().setText("");
         orderView.getTextFieldQuantity().setText("1");
         orderView.getTextFieldUnitPrice().setText("");
-
         orderView.setPreviewImage(null);
     }
-
-
 }
-
-
-
-
-
