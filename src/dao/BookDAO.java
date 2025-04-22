@@ -5,6 +5,7 @@ import model.BookSearch;
 import model.Books;
 import model.Category;
 import service.CategoryService;
+import utils.ResultMapper;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -12,10 +13,9 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
-public class BookDAO implements IBookDAO {
+public class BookDAO  {
 
     // Thêm sách vào CSDL
-    @Override
     public int insert(Books books) {
         int result = 0;
         String sql = "INSERT INTO books(bookID, bookName, author, yearPublished, price, quantity, categoryID) VALUES (?, ?, ?, ?, ?, ?, ?)";
@@ -36,7 +36,6 @@ public class BookDAO implements IBookDAO {
     }
 
     // Lấy toàn bộ sách từ CSDL
-    @Override
     public ArrayList<Books> getAll() {
         ArrayList<Books> listBooks = new ArrayList<>();
         String sql = "SELECT * FROM books";
@@ -70,7 +69,6 @@ public class BookDAO implements IBookDAO {
         return listBooks;
     }
 
-    @Override
     public int update(Books books) {
         int result = 0;
         String query = "UPDATE books SET bookName = ?,author = ?,yearPublished = ?,price = ?,quantity = ?,categoryID = ? WHERE bookID = ?";
@@ -90,7 +88,6 @@ public class BookDAO implements IBookDAO {
         return result;
     }
 
-    @Override
     public int delete(Books books) {
         int result = 0;
         String query = "DELETE FROM books WHERE bookID = ?";
@@ -104,7 +101,6 @@ public class BookDAO implements IBookDAO {
         return result;
     }
 
-    @Override
     public ArrayList<Books> listSearchBooks(BookSearch condition) {
         ArrayList<Books> listBooks = new ArrayList<>();
         StringBuilder query = new StringBuilder(
@@ -172,6 +168,25 @@ public class BookDAO implements IBookDAO {
             }
         } catch (SQLException e) {
             e.printStackTrace();
+        }
+        return listBooks;
+    }
+    //phuong thuc tim kiem theo ten
+    public ArrayList<Books> SearchBookByName(String bookName) {
+        ArrayList<Books> listBooks = new ArrayList<>();
+        String query = "select * from books join category on category.categoryID = books.categoryID where bookName like ?";
+        try (Connection conn = JDBCUtil.getConnection();
+             PreparedStatement ps = conn.prepareStatement(query)) {
+            String condition = "%" + bookName + "%";
+            ps.setString(1, condition);
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                Books books = ResultMapper.mapResultSetToBooks(rs);
+                listBooks.add(books);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            throw new RuntimeException(e + e.getMessage());
         }
         return listBooks;
     }

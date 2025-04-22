@@ -11,10 +11,12 @@ import java.util.Map;
 public class InvoiceDetailService {
     private final InvoiceDAO invoiceDAO;
     private final DiscountDetailService discountDetailService;
+
     public InvoiceDetailService(InvoiceDAO invoiceDAO, DiscountDetailService discountDetailService) {
         this.invoiceDAO = invoiceDAO;
         this.discountDetailService = discountDetailService;
     }
+
     public InvoiceDetailService() {
         this.invoiceDAO = new InvoiceDAO();
         this.discountDetailService = new DiscountDetailService();
@@ -66,11 +68,15 @@ public class InvoiceDetailService {
 
         // Gán Books vào InvoiceDetails
         for (InvoiceDetails invoiceDetail : invoices) {
-            Books book = listBooks.stream()
-                    .filter(b -> b.getBookID().equals(invoiceDetail.getBookID()))
-                    .findFirst()
-                    .orElse(null);
-            invoiceDetail.setBooks(book);
+            String bookID = invoiceDetail.getBookID();
+            Books bookMatching = null;
+            for (Books book : listBooks) {
+                if (book.getBookID().equals(bookID)) {
+                    bookMatching = book;
+                    break;
+                }
+            }
+            invoiceDetail.setBooks(bookMatching);
         }
 
         return invoices;
@@ -106,8 +112,10 @@ public class InvoiceDetailService {
                     !dayOfEstablishment.before(startDate) && !dayOfEstablishment.after(endDate)) {
                 double percent = discountDetail.getPercent();
                 // Cập nhật percent cao nhất cho bookID
-                bestDiscounts.compute(bookID, (key, oldPercent) ->
-                        oldPercent == null || percent > oldPercent ? percent : oldPercent);
+                //Nếu sách chưa có giảm giá hoặc phần trăm mới cao hơn, cập nhật giá trị
+                if (!bestDiscounts.containsKey(bookID) || percent > bestDiscounts.get(bookID)) {
+                    bestDiscounts.put(bookID, percent);
+                }
             }
         }
 
@@ -130,5 +138,10 @@ public class InvoiceDetailService {
                 invoiceDetail.setTotalMoney(invoiceDetail.getBooks().getPrice() * invoiceDetail.getQuantity());
             }
         }
+    }
+
+    //chuc nang xoa chi tiet hoa don thong qua ma hoa don
+    public boolean isDeleteInvoiceDetail(String invoiceID) {
+        return invoiceDAO.deleteInvoiceDetailsByInvoiceID(invoiceID) > 0;
     }
 }

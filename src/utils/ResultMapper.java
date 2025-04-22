@@ -57,10 +57,17 @@ public class ResultMapper {
     }
 
     public static Books mapResultSetToBooks(ResultSet rs) throws SQLException {
-        return new Books(rs.getString("bookID"), rs.getString("bookName"), rs.getString("author")
-                , rs.getInt("yearPublished"), rs.getDouble("price"), rs.getInt("quantity"), mapResultSetToCategory(rs));
+        Category category = mapResultSetToCategory(rs);
+        String bookID = rs.getString("bookID");
+        String bookName = rs.getString("bookName");
+        String author = rs.getString("author");
+        double price = rs.getDouble("price");
+        int yearPublished = rs.getInt("yearPublished");
+        int quantity = rs.getInt("quantity");
+        return new Books(bookID, bookName, author, yearPublished, price, quantity, category);
     }
+
     public static InvoiceDetails mapResultSetToInvoiceDetails(ResultSet rs) throws SQLException {
-        return new InvoiceDetails(mapResultSetToInvoice(rs),mapResultSetToBooks(rs),rs.getInt("quantity"),rs.getDouble("price"));
+        return new InvoiceDetails(mapResultSetToInvoice(rs), mapResultSetToBooks(rs), rs.getInt("quantity"), rs.getDouble("price"));
     }
 }

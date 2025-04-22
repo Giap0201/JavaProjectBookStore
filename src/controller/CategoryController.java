@@ -19,4 +19,5 @@ public class CategoryController {
     public ArrayList<Category> getCategories() {
         return service.getCategory();
     }
+
 }

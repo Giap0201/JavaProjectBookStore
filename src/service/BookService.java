@@ -30,4 +30,7 @@ public class BookService {
     public ArrayList<Books> listBookSearch(BookSearch condition){
         return bookDAO.listSearchBooks(condition);
     }
+    public ArrayList<Books> bookSearchByName(String bookName){
+        return bookDAO.SearchBookByName(bookName);
+    }
 }

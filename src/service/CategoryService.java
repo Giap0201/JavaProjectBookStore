@@ -16,4 +16,7 @@ public class CategoryService {
    public ArrayList<Category> getCategory() {
        return dao.listCategory();
    }
+   public Category getCategoryByName(String categoryName) {
+       return dao.getCategory(categoryName);
+   }
 }

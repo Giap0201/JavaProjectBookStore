@@ -2,6 +2,7 @@ package dao;
 
 import database.JDBCUtil;
 import model.Category;
+import utils.ResultMapper;
 
 import javax.swing.*;
 import java.sql.Connection;
@@ -18,14 +19,29 @@ public class CategoryDAO {
              PreparedStatement ps = conn.prepareStatement(sql)) {
             ResultSet rs = ps.executeQuery();
             while (rs.next()) {
-                String categoryID = rs.getString("CategoryID");
-                String categoryName = rs.getString("CategoryName");
-                Category category = new Category(categoryID, categoryName);
+                Category category = ResultMapper.mapResultSetToCategory(rs);
                 list.add(category);
             }
         } catch (SQLException e) {
             JOptionPane.showMessageDialog(null, e.getMessage());
         }
         return list;
+    }
+    //phuong thuc lay category theo then
+    public Category getCategory(String categoryName) {
+        String sql = "select * from Category where CategoryName=?";
+        Category category = null;
+        try(Connection conn = JDBCUtil.getConnection();
+        PreparedStatement ps = conn.prepareStatement(sql)){
+            ps.setString(1,categoryName);
+            ResultSet rs = ps.executeQuery();
+            while(rs.next()){
+                category = ResultMapper.mapResultSetToCategory(rs);
+            }
+        }catch (SQLException e){
+            e.printStackTrace();
+            throw new RuntimeException(e.getMessage());
+        }
+        return category;
     }
 }

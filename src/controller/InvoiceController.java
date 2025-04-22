@@ -62,7 +62,7 @@ public class InvoiceController implements ActionListener {
         manageInvoiceView.getBtnDelete().addActionListener(this);
         manageInvoiceView.getBtnSearchCustomer().addActionListener(this);
         manageInvoiceView.getBtnSearchEmployee().addActionListener(this);
-        manageInvoiceView.getBtnSave().addActionListener(this);
+//        manageInvoiceView.getBtnSave().addActionListener(this);
         manageInvoiceView.getBtnChange().addActionListener(this);
         manageInvoiceView.getBtnLoad().addActionListener(this);
         manageInvoiceView.getBtnSearch().addActionListener(this);
@@ -279,14 +279,15 @@ public class InvoiceController implements ActionListener {
     }
 
     private void deleteMultipleInvoice(List<String> ids) {
-        if (!CommonView.confirmAction(manageInvoiceView, "Bạn có chắc chắn muốn xóa " + ids.size() + " hóa đơn đã chọn?")) {
+        if (!CommonView.confirmAction(manageInvoiceView, "Bạn có chắc chắn muốn xóa " + ids.size() + " hóa đơn đã chọn?\n Bao gồm tất " +
+                "cả những thông tin liên quan!")) {
             return;
         }
         List<String> failed = new ArrayList<>();
         int success = 0;
         for (String id : ids) {
             try {
-                if (invoiceService.deleteInvoice(id)) {
+                if (invoiceDetailService.isDeleteInvoiceDetail(id) && invoiceService.deleteInvoice(id)) {
                     success++;
                 } else {
                     failed.add(id + " (Không thể xoá)");
@@ -299,11 +300,11 @@ public class InvoiceController implements ActionListener {
     }
 
     private void deleteSingleInvoice(String id) {
-        if (!CommonView.confirmAction(manageInvoiceView, "Bạn có chắc chắn muốn xóa hóa đơn có ID: " + id + "?")) {
+        if (!CommonView.confirmAction(manageInvoiceView, "Bạn có chắc chắn muốn xóa hóa đơn có ID: " + id + "?\nBao gồm các thông tin liên quan!")) {
             return;
         }
         try {
-            if (invoiceService.deleteInvoice(id)) {
+            if (invoiceDetailService.isDeleteInvoiceDetail(id) && invoiceService.deleteInvoice(id)) {
                 CommonView.showInfoMessage(manageInvoiceView, "Xóa hóa đơn thành công!");
             } else {
                 CommonView.showErrorMessage(manageInvoiceView, "Không thể xóa hóa đơn!");

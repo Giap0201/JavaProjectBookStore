@@ -8,9 +8,8 @@ import utils.ResultMapper;
 import java.sql.*;
 import java.util.ArrayList;
 
-public class EmployeeDAO implements InterfaceDAO{
+public class EmployeeDAO{
 
-    @Override
     public int insert(Employees employee) {
         int ketQua = 0 ;
         String sql = "INSERT INTO employees(employeeID,lastName,firstName,position,email,phoneNumber,salary,gender,dateOfBirth) VALUES(?,?,?,?,?,?,?,?,?)";
@@ -35,7 +34,6 @@ public class EmployeeDAO implements InterfaceDAO{
         return ketQua;
     }
 
-    @Override
     public int update(Employees employee) {
         int ketQua = 0;
         String sql = "UPDATE employees SET lastName=?,firstName=?,position=?,email=?,phoneNumber=?,salary=?,gender=?,dateOfBirth=? WHERE employeeID=?";
@@ -69,7 +67,6 @@ public class EmployeeDAO implements InterfaceDAO{
         return ketQua;
     }
 
-    @Override
     public int deleteById(String employeeId) {
         int ketQua = 0;
         String sql = "DELETE FROM employees WHERE employeeID=?";
@@ -86,7 +83,6 @@ public class EmployeeDAO implements InterfaceDAO{
         return ketQua;
     }
 
-    @Override
     public ArrayList<Employees> getAll() {
         ArrayList<Employees> employees = new ArrayList<>();
         String sql = "SELECT * FROM employees";
@@ -104,7 +100,6 @@ public class EmployeeDAO implements InterfaceDAO{
         return employees;
     }
 
-    @Override
     public Employees getById(int id) {
         return null;
     }
@@ -157,7 +152,6 @@ public class EmployeeDAO implements InterfaceDAO{
         return employees;
     }
 
-    @Override
     public Employees selectByID(String id) {
         Employees employee = null;
         String sql = "SELECT * FROM employees WHERE employeeID=?";

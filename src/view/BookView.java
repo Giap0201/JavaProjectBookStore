@@ -494,10 +494,4 @@ public class BookView extends JPanel {
         return labelTotalBooksValue;
     }
 
-    public static void main(String[] args) {
-        BookView a = new BookView();
-        JPanel panel = a.initBookView();
-        JFrame app = new App();
-        app.add(panel, BorderLayout.CENTER);
-    }
 }
