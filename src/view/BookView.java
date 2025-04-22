@@ -376,6 +376,7 @@ public class BookView extends JPanel {
         btnReset.addActionListener(bookController);
         btnSaveFile.addActionListener(bookController);
         btnSearch.addActionListener(bookController);
+        btnUploadImage.addActionListener(bookController);
         return panelContent;
     }
 

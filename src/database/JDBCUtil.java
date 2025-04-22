@@ -10,7 +10,7 @@ public class JDBCUtil {
     //dung static de khong can tao doi tuong moi, no nhu la bien tinh
     private static final String URL = "jdbc:mysql://localhost:3306/bookstore";
     private static final String USER = "root";
-    private static final String PASSWORD = "thai123";
+    private static final String PASSWORD = "";
 
     public static Connection getConnection() {
         Connection c = null;

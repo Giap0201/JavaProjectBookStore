@@ -7,6 +7,7 @@ public class OrderDetails {
     private int quantity;
     private double total; // Thành tiền cho dòng này
 
+
     public OrderDetails() {
     }
 
