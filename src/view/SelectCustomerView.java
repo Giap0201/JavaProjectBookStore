@@ -108,10 +108,5 @@ public class SelectCustomerView extends JDialog {
         this.customers = customers;
     }
 
-    public static void main(String[] args) {
-        SwingUtilities.invokeLater(() -> {
-            SelectCustomerView s = new SelectCustomerView();
-            s.setVisible(true);
-        });
-    }
+
 }

@@ -12,64 +12,12 @@ import java.util.List; // Import List
 
 
 public class OrderDAO {
-    // BookService có thể không cần trực tiếp trong DAO nếu chỉ lấy ID
-    // private BookService bookService = new BookService();
-    private GetDiscountByBookId getDiscountByBookId = new GetDiscountByBookId(); // Vẫn cần để lấy discount khi get
-
-    // Đổi tên hàm cho rõ ràng
-    public boolean insertBookDetail(OrderDetails orderDetails) {
-        int result = 0;
-        // Sửa lại tên bảng/cột nếu cần, thêm cột discount nếu lưu cả % giảm giá item
-        String sql = "INSERT INTO orderdetails(orderID, bookID, quantity, price) VALUES(?,?,?,?)";
-        try (Connection connection = JDBCUtil.getConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
-
-            preparedStatement.setString(1, orderDetails.getOrderId());
-            preparedStatement.setString(2, orderDetails.getBook().getBookID());
-            preparedStatement.setInt(3, orderDetails.getQuantity());
-            preparedStatement.setDouble(4, orderDetails.getBook().getPrice());
-
-            result = preparedStatement.executeUpdate();
-        } catch (SQLException e) {
-            System.err.println("SQL Error khi insert OrderDetail: " + e.getMessage());
-            e.printStackTrace();
-        }
-        return result > 0;
-    }
-
-    // Đổi tên hàm cho rõ ràng
-    public int insertOrderHeader(Orders order) {
-        int result = 0;
-        // Sửa lại tên bảng/cột nếu cần
-        String sql = "INSERT INTO orders(orderID, customerID, dayOfEstablishment, status) VALUES(?,?,?,?)";
-        try (Connection connection = JDBCUtil.getConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
-
-            preparedStatement.setString(1, order.getOrderId());
-            preparedStatement.setString(2, order.getCustomer().getCustomerID());
-            // Chuyển java.util.Date sang java.sql.Date
-            if (order.getOrderDate() != null) {
-                preparedStatement.setDate(3, new java.sql.Date(order.getOrderDate().getTime()));
-            } else {
-                preparedStatement.setNull(3, Types.DATE);
-            }
-            preparedStatement.setString(4, order.getStatus());
-
-            result = preparedStatement.executeUpdate();
-        } catch (SQLException e) {
-            System.err.println("SQL Error khi insert OrderHeader: " + e.getMessage());
-            e.printStackTrace();
-        }
-        return result;
-    }
-
     // Lấy tất cả chi tiết của một đơn hàng (có thể cần lấy thêm discount_percent)
     public ArrayList<OrderDetails> getAllOrderDetails(String orderId) {
         ArrayList<OrderDetails> orderDetailsList = new ArrayList<>();
-        // Thêm cột discount_percent vào câu SELECT
         String sql = "SELECT od.orderID,  od.quantity, od.price, b.* " + // Lấy cả thông tin sách
                 "FROM orderdetails od " +
-                "JOIN books b ON od.bookID = b.bookID " + // Join với bảng books
+                "JOIN books b ON od.bookID = b.bookID " +
                 "WHERE od.orderID = ?";
         try (Connection connection = JDBCUtil.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
@@ -99,7 +47,6 @@ public class OrderDAO {
         return orderDetailsList;
     }
 
-    // --- PHƯƠNG THỨC MỚI QUAN TRỌNG VỚI TRANSACTION ---
     public boolean saveOrderTransaction(Orders order, List<OrderDetails> orderDetailsList) {
         Connection connection = null;
         boolean success = false;
@@ -113,7 +60,7 @@ public class OrderDAO {
             connection = JDBCUtil.getConnection();
             connection.setAutoCommit(false); // Bắt đầu transaction
 
-            // 1. Insert Order Header (Giữ nguyên)
+            // 1. Insert Order Header
             try (PreparedStatement psOrder = connection.prepareStatement(insertOrderSQL)) {
                 psOrder.setString(1, order.getOrderId());
                 psOrder.setString(2, order.getCustomer().getCustomerID());
@@ -149,7 +96,7 @@ public class OrderDAO {
                 }
             }
 
-            // 3. Update Book Stock (Giữ nguyên)
+            // 3. Update Book Stock
             try (PreparedStatement psStock = connection.prepareStatement(updateStockSQL)) {
                 for (OrderDetails detail : orderDetailsList) {
                     psStock.setInt(1, detail.getQuantity());

@@ -29,4 +29,8 @@ public class DiscountDetailService {
     public boolean deleteDiscountDetailsByID(String discountID) {
         return discountDetailsDTO.deleteAll(discountID) > 0;
     }
+
+    public float getDiscountByBookId(String bookId){
+        return discountDetailsDTO.getDiscount(bookId);
+    }
 }

@@ -1,13 +1,10 @@
 package controller;
 
-import dao.GetDiscountByBookId;
 import model.Books;
 import model.Customers;
 import model.OrderDetails;
 import model.Orders;
-import service.BookService;
-import service.CustomerService;
-import service.OrderService;
+import service.*;
 import utils.CommonView;
 import utils.ImageUtils;
 import view.CreateInvoiceView;
@@ -38,8 +35,8 @@ public class OrderController implements ActionListener {
     private CustomerService customerService ;
     private SelectBookForOrderView selectBookForOrderView ;
     private BookService bookService ;
-    private Books currentSelectedBook = null; // Lưu sách đang được chọn
-    private GetDiscountByBookId getDiscountByBookId; // Để lấy discount
+    private Books currentSelectedBook = null;
+    private DiscountDetailService discountDetailService ;
 
 
 
@@ -56,7 +53,7 @@ public class OrderController implements ActionListener {
         this.customerService = new CustomerService() ;
         this.bookService = new BookService() ;
         this.currencyFormatter = NumberFormat.getCurrencyInstance(new Locale("vi", "VN"));
-        this.getDiscountByBookId = new GetDiscountByBookId();
+        this.discountDetailService = new DiscountDetailService() ;
         addTableSelectionListener();
         start();
     }
@@ -214,17 +211,12 @@ public class OrderController implements ActionListener {
         }
     }
 
-    //khi click vao tim kiem thi chon khach hang
     private void openSelectBook() {
-        // Nếu chưa có cửa sổ chọn sách, tạo mới
-        // if (selectBookForOrderView == null || !selectBookForOrderView.isDisplayable()) {
         selectBookForOrderView = new SelectBookForOrderView();
-        // }
-
         selectBookForOrderView.setVisible(true); // Hiển thị cửa sổ chọn sách
 
-        // Lấy sách được chọn từ cửa sổ đó (SelectBookForOrderView cần có phương thức trả về sách đã chọn)
-        Books selectedBook = selectBookForOrderView.getBook(); // Giả sử có phương thức getBook()
+        // Lấy sách được chọn từ cửa sổ đó
+        Books selectedBook = selectBookForOrderView.getBook();
 
         if (selectedBook != null) {
             currentSelectedBook = selectedBook; // Lưu lại sách vừa chọn
@@ -326,7 +318,7 @@ public class OrderController implements ActionListener {
                     OrderDetails tempDetail = new OrderDetails();
                     tempDetail.setBook(currentSelectedBook);
                     tempDetail.setQuantity(newQuantity);
-                    tempDetail.setDiscount(getDiscountByBookId.getDiscountByBookId(currentSelectedBook.getBookID())); // Lấy lại discount
+                    tempDetail.setDiscount(discountDetailService.getDiscountByBookId(currentSelectedBook.getBookID())); // Lấy lại discount
                     model.setValueAt(tempDetail.getTotal(), i, 5); // Cập nhật thành tiền
                     updateInvoiceTotals(); // Cập nhật tổng hóa đơn
                     clearItemInputFields(); // Xóa input
@@ -343,7 +335,7 @@ public class OrderController implements ActionListener {
                     OrderDetails tempDetail = new OrderDetails();
                     tempDetail.setBook(currentSelectedBook);
                     tempDetail.setQuantity(quantity);
-                    tempDetail.setDiscount(getDiscountByBookId.getDiscountByBookId(currentSelectedBook.getBookID()));
+                    tempDetail.setDiscount(discountDetailService.getDiscountByBookId(currentSelectedBook.getBookID()));
                     model.setValueAt(tempDetail.getTotal(), i, 5);
                     updateInvoiceTotals();
                     clearItemInputFields();
@@ -358,7 +350,7 @@ public class OrderController implements ActionListener {
 
 
         // 4. Lấy % giảm giá cho sách này (nếu có)
-        float itemDiscountPercent = getDiscountByBookId.getDiscountByBookId(currentSelectedBook.getBookID());
+        float itemDiscountPercent = discountDetailService.getDiscountByBookId(currentSelectedBook.getBookID());
 
         // 5. Tạo đối tượng OrderDetails tạm để tính toán
         OrderDetails newItem = new OrderDetails();
@@ -476,17 +468,6 @@ public class OrderController implements ActionListener {
                 totalAmount += ((Number) value).doubleValue();
             }
         }
-
-//        double totalSpending = 0.0;
-//
-//        for (int i = 0; i < model.getRowCount(); i++) {
-//            // Lấy giá trị từ cột "Thành tiền" (cột 5)
-//            Object value = model.getValueAt(i, 5);
-//            if (value instanceof Number) {
-//                totalSpending += ((Number) value).doubleValue();
-//            }
-//        }
-
         // Hiển thị tổng tiền hàng (đã định dạng)
         orderView.setFormattedCurrency(orderView.getTextFieldTotalAmount(), totalAmount);
 
@@ -557,10 +538,6 @@ public class OrderController implements ActionListener {
             orderView.getTextFieldInvoiceId().requestFocus();
             return;
         }
-        // TODO: Kiểm tra xem Mã hóa đơn đã tồn tại chưa (nếu cần)
-        // boolean exists = orderService.checkInvoiceIdExists(invoiceId);
-        // if (exists) { ... }
-
         if (customerId.isEmpty()) {
             CommonView.showErrorMessage(null, "Vui lòng chọn hoặc thêm khách hàng.");
             orderView.getTextFieldPhoneNumber().requestFocus();

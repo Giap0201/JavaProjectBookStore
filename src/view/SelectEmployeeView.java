@@ -111,11 +111,5 @@ public class SelectEmployeeView extends JDialog {
         this.employee = employee;
     }
 
-    public static void main(String[] args) {
-        // Sử dụng invokeLater cho an toàn luồng Swing - Giữ nguyên
-        SwingUtilities.invokeLater(() -> {
-            SelectEmployeeView s = new SelectEmployeeView();
-            s.setVisible(true);
-        });
-    }
+
 }

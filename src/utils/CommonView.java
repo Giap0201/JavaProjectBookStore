@@ -81,10 +81,6 @@ public final class CommonView {
 
     /**
      * Hiển thị hộp thoại xác nhận hành động.
-     *
-     * @param parent  Thành phần cha của hộp thoại (có thể null)
-     * @param message Thông điệp xác nhận
-     * @return true nếu người dùng chọn "Yes", false nếu chọn "No"
      */
     public static boolean confirmAction(JComponent parent, String message) {
         return JOptionPane.showConfirmDialog(parent, message, "Xác nhận",

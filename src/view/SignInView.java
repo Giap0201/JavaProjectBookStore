@@ -152,8 +152,5 @@ public class SignInView extends JFrame {
         this.btnCancel = btnCancel;
     }
 
-    public static void main(String[] args) {
-        new SignInView();
-    }
 
 }

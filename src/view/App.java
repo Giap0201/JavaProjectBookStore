@@ -147,10 +147,5 @@ public class App extends JFrame {
     public JPanel getPanelInvoice() {
         return panelInvoice;
     }
-
-
-    public static void main(String[] args) {
-        new App();
-    }
-
+    
 }
