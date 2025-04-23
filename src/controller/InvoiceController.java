@@ -56,13 +56,14 @@ public class InvoiceController implements ActionListener {
     private void setEnabledFiled() {
         manageInvoiceView.getTextFieldCustomerId().setEditable(false);
         manageInvoiceView.getTextFieldEmployee().setEditable(false);
+        manageInvoiceView.getBtnSave().setEnabled(false);
     }
 
     private void registerButtonListeners() {
         manageInvoiceView.getBtnDelete().addActionListener(this);
         manageInvoiceView.getBtnSearchCustomer().addActionListener(this);
         manageInvoiceView.getBtnSearchEmployee().addActionListener(this);
-//        manageInvoiceView.getBtnSave().addActionListener(this);
+        manageInvoiceView.getBtnSave().addActionListener(this);
         manageInvoiceView.getBtnChange().addActionListener(this);
         manageInvoiceView.getBtnLoad().addActionListener(this);
         manageInvoiceView.getBtnSearch().addActionListener(this);
@@ -181,13 +182,11 @@ public class InvoiceController implements ActionListener {
         String employeeId = manageInvoiceView.getTextFieldEmployee().getText().trim();
         java.util.Date date = manageInvoiceView.getDate().getDate();
         validateFormData(invoiceId, customerId, employeeId, date);
-
         java.sql.Date sqlDate = new java.sql.Date(date.getTime());
         String status = (String) manageInvoiceView.getjComboBoxTT().getSelectedItem();
         if (manageInvoiceView.getjComboBoxTT().getSelectedIndex() <= 0 || status == null) {
             throw new IllegalArgumentException("Trạng thái không hợp lệ!");
         }
-
         Customers customer = customerService.getCustomerById(customerId);
         if (customer == null) {
             throw new IllegalArgumentException("Khách hàng với ID " + customerId + " không tồn tại!");
@@ -196,7 +195,6 @@ public class InvoiceController implements ActionListener {
         if (employee == null) {
             throw new IllegalArgumentException("Nhân viên với ID " + employeeId + " không tồn tại!");
         }
-
         return new Invoice(invoiceId, sqlDate, customer, employee, status);
     }
 
@@ -209,6 +207,7 @@ public class InvoiceController implements ActionListener {
         }
     }
 
+    //lay du lieu tu bang ra va set vao form
     private void loadInvoiceToForm(String invoiceId) {
         if (invoiceId == null) {
             int selectedRow = manageInvoiceView.getTableInvoice().getSelectedRow();
@@ -382,16 +381,13 @@ public class InvoiceController implements ActionListener {
                         manageInvoiceView.getTextFieldInvoiceId().setEnabled(true);
                         try {
                             loadInvoiceToForm(null);
-
                             // Lấy invoiceID từ dòng được chọn
                             String invoiceID = (String) manageInvoiceView.getTableInvoice().getValueAt(selectedRows[0], 0);
-
                             // Lấy thông tin hóa đơn
                             Invoice invoice = invoiceService.getInvoiceByID(invoiceID);
                             if (invoice == null) {
                                 throw new IllegalArgumentException("Hóa đơn với ID " + invoiceID + " không tồn tại!");
                             }
-
                             // Lấy chi tiết hóa đơn
                             ArrayList<InvoiceDetails> invoiceDetails = invoiceDetailService.getInvoiceDetailByID(invoiceID);
                             updateInvoiceDetailsPanel(invoice, invoiceDetails);

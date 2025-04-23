@@ -37,6 +37,7 @@ public class DiscountController implements ActionListener {
         setComboBox(discountService.listMapDiscount());
         addListenerTableDiscount();
         registerButtonListeners();
+        view.getBtnDeleteDetail().setEnabled(false);
     }
 
     private void registerButtonListeners() {
@@ -131,7 +132,8 @@ public class DiscountController implements ActionListener {
             throw new IllegalArgumentException("Vui lòng chọn chương trình cần xóa!");
         }
         if (CommonView.confirmAction(view, "Bạn có chắc chắn muốn xóa chương trình này?")) {
-            discountDetailService.deleteDiscountDetailsByID(discountID);
+//            discountDetailService.deleteDiscountDetailsByID(discountID);
+//            không cho xoá cái đã có
             if (!discountService.deleteCondition(discountID)) {
                 throw new IllegalArgumentException("Không thể xóa chương trình.");
             }
