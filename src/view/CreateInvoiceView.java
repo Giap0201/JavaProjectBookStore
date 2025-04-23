@@ -591,4 +591,5 @@ public class CreateInvoiceView extends Component {
     public void setTable(JTable table) {
         this.table = table;
     }
+
 }

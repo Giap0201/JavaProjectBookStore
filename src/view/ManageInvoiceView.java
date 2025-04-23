@@ -98,9 +98,9 @@ public class ManageInvoiceView extends JPanel {
         btnChange.setBounds(140, 210, 100, 30);
         panelContent1.add(btnChange);
 
-//        btnSave = CommonView.createButton("Lưu Excel", new Color(60, 197, 71));
-//        btnSave.setBounds(260, 210, 110, 30);
-//        panelContent1.add(btnSave);
+        btnSave = CommonView.createButton("Lưu Excel", new Color(60, 197, 71));
+        btnSave.setBounds(260, 210, 110, 30);
+        panelContent1.add(btnSave);
 
         btnLoad = CommonView.createButton("Làm mới", new Color(211, 99, 167));
         btnLoad.setBounds(20, 250, 100, 30);

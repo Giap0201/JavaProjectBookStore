@@ -16,7 +16,7 @@ The project follows a layered architecture pattern with the following components
   - `database/` - Database related code
   - `utils/` - Utility classes
   - `images/` - Image resources
-  - `test/` - Test classes
+  - `main/` - Test classes
 
 ### 2.2 Technology Stack
 - Programming Language: Java
