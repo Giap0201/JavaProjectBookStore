@@ -38,6 +38,7 @@ public class DiscountController implements ActionListener {
         addListenerTableDiscount();
         registerButtonListeners();
         view.getBtnDeleteDetail().setEnabled(false);
+        view.getBtnEdit().setEnabled(false);
     }
 
     private void registerButtonListeners() {

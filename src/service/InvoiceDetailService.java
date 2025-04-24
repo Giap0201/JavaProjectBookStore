@@ -47,7 +47,7 @@ public class InvoiceDetailService {
         return invoices;
     }
 
-    // Lấy chi tiết hóa đơn và thông tin sách
+    // Lấy chi tiết hóa đơn và thông tin sách, mục đích ánh xạ được một lớp dựa trên thuộc tính
     private ArrayList<InvoiceDetails> fetchInvoiceDetailsWithBooks(String invoiceID) {
         ArrayList<InvoiceDetails> invoices = new ArrayList<>();
         ArrayList<String> bookIDs = new ArrayList<>();
@@ -90,11 +90,11 @@ public class InvoiceDetailService {
 
     // Hàm phụ: Kiểm tra và áp dụng giảm giá
     private void applyDiscounts(ArrayList<InvoiceDetails> invoices, java.util.Date dayOfEstablishment) {
-        // Lấy danh sách bookIDs
-        ArrayList<String> bookIDs = new ArrayList<>();
-        for (InvoiceDetails invoiceDetail : invoices) {
-            bookIDs.add(invoiceDetail.getBookID());
-        }
+//        // Lấy danh sách bookIDs
+//        ArrayList<String> bookIDs = new ArrayList<>();
+//        for (InvoiceDetails invoiceDetail : invoices) {
+//            bookIDs.add(invoiceDetail.getBookID());
+//        }
 
         // Lấy danh sách giảm giá
         ArrayList<DiscountDetails> listBookDiscount = discountDetailService.getAllDiscountDetails();
@@ -129,13 +129,13 @@ public class InvoiceDetailService {
                 invoiceDetail.setDiscount(percent);
 
                 // Tính totalMoney (tổng tiền sau giảm giá)
-                double discountValue = invoiceDetail.getBooks().getPrice() * invoiceDetail.getQuantity() * (percent / 100);
-                double total = invoiceDetail.getBooks().getPrice() * invoiceDetail.getQuantity() - discountValue;
+                double discountValue = invoiceDetail.getPrice() * invoiceDetail.getQuantity() * (percent / 100);
+                double total = invoiceDetail.getPrice() * invoiceDetail.getQuantity() - discountValue;
                 invoiceDetail.setTotalMoney(total);
             } else {
                 // Nếu không có giảm giá
                 invoiceDetail.setDiscount(0);
-                invoiceDetail.setTotalMoney(invoiceDetail.getBooks().getPrice() * invoiceDetail.getQuantity());
+                invoiceDetail.setTotalMoney(invoiceDetail.getPrice() * invoiceDetail.getQuantity());
             }
         }
     }

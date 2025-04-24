@@ -96,7 +96,7 @@ public class DiscountDetailsDAO {
                 Discount discount_result = new Discount(rs.getString("discountID"), rs.getString("nameDiscount"), rs.getString("typeDiscount"),
                         rs.getDate("startDate"), rs.getDate("endDate"));
                 double percent = rs.getDouble("percent");
-                DiscountDetails discountDetails = new DiscountDetails(discount, percent, book);
+                DiscountDetails discountDetails = new DiscountDetails(discount_result, percent, book);
                 listDiscountDetails.add(discountDetails);
             }
         }catch (SQLException e){
