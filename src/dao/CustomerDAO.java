@@ -8,12 +8,14 @@ import java.sql.*;
 import java.util.ArrayList;
 
 public class CustomerDAO {
+
+
     public int insert(Customers customer) {
         int ketQua = 0;
-        String sql = "INSERT INTO customer (customerID, lastName, firstName, gender, phoneNumber, email, dateOfBirth, totalMoney, creationDate, note) " +
-                "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO customer (customerID, lastName, firstName, gender, phoneNumber, email, dateOfBirth, totalMoney, creationDate, note) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
         try (Connection conn = JDBCUtil.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
+
             stmt.setString(1, customer.getCustomerID());
             stmt.setString(2, customer.getLastName());
             stmt.setString(3, customer.getFirstName());
@@ -32,9 +34,13 @@ public class CustomerDAO {
                 stmt.setNull(9, Types.DATE);
             }
             stmt.setString(10, customer.getNote());
+
             ketQua = stmt.executeUpdate();
+            System.out.println("Đã thực thi: " + sql);
+            System.out.println("Có " + ketQua + " dòng bị thay đổi!");
+
         } catch (SQLException e) {
-            e.printStackTrace(); // In lỗi ra console để debug
+            e.printStackTrace();
         }
         return ketQua;
     }
@@ -62,7 +68,7 @@ public class CustomerDAO {
                 stmt.setNull(8, Types.DATE);
             }
             stmt.setString(9, customer.getNote());
-            stmt.setString(10, customer.getCustomerID()); // WHERE clause
+            stmt.setString(10, customer.getCustomerID());
 
             ketQua = stmt.executeUpdate();
             System.out.println("Đã thực thi: " + sql);
@@ -74,7 +80,6 @@ public class CustomerDAO {
         return ketQua;
     }
 
-    // Thay đổi tham số hoặc tạo hàm mới để xóa theo ID
     public int deleteById(String customerId) {
         int ketQua = 0;
         String sql = "DELETE FROM customer WHERE customerID=?";
@@ -162,25 +167,17 @@ public class CustomerDAO {
     }
 
 
-//    public Customers selectbyId(Customers customers) {
-//        if (customers != null && customers.getCustomerID() != null) {
-//            return selectById(customers.getCustomerID());
-//        }
-//        return null;
-//    }
+
 
     // Phương thức search linh hoạt hơn
     public ArrayList<Customers> search(String field, String value, String gender) {
         ArrayList<Customers> customers = new ArrayList<>();
-        // Xây dựng câu lệnh SQL động một cách an toàn
-        StringBuilder sqlBuilder = new StringBuilder("SELECT * FROM customer WHERE 1=1"); // Bắt đầu với điều kiện luôn đúng
+        StringBuilder sqlBuilder = new StringBuilder("SELECT * FROM customer WHERE 1=1");
 
-        // Sử dụng LIKE cho tìm kiếm chuỗi (an toàn hơn với ký tự đặc biệt)
         if (value != null && !value.trim().isEmpty()) {
             sqlBuilder.append(" AND ").append(field).append(" LIKE ?");
         }
 
-        // Thêm điều kiện giới tính nếu được chọn
         if (gender != null && !gender.isEmpty()) {
             sqlBuilder.append(" AND gender = ?");
         }
@@ -195,7 +192,6 @@ public class CustomerDAO {
 
             int paramIndex = 1;
             if (value != null && !value.trim().isEmpty()) {
-                // Thêm dấu % để tìm kiếm gần đúng
                 stmt.setString(paramIndex++, "%" + value + "%");
                 System.out.println("Search value param: %" + value + "%");
             }
@@ -217,13 +213,7 @@ public class CustomerDAO {
     }
 
 
-    // Ghi đè phương thức không dùng đến hoặc gọi search
-    public ArrayList<Customers> selectbyCondition(String condition) {
-        // Phương thức này không đủ linh hoạt, nên dùng search() ở trên
-        // Hoặc bạn có thể phân tích chuỗi condition phức tạp ở đây (không khuyến khích)
-        System.out.println("selectbyCondition(String) is deprecated, use search() instead.");
-        return new ArrayList<>(); // Trả về danh sách rỗng
-    }
+
     //tim kiem khach hang theo ten, dung liKe de loc khach hang co tenn nhu vay
     public ArrayList<Customers> searchByName(String name){
         ArrayList<Customers> listCustomers = new ArrayList<>();

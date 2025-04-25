@@ -38,14 +38,11 @@ public class OrderController implements ActionListener {
     private Books currentSelectedBook = null;
     private DiscountDetailService discountDetailService ;
 
-
-
     private static final Pattern PHONE_NUMBER_PATTERN = Pattern.compile("^0\\d{9,10}$");
-    // Định dạng ngày tháng bạn muốn sử dụng (ví dụ)
+    // Định dạng ngày tháng
     private static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("dd/MM/yyyy");
     private static final SimpleDateFormat DATE_FORMAT_DISPLAY = new SimpleDateFormat("dd/MM/yyyy"); // Dùng để hiển thị ngày
     private NumberFormat currencyFormatter; // Để định dạng tiền tệ
-
 
     public OrderController(CreateInvoiceView orderView) {
         this.orderView = orderView ;
@@ -64,9 +61,9 @@ public class OrderController implements ActionListener {
         if (source == orderView.getBtnSearchCustmer()) {
             filterCustomer();
         } else if (source == orderView.getBtnSearchBook()) {
-            openSelectBook(); // Đổi tên hàm cho rõ ràng
+            openSelectBook();
         } else if (source == orderView.getBtnAdd()) {
-            handleAddItemToTable(); // Thay đổi hành động nút Add
+            handleAddItemToTable();
         } else if (source == orderView.getBtnEdit()) {
             handleEditItemInTable();
         } else if (source == orderView.getBtnDelete()) {
@@ -124,16 +121,15 @@ public class OrderController implements ActionListener {
 
 
     private void start() {
-        // --- Trạng thái nút ban đầu ---
         // Header
-        orderView.getTextFieldInvoiceId().setText(""); // Có thể để trống hoặc tự sinh sau
+        orderView.getTextFieldInvoiceId().setText("");
         orderView.getTextFieldCustomerId().setText("");
         orderView.getTextFieldCustomerName().setText("");
         orderView.getTextFieldPhoneNumber().setText("");
 
         // Item Details
         clearItemInputFields();
-        resetItemButtonStates(); // Reset nút Thêm/Sửa/Xóa item
+        resetItemButtonStates();
 
         // Footer/Totals
         orderView.getTextFieldTotalAmount().setText(currencyFormatter.format(0));
@@ -145,25 +141,32 @@ public class OrderController implements ActionListener {
         orderView.getBtnCancel().setEnabled(true); // Bật nút hủy
 
         // Table
-        orderView.getTableModel().setRowCount(0); // Xóa bảng
+        orderView.getTableModel().setRowCount(0);
 
         // Set ngày hiện tại
         Date currentDate = new Date();
         orderView.getTextFieldDate().setText(DATE_FORMAT_DISPLAY.format(currentDate));
         orderView.getTextFieldDate().setEditable(false); // Không cho sửa ngày
 
-        // Vô hiệu hóa nút không cần thiết ban đầu
-        // orderView.getBtnCreateInvoice().setEnabled(false); // Nếu không dùng nút này
+    }
+
+    private void clearItemDetails(){
+        clearItemInputFields();
+        orderView.getTableModel().setRowCount(0);
+        resetItemButtonStates();
+        orderView.getTextFieldTotalAmount().setText(currencyFormatter.format(0));
+        orderView.getTextFieldDiscount().setText("0");
+        orderView.getTextFieldTotalInvoiceAmount().setText(currencyFormatter.format(0));
     }
     // Xóa các trường nhập thông tin sách
     private void clearItemInputFields() {
         orderView.getTextFieldBookId().setText("");
         orderView.getTextFieldBookName().setText("");
-        orderView.getTextFieldQuantity().setText("1"); // Reset số lượng về 1
+        orderView.getTextFieldQuantity().setText("1");
         orderView.getTextFieldUnitPrice().setText("");
-        orderView.setPreviewImage(null); // Xóa ảnh xem trước
-        currentSelectedBook = null; // Reset sách đang chọn
-        orderView.getTable().clearSelection(); // Bỏ chọn trên bảng
+        orderView.setPreviewImage(null);
+        currentSelectedBook = null;
+        orderView.getTable().clearSelection();
     }
 
     // Reset trạng thái các nút Thêm/Sửa/Xóa Item
@@ -184,14 +187,13 @@ public class OrderController implements ActionListener {
         Matcher phoneMatcher = PHONE_NUMBER_PATTERN.matcher(phoneNumber);
         if (!phoneMatcher.matches()) {
             CommonView.showErrorMessage(null, "Số điện thoại không hợp lệ (cần 10-11 số, bắt đầu bằng 0).");
-            return; // Dừng lại nếu SĐT không hợp lệ
+            return;
         }
 
         Customers customer = customerService.getCustomerByPhoneNumber(phoneNumber);
         if (customer != null) {
             orderView.getTextFieldCustomerId().setText(customer.getCustomerID());
             orderView.getTextFieldCustomerName().setText(customer.getLastName() + " " + customer.getFirstName());
-            // Giữ nguyên SĐT đã nhập để người dùng thấy
         } else {
             int confirmation = JOptionPane.showConfirmDialog(
                     orderView, // Parent component
@@ -206,7 +208,6 @@ public class OrderController implements ActionListener {
                 // Người dùng chọn NO, xóa các trường liên quan đến khách hàng
                 orderView.getTextFieldCustomerId().setText("");
                 orderView.getTextFieldCustomerName().setText("");
-                // Giữ lại số điện thoại để người dùng có thể sửa
             }
         }
     }
@@ -263,16 +264,16 @@ public class OrderController implements ActionListener {
     }
 
 
-    // Xử lý khi nhấn nút "THÊM" (Thêm item vào bảng tạm)
+    // Xử lý khi nhấn nút "THÊM"
     private void handleAddItemToTable() {
-        // 1. Validate đã chọn sách chưa?
+        // Validate đã chọn sách chưa
         if (currentSelectedBook == null || orderView.getTextFieldBookId().getText().trim().isEmpty()) {
             CommonView.showErrorMessage(null, "Vui lòng chọn một quyển sách trước khi thêm.");
             openSelectBook(); // Mở lại cửa sổ chọn sách
             return;
         }
 
-        // 2. Validate số lượng
+        // Validate số lượng
         String quantityStr = orderView.getTextFieldQuantity().getText().trim();
         int quantity;
         try {
@@ -294,7 +295,7 @@ public class OrderController implements ActionListener {
             return;
         }
 
-        // 3. Kiểm tra sách đã có trong bảng chưa
+        //  Kiểm tra sách đã có trong bảng chưa
         DefaultTableModel model = orderView.getTableModel();
         for (int i = 0; i < model.getRowCount(); i++) {
             if (model.getValueAt(i, 0).equals(currentSelectedBook.getBookID())) {
@@ -348,23 +349,18 @@ public class OrderController implements ActionListener {
             }
         }
 
-
-        // 4. Lấy % giảm giá cho sách này (nếu có)
+        // Lấy % giảm giá cho sách này (nếu có)
         float itemDiscountPercent = discountDetailService.getDiscountByBookId(currentSelectedBook.getBookID());
-
-        // 5. Tạo đối tượng OrderDetails tạm để tính toán
+        // Tạo đối tượng OrderDetails tạm để tính toán
         OrderDetails newItem = new OrderDetails();
         newItem.setBook(currentSelectedBook);
         newItem.setQuantity(quantity);
         newItem.setDiscount(itemDiscountPercent);
-
-        // 6. Thêm dòng mới vào bảng
+        //Thêm dòng mới vào bảng
         model.addRow(newItem.toTableRow());
-
-        // 7. Cập nhật tổng tiền hóa đơn
+        //  Cập nhật tổng tiền hóa đơn
         updateInvoiceTotals();
-
-        // 8. Xóa các trường nhập liệu item và reset nút
+        //  Xóa các trường nhập liệu item và reset nút
         clearItemInputFields();
         resetItemButtonStates();
     }
@@ -377,7 +373,6 @@ public class OrderController implements ActionListener {
             CommonView.showErrorMessage(null, "Vui lòng chọn một dòng trong bảng để sửa.");
             return;
         }
-
         // Validate số lượng mới
         String quantityStr = orderView.getTextFieldQuantity().getText().trim();
         int newQuantity;
@@ -404,11 +399,9 @@ public class OrderController implements ActionListener {
             CommonView.showErrorMessage(null, "Số lượng phải là một con số.");
             return;
         }
-
         // Cập nhật số lượng trong bảng
         DefaultTableModel model = orderView.getTableModel();
         model.setValueAt(newQuantity, selectedRow, 2);
-
         // Tính lại thành tiền cho dòng đó
         Books book = bookService.getBookByID(model.getValueAt(selectedRow, 0).toString());
         float discount = (float) model.getValueAt(selectedRow, 4); // Lấy lại discount từ bảng
@@ -417,14 +410,11 @@ public class OrderController implements ActionListener {
         tempDetail.setQuantity(newQuantity);
         tempDetail.setDiscount(discount);
         model.setValueAt(tempDetail.getTotal(), selectedRow, 5); // Cập nhật thành tiền
-
         // Cập nhật tổng hóa đơn
         updateInvoiceTotals();
-
         // Xóa input và reset nút
         clearItemInputFields();
         resetItemButtonStates();
-
         CommonView.showInfoMessage(null, "Đã cập nhật số lượng sản phẩm.");
     }
 
@@ -480,13 +470,11 @@ public class OrderController implements ActionListener {
             }
             if (discountPercent < 0 || discountPercent > 100) {
                 // Có thể hiển thị lỗi nhẹ hoặc giới hạn lại giá trị
-                // CommonView.showWarningMessage(orderView, "Giảm giá hóa đơn phải từ 0 đến 100%.");
                 discountPercent = Math.max(0, Math.min(100, discountPercent)); // Giới hạn trong khoảng 0-100
                 orderView.getTextFieldDiscount().setText(String.valueOf(discountPercent)); // Cập nhật lại ô input
             }
         } catch (NumberFormatException e) {
             // Nếu nhập không phải số, coi như giảm giá là 0
-            // CommonView.showWarningMessage(orderView,"Giảm giá hóa đơn không hợp lệ, đặt về 0.");
             orderView.getTextFieldDiscount().setText("0"); // Reset về 0 nếu nhập lỗi
             discountPercent = 0.0;
         }
@@ -498,20 +486,19 @@ public class OrderController implements ActionListener {
         orderView.setFormattedCurrency(orderView.getTextFieldTotalInvoiceAmount(), finalInvoiceAmount);
     }
 
-    // Xử lý khi nhấn nút "LÀM MỚI" (Reset)
     private void handleReset() {
         int confirmation = JOptionPane.showConfirmDialog(orderView,
-                "Bạn có chắc chắn muốn làm mới toàn bộ hóa đơn?\nMọi thông tin chưa lưu sẽ bị mất.",
+                "Bạn có chắc chắn muốn làm mới tất ca?\nMọi thông tin chưa lưu sẽ bị mất.",
                 "Xác nhận làm mới",
                 JOptionPane.YES_NO_OPTION,
                 JOptionPane.QUESTION_MESSAGE);
 
         if (confirmation == JOptionPane.YES_OPTION) {
-            start(); // Gọi lại hàm khởi tạo để reset mọi thứ về ban đầu
+            clearItemDetails();
         }
     }
 
-    // Xử lý khi nhấn nút "HỦY BỎ"
+    // Xử lý khi nhấn nút HỦY
     private void handleCancel() {
         int confirmation = JOptionPane.showConfirmDialog(orderView,
                 "Bạn có muốn hủy bỏ việc tạo hóa đơn này không?",
@@ -520,15 +507,12 @@ public class OrderController implements ActionListener {
                 JOptionPane.QUESTION_MESSAGE);
 
         if (confirmation == JOptionPane.YES_OPTION) {
-            // Tùy chọn: Đóng cửa sổ/panel hoặc chỉ đơn giản là reset
             start(); // Reset về trạng thái ban đầu
-            // Nếu đây là Dialog, có thể gọi dispose()
-            // if (orderView.getParent() instanceof JDialog) { ((JDialog) orderView.getParent()).dispose(); }
         }
     }
     // Xử lý khi nhấn nút "XÁC NHẬN & LƯU" (Confirm)
     private void handleConfirmInvoice() {
-        // 1. Validate Header Info
+        // Validate Header Info
         String invoiceId = orderView.getTextFieldInvoiceId().getText().trim();
         String customerId = orderView.getTextFieldCustomerId().getText().trim();
         String dateStr = orderView.getTextFieldDate().getText().trim();
@@ -544,14 +528,14 @@ public class OrderController implements ActionListener {
             return;
         }
 
-        // 2. Validate Table Items
+        // Validate Table Items
         DefaultTableModel model = orderView.getTableModel();
         if (model.getRowCount() == 0) {
             CommonView.showErrorMessage(null, "Hóa đơn phải có ít nhất một sản phẩm.");
             return;
         }
 
-        // 3. Parse Date
+        //  Parse Date
         Date orderDate;
         try {
             orderDate = DATE_FORMAT_DISPLAY.parse(dateStr);
@@ -560,14 +544,13 @@ public class OrderController implements ActionListener {
             return;
         }
 
-        // 4. Get Customer Object
         Customers customer = customerService.getCustomerByCustomerId(customerId);
         if (customer == null) {
             CommonView.showErrorMessage(null, "Không tìm thấy thông tin khách hàng hợp lệ. Vui lòng kiểm tra lại.");
             return;
         }
 
-        // 5. Create Orders Object (Header)
+        //  Create Orders Object (Header)
         Orders newOrder = new Orders();
         newOrder.setOrderId(invoiceId);
         newOrder.setCustomer(customer);
@@ -575,7 +558,7 @@ public class OrderController implements ActionListener {
         newOrder.setStatus("Chưa xử lý");
         newOrder.setEmployeeID("NV01");
 
-        // 6. Create List<OrderDetails> from Table
+        //  Create List<OrderDetails> from Table
         ArrayList<OrderDetails> orderDetailsList = new ArrayList<>();
         for (int i = 0; i < model.getRowCount(); i++) {
             String bookId = model.getValueAt(i, 0).toString();
@@ -603,9 +586,7 @@ public class OrderController implements ActionListener {
             orderDetailsList.add(detail);
         }
 
-        // 7. Call Service to Save Order and Details (Cần sửa Service/DAO)
         try {
-            // Giả sử có phương thức saveOrderWithDetails trong OrderService
             // Phương thức này nên xử lý transaction để lưu Orders, OrderDetails và cập nhật tồn kho Books
             boolean success = orderService.saveOrderWithDetails(newOrder, orderDetailsList);
             double total = 0;
@@ -634,7 +615,7 @@ public class OrderController implements ActionListener {
             }
         } catch (Exception ex) {
             CommonView.showErrorMessage(null, "Lỗi hệ thống khi lưu hóa đơn: " + ex.getMessage());
-            ex.printStackTrace(); // In lỗi ra console để debug
+            ex.printStackTrace();
         }
     }
 
@@ -657,11 +638,11 @@ public class OrderController implements ActionListener {
                 orderView, // Parent component
                 inputPanel, // Panel cần hiển thị
                 "Thêm khách hàng mới", // Tiêu đề dialog
-                JOptionPane.OK_CANCEL_OPTION, // Loại Option (ảnh hưởng icon mặc định và giá trị trả về)
-                JOptionPane.PLAIN_MESSAGE,    // Loại Message (không hiển thị icon chuẩn)
-                null,       // Icon tùy chỉnh (null là không dùng)
-                options,    // Text cho các nút
-                options[0]  // Nút mặc định được chọn
+                JOptionPane.OK_CANCEL_OPTION,
+                JOptionPane.PLAIN_MESSAGE,
+                null,
+                options,
+                options[0]
         );
 
         if (result == JOptionPane.OK_OPTION) { // Người dùng nhấn "Lưu" (index 0)
@@ -741,7 +722,7 @@ public class OrderController implements ActionListener {
 
             } catch (Exception ex) {
                 JOptionPane.showMessageDialog(orderView, "Đã xảy ra lỗi khi lưu khách hàng: " + ex.getMessage(), "Lỗi hệ thống", JOptionPane.ERROR_MESSAGE);
-                ex.printStackTrace(); // In lỗi ra console để debug
+                ex.printStackTrace();
             }
         } else {
             // Người dùng nhấn "Hủy" hoặc đóng dialog

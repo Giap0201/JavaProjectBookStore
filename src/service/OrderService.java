@@ -10,18 +10,11 @@ import java.util.List; // Cần import List
 
 public class OrderService {
     private OrderDAO orderDAO;
-    private BookService bookService; // Thêm BookService để cập nhật tồn kho
 
     public OrderService() {
         this.orderDAO = new OrderDAO();
-        this.bookService = new BookService(); // Khởi tạo
     }
 
-
-    // Phương thức cũ để lấy chi tiết (vẫn có thể dùng)
-    public ArrayList<OrderDetails> getAllOrderDetails(String orderId) {
-        return orderDAO.getAllOrderDetails(orderId);
-    }
     /**
      * Lưu đơn hàng mới bao gồm thông tin header và danh sách chi tiết.
      * Đồng thời cập nhật số lượng tồn kho sách.
@@ -37,7 +30,7 @@ public class OrderService {
         return success;
     }
 
-    // Hàm kiểm tra sự tồn tại của mã hóa đơn (nếu cần)
+    // Hàm kiểm tra sự tồn tại của mã hóa đơn
     // public boolean checkInvoiceIdExists(String invoiceId) {
     //    return orderDAO.checkInvoiceIdExists(invoiceId);
     // }

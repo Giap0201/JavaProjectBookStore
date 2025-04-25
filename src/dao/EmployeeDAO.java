@@ -55,8 +55,6 @@ public class EmployeeDAO{
 
             stmt.setString(9, employee.getEmployeeID());
 
-
-
             ketQua = stmt.executeUpdate();
             System.out.println("Đã thực thi: " + sql);
             System.out.println("Có " + ketQua + " dòng bị thay đổi!");
@@ -100,14 +98,9 @@ public class EmployeeDAO{
         return employees;
     }
 
-    public Employees getById(int id) {
-        return null;
-    }
-
 
     public ArrayList<Employees> Search(String field ,String value  ,String salaryFromValue , String salaryToValue) {
         ArrayList<Employees> employees = new ArrayList<>();
-
         StringBuilder sqlBuilder = new StringBuilder("SELECT * FROM employees WHERE 1=1");
 
         if(value != null && !value.trim().isEmpty()){
