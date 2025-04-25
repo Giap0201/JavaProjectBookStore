@@ -388,6 +388,7 @@ public class InvoiceController implements ActionListener {
                             if (invoice == null) {
                                 throw new IllegalArgumentException("Hóa đơn với ID " + invoiceID + " không tồn tại!");
                             }
+                            //.........................
                             // Lấy chi tiết hóa đơn
                             ArrayList<InvoiceDetails> invoiceDetails = invoiceDetailService.getInvoiceDetailByID(invoiceID);
                             updateInvoiceDetailsPanel(invoice, invoiceDetails);

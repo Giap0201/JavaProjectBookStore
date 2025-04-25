@@ -99,6 +99,7 @@ public class DiscountDAO  {
             query.append(" and endDate <= ?");
             pargam.add(endDate);
         }
+//        .............
         try(Connection conn = JDBCUtil.getConnection();
         PreparedStatement ps = conn.prepareStatement(query.toString())){
             //gan gia tri cho ?

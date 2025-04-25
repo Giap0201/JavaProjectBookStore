@@ -8,7 +8,7 @@ import java.sql.SQLException;
 public class JDBCUtil {
     //dung final de ngan chan viec thay doi gia tri cua bien, phuong thuc, khong the gi de, khong the ke thua
     //dung static de khong can tao doi tuong moi, no nhu la bien tinh
-    private static final String URL = "jdbc:mysql://localhost:3306/bookstore";
+    private static final String URL = "jdbc:mysql://localhost:3306/bookstores";
     private static final String USER = "root";
     private static final String PASSWORD = "";
 

@@ -60,6 +60,7 @@ public class AppController implements MouseListener {
         } else if (e.getSource() == app.getPanelCustomer()) {
             CommonView.replacePanel(app, viewCustomers);
             app.changeBackground(app.getPanelCustomer());
+            //...........................................
         } else if (e.getSource() == app.getPanelInvoice()) {
             CommonView.replacePanel(app, viewManageInvoice);
             app.changeBackground(app.getPanelInvoice());

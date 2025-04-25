@@ -21,9 +21,9 @@ public class DiscountService {
     public ArrayList<Discount> getAllDiscounts() {
         return discountDTO.selectAll();
     }
-    public  boolean deleteDiscount(Discount discount) {
-        return discountDTO.delete(discount)>0;
-    }
+//    public  boolean deleteDiscount(Discount discount) {
+//        return discountDTO.delete(discount)>0;
+//    }
     public boolean deleteCondition(String discountID){
         return discountDTO.deleteCondition(discountID)>0;
     }

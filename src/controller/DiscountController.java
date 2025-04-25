@@ -82,6 +82,7 @@ public class DiscountController implements ActionListener {
             CommonView.showErrorMessage(view, "Lỗi hệ thống: " + ex.getMessage());
         }
     }
+
     //chuc nang tim kiem sach giam gia khi co chuong trinh
     private void searchDiscountDetalis(){
         int index = view.getComboBoxNameDiscount().getSelectedIndex();
@@ -125,7 +126,6 @@ public class DiscountController implements ActionListener {
         }
     }
 
-    //bo sung chuc nang xoa, xoa toan bo chi tiet truoc
     //chuc nang xoa chuong trinh giam gia
     private void deleteDiscount() {
         String discountID = getDiscountID();
@@ -133,8 +133,6 @@ public class DiscountController implements ActionListener {
             throw new IllegalArgumentException("Vui lòng chọn chương trình cần xóa!");
         }
         if (CommonView.confirmAction(view, "Bạn có chắc chắn muốn xóa chương trình này?")) {
-//            discountDetailService.deleteDiscountDetailsByID(discountID);
-//            không cho xoá cái đã có
             if (!discountService.deleteCondition(discountID)) {
                 throw new IllegalArgumentException("Không thể xóa chương trình.");
             }

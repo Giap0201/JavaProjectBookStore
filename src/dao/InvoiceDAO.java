@@ -123,6 +123,7 @@ public class InvoiceDAO {
                         "JOIN customer c ON o.customerID = c.customerID " +
                         "WHERE 1 = 1"
         );
+        //....................
         ArrayList<Object> params = new ArrayList<>();
         if (invoice.getInvoiceID() != null && !invoice.getInvoiceID().isEmpty()) {
             query.append(" AND o.orderID LIKE ?");

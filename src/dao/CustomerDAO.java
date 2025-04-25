@@ -8,22 +8,18 @@ import java.sql.*;
 import java.util.ArrayList;
 
 public class CustomerDAO {
-
-
     public int insert(Customers customer) {
         int ketQua = 0;
-        String sql = "INSERT INTO customer (customerID, lastName, firstName, gender, phoneNumber, email, dateOfBirth, totalMoney, creationDate, note) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
-        // Sử dụng try-with-resources để đảm bảo tài nguyên được đóng
+        String sql = "INSERT INTO customer (customerID, lastName, firstName, gender, phoneNumber, email, dateOfBirth, totalMoney, creationDate, note) " +
+                "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
         try (Connection conn = JDBCUtil.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
-
             stmt.setString(1, customer.getCustomerID());
             stmt.setString(2, customer.getLastName());
             stmt.setString(3, customer.getFirstName());
             stmt.setString(4, customer.getGender());
             stmt.setString(5, customer.getPhoneNumber());
             stmt.setString(6, customer.getEmail());
-            // Xử lý Date cẩn thận hơn với null check
             if (customer.getDateOfBirth() != null) {
                 stmt.setDate(7, new java.sql.Date(customer.getDateOfBirth().getTime()));
             } else {
@@ -33,15 +29,10 @@ public class CustomerDAO {
             if (customer.getCreationDate() != null) {
                 stmt.setDate(9, new java.sql.Date(customer.getCreationDate().getTime()));
             } else {
-                // Ngày tạo thường không nên null, nhưng để an toàn
                 stmt.setNull(9, Types.DATE);
             }
             stmt.setString(10, customer.getNote());
-
             ketQua = stmt.executeUpdate();
-            System.out.println("Đã thực thi: " + sql);
-            System.out.println("Có " + ketQua + " dòng bị thay đổi!");
-
         } catch (SQLException e) {
             e.printStackTrace(); // In lỗi ra console để debug
         }

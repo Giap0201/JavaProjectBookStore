@@ -62,7 +62,7 @@ public class BookDAO {
                 int quantity = rs.getInt("quantity");
                 String categoryID = rs.getString("categoryID");
                 String urlImage = rs.getString("urlImage");
-
+                //....................................................
                 // Tìm Category theo ID
                 Category category = new Category();
                 for (Category c : categories) {
@@ -106,13 +106,10 @@ public class BookDAO {
         int result = 0;
         String query = "DELETE FROM books WHERE bookID = ?";
         String sqlSelectUrl = "SELECT urlImage FROM books WHERE bookID = ?";
-
         try (Connection conn = JDBCUtil.getConnection();
              PreparedStatement p = conn.prepareStatement(sqlSelectUrl)) {
-
             // Set parameter cho p
             p.setString(1, books.getBookID());
-
             // Thực hiện truy vấn
             try (ResultSet rs = p.executeQuery()) {
                 while (rs.next()) {
@@ -120,13 +117,11 @@ public class BookDAO {
                     deleteSinglePhysicalImageFile(imageUrl);
                 }
             }
-
             // Sau khi lấy xong ảnh, thực hiện xóa sách
             try (PreparedStatement ps = conn.prepareStatement(query)) {
                 ps.setString(1, books.getBookID());
                 result = ps.executeUpdate();
             }
-
         } catch (SQLException e) {
             e.printStackTrace();
         }

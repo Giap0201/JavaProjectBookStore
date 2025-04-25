@@ -108,37 +108,31 @@ public class BookController implements ActionListener {
         if (!CommonView.confirmAction(bookView, "Bạn có chắc chắn muốn thêm sách này?")) {
             return;
         }
-
         Books book = null;
         Path copiedImagePath = null;
         String urlPathForDb = null;
-
         try {
             book = getBookInForm();
-
             if (selectedImageFileForNewBook != null) {
                 String projectDir = System.getProperty("user.dir");
                 Path imageDirPath = Paths.get(projectDir, "images", book.getBookID());
                 Files.createDirectories(imageDirPath);
-
                 String originalFileName = selectedImageFileForNewBook.getName();
                 String fileExtension = originalFileName.substring(originalFileName.lastIndexOf('.'));
                 String cleanBookName = book.getBookName().replaceAll("[^a-zA-Z0-9.\\-]", "_");
                 String destinationFileName = cleanBookName + fileExtension;
                 copiedImagePath = imageDirPath.resolve(destinationFileName);
-
                 Files.copy(selectedImageFileForNewBook.toPath(), copiedImagePath, StandardCopyOption.REPLACE_EXISTING);
                 urlPathForDb = "images/" + book.getBookID() + "/" + destinationFileName;
                 book.setUrlImage(urlPathForDb);
             }
-
+//            .....................
             if (!bookService.addBook(book)) {
                 if (copiedImagePath != null) {
                     Files.deleteIfExists(copiedImagePath);
                 }
                 throw new IllegalArgumentException("Không thể thêm sách. Mã sách có thể đã tồn tại.");
             }
-
             CommonView.showInfoMessage(bookView, "Thêm sách thành công!");
             refreshView();
             selectedImageFileForNewBook = null;
@@ -165,26 +159,21 @@ public class BookController implements ActionListener {
         if (bookID.isEmpty()) {
             throw new IllegalArgumentException("Vui lòng chọn sách cần sửa!");
         }
-
         Books oldBook = bookService.getBookByID(bookID);
         if (oldBook == null) {
             throw new IllegalArgumentException("Không tìm thấy sách với mã: " + bookID);
         }
-
         if (!CommonView.confirmAction(bookView, "Bạn có chắc chắn muốn sửa thông tin sách này?")) {
             return;
         }
-
         try {
             Books newBook = getBookInForm();
             newBook.setBookID(bookID);
             String oldImageUrl = oldBook.getUrlImage();
-
             if (selectedImageFileForNewBook != null) {
                 String projectDir = System.getProperty("user.dir");
                 Path imageDirPath = Paths.get(projectDir, "images", bookID);
                 Files.createDirectories(imageDirPath);
-
                 String originalFileName = selectedImageFileForNewBook.getName();
                 String fileExtension = originalFileName.substring(originalFileName.lastIndexOf('.'));
                 String cleanBookName = newBook.getBookName().replaceAll("[^a-zA-Z0-9.\\-]", "_");
@@ -197,20 +186,18 @@ public class BookController implements ActionListener {
                         Files.delete(oldImagePath);
                     }
                 }
-
                 Files.copy(selectedImageFileForNewBook.toPath(), newImagePath, StandardCopyOption.REPLACE_EXISTING);
                 String newUrl = "images/" + bookID + "/" + newFileName;
                 newBook.setUrlImage(newUrl);
             } else {
                 newBook.setUrlImage(oldImageUrl);
             }
-
             if (!bookService.updateBook(newBook)) {
                 throw new IllegalArgumentException("Không thể sửa sách. Vui lòng thử lại.");
             }
-
             CommonView.showInfoMessage(bookView, "Sửa sách thành công!");
             refreshView();
+            //..............................................................................
             selectedImageFileForNewBook = null;
         } catch (IOException ex) {
             CommonView.showErrorMessage(bookView, "Lỗi khi xử lý file ảnh: " + ex.getMessage());
@@ -228,16 +215,13 @@ public class BookController implements ActionListener {
         if (bookID.isEmpty()) {
             throw new IllegalArgumentException("Vui lòng chọn sách cần xóa!");
         }
-
         Books book = bookService.getBookByID(bookID);
         if (book == null) {
             throw new IllegalArgumentException("Không tìm thấy sách với mã: " + bookID);
         }
-
         if (!CommonView.confirmAction(bookView, "Bạn có chắc chắn muốn xóa sách này? Ảnh liên quan cũng sẽ bị xóa.")) {
             return;
         }
-
         try {
             String imageUrl = book.getUrlImage();
             if (imageUrl != null && !imageUrl.isEmpty()) {
@@ -246,7 +230,6 @@ public class BookController implements ActionListener {
                     Files.delete(imagePath);
                 }
             }
-
             if (!bookService.deleteBook(book)) {
                 throw new IllegalArgumentException("Không thể xóa sách!");
             }
@@ -299,18 +282,17 @@ public class BookController implements ActionListener {
         if (userSelection != JFileChooser.APPROVE_OPTION) {
             return;
         }
-
         File fileToSave = fileChooser.getSelectedFile();
         String filePath = fileToSave.getAbsolutePath();
         if (!filePath.endsWith(".csv")) {
             filePath += ".csv";
         }
         try (BufferedWriter writer = new BufferedWriter(
+                //con tiep ..........................................................................
                 new OutputStreamWriter(new FileOutputStream(filePath), "UTF-8"))) {
             writer.write("\uFEFF");
             writer.write("Mã sách,Thể loại,Tên sách,Tác giả,Năm xuất bản,Số lượng,Giá");
             writer.newLine();
-
             for (int i = 0; i < bookView.getTableModel().getRowCount(); i++) {
                 StringBuilder sb = new StringBuilder();
                 for (int j = 0; j < bookView.getTableModel().getColumnCount(); j++) {
