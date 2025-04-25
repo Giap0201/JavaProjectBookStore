@@ -151,15 +151,11 @@ public class BookView extends JPanel {
 //        labelImage6 = new JLabel(icon6);
 //        labelImage6.setBounds(850, 20, 200, 200);
 //        panelContent.add(labelImage6);
-
-        // Khởi tạo JLabel để hiển thị ảnh (thay thế labelImage6 cũ)
         labelImagePreview = new JLabel();
-        labelImagePreview.setBounds(850, 20, 200, 200); // Vị trí và kích thước như cũ
+        labelImagePreview.setBounds(850, 20, 200, 200);
         labelImagePreview.setBorder(BorderFactory.createLineBorder(Color.GRAY)); // Thêm đường viền để dễ thấy
         labelImagePreview.setHorizontalAlignment(JLabel.CENTER); // Căn giữa ảnh
         labelImagePreview.setText("Chưa có ảnh"); // Text mặc định
-        // Load ảnh mặc định ban đầu (nếu có)
-        // displayBookImage("images/icon6.png"); // Gọi hàm hiển thị ảnh mặc định (nếu cần)
         // Hoặc set icon mặc định nếu icon6 là resource nội bộ
         ImageIcon defaultIcon = ImageUtils.getDefaultScaledIcon("images/icon6.png",ImageUtils.DEFAULT_IMAGE_WIDTH,
                 ImageUtils.DEFAULT_IMAGE_HEIGHT);
@@ -172,8 +168,6 @@ public class BookView extends JPanel {
             labelImagePreview.setText("Chưa có ảnh");
         }
         panelContent.add(labelImagePreview);
-
-
 
 
         // tao ra 1 panel moi chua tat ca phan tim kiem

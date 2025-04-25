@@ -10,13 +10,6 @@ public class Customers extends Person{
 
     public Customers() {}
 
-    public Customers(String customerID, double totalMoney, Date creationDate, String note) {
-        this.customerID = customerID;
-        this.totalMoney = totalMoney;
-        this.creationDate = creationDate;
-        this.note = note;
-    }
-
     public Customers(String firstName, String lastName, Date dateOfBirth, String phoneNumber, String email, String gender, String customerID, double totalMoney, Date creationDate, String note) {
         super(firstName, lastName, dateOfBirth, phoneNumber, email, gender);
         this.customerID = customerID;

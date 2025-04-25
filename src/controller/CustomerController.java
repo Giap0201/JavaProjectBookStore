@@ -25,10 +25,7 @@ public class CustomerController implements ActionListener {
     private final SimpleDateFormat displayDateFormat = new SimpleDateFormat("dd/MM/yyyy");
     private final SimpleDateFormat parseDateFormat = new SimpleDateFormat("dd/MM/yyyy");
 
-    // --- Định nghĩa các biểu thức chính quy (Regex) cho validation ---
-    // Regex cho SĐT Việt Nam (10 hoặc 11 số, bắt đầu bằng 0)
     private static final Pattern PHONE_NUMBER_PATTERN = Pattern.compile("^0\\d{9,10}$");
-    // Regex cho Email (một phiên bản tương đối phổ biến)
     private static final Pattern EMAIL_PATTERN = Pattern.compile(
             "^[a-zA-Z0-9_+&*-]+(?:\\.[a-zA-Z0-9_+&*-]+)*@(?:[a-zA-Z0-9-]+\\.)+[a-zA-Z]{2,7}$"
     );
@@ -39,16 +36,12 @@ public class CustomerController implements ActionListener {
         this.customerService = new CustomerService();
         this.parseDateFormat.setLenient(false);
 
-
-
-        // Tải dữ liệu và thêm listener
         updateCustomerTable();
         updateTotalCustomers();
         addTableSelectionListener();
         initializeButtonStates();
     }
 
-    // Đặt trạng thái ban đầu cho các nút Sửa/Xóa
     private void initializeButtonStates() {
         customerView.getBtnUpdate().setEnabled(false);
         customerView.getBtnDelete().setEnabled(false);
@@ -56,12 +49,6 @@ public class CustomerController implements ActionListener {
         customerView.getTextFieldCustomerId().setEditable(true);
     }
 
-
-    /**
-     * Đăng ký một ListSelectionListener cho bảng khách hàng trong View.
-     * Listener này sẽ được kích hoạt khi người dùng chọn hoặc bỏ chọn một hàng.
-     * Nó cập nhật các trường nhập liệu với dữ liệu từ hàng được chọn và quản lý trạng thái các nút.
-     */
     public void addTableSelectionListener() {
         customerView.getTable().getSelectionModel().addListSelectionListener(new ListSelectionListener() {
             @Override
@@ -79,8 +66,6 @@ public class CustomerController implements ActionListener {
                         String phone = getStringValueFromModel(model, selectRow, 4);
                         String email = getStringValueFromModel(model, selectRow, 5);
                         String dobStr = getStringValueFromModel(model, selectRow, 6);
-                        // double totalMoney = getDoubleValueFromModel(model, selectRow, 7); // Lấy nếu cần hiển thị
-                        // String creationDateStr = getStringValueFromModel(model, selectRow, 8); // Lấy nếu cần
                         String note = "";
                         if (model.getColumnCount() > 9) {
                             note = getStringValueFromModel(model, selectRow, 9);
@@ -126,16 +111,14 @@ public class CustomerController implements ActionListener {
         return (value == null) ? "" : value.toString();
     }
 
-    // Hàm tiện ích để đặt lại trạng thái nút và trường nhập liệu
     private void resetInputFieldsState() {
-        customerView.clear(); // Gọi hàm clear của View (đã bao gồm cả Note)
+        customerView.clear();
         customerView.getBtnAdd().setEnabled(true);
         customerView.getTextFieldCustomerId().setEditable(true);
         customerView.getBtnUpdate().setEnabled(false);
         customerView.getBtnDelete().setEnabled(false);
         // Xóa lựa chọn trên bảng
         customerView.getTable().clearSelection();
-        // Clear RadioButton nhập liệu (đã làm trong customerView.clear())
     }
 
 
@@ -165,7 +148,7 @@ public class CustomerController implements ActionListener {
                         dobStr,
                         customer.getTotalMoney(),
                         creationStr,
-                        customer.getNote() // <-- Thêm note vào dữ liệu hàng
+                        customer.getNote()
                 });
             }
         }
@@ -196,8 +179,6 @@ public class CustomerController implements ActionListener {
         } else if (source == customerView.getCalendarButton()) {
             showCalendar();
         }
-        // Thêm xử lý Import/Export nếu cần
-
         // Cập nhật tổng số sau các hành động thay đổi dữ liệu hoặc reset/search
         if (source == customerView.getBtnAdd() || source == customerView.getBtnUpdate() ||
                 source == customerView.getBtnDelete() || source == customerView.getBtnSearch() ||
@@ -206,17 +187,12 @@ public class CustomerController implements ActionListener {
         }
     }
 
-    /**
-     * Xử lý logic khi người dùng nhấn nút "THÊM".
-     * Lấy dữ liệu từ form, **validate**, gọi Service để thêm, cập nhật View.
-     */
     private void handleAddCustomer() {
         try {
             customerView.getTextFieldCustomerId().setEditable(true);
-            // *** Bước 1: Lấy và validate dữ liệu ***
-            Customers customer = createCustomerFromInput(); // Nếu validate lỗi, sẽ ném Exception ở đây
-
-            // *** Bước 2: Gọi Service để thêm (chỉ thực hiện nếu validate thành công) ***
+            //  Lấy và validate dữ liệu
+            Customers customer = createCustomerFromInput();
+            //  Gọi Service để thêm
             if (customerService.insertCustomer(customer)) {
                 updateCustomerTable();
                 customerView.showMessage("Thêm khách hàng thành công!");
@@ -225,9 +201,8 @@ public class CustomerController implements ActionListener {
                 customerView.showMessage("Thêm khách hàng thất bại! (Mã KH có thể đã tồn tại)");
                 customerView.getTextFieldCustomerId().setEditable(true); // Giữ editable nếu thất bại do trùng mã
             }
-            // *** Bước 3: Bắt và hiển thị lỗi validation hoặc lỗi khác ***
+            //  Bắt và hiển thị lỗi validation hoặc lỗi khác
         } catch (IllegalArgumentException | ParseException ex) {
-            // Bắt lỗi validate (IllegalArgumentException) hoặc lỗi parse ngày (ParseException)
             customerView.showMessage("Lỗi nhập liệu: " + ex.getMessage());
         } catch (Exception ex) {
             customerView.showMessage("Lỗi không xác định khi thêm: " + ex.getMessage());
@@ -235,10 +210,6 @@ public class CustomerController implements ActionListener {
         }
     }
 
-    /**
-     * Xử lý logic khi người dùng nhấn nút "SỬA".
-     * Lấy ID từ hàng đang chọn, lấy dữ liệu mới từ form, **validate**, gọi Service để cập nhật, cập nhật View.
-     */
     private void handleUpdateCustomer() {
         int selectedRow = customerView.getTable().getSelectedRow();
         if (selectedRow < 0) {
@@ -248,9 +219,9 @@ public class CustomerController implements ActionListener {
         try {
             String customerIdToUpdate = getStringValueFromModel(customerView.getTableModel(), selectedRow, 0);
 
-            // *** Bước 1: Lấy và validate dữ liệu mới ***
-            Customers updatedCustomer = createCustomerFromInput(); // Validate ở đây
-            updatedCustomer.setCustomerID(customerIdToUpdate); // Gán lại ID đúng
+            //  Lấy và validate dữ liệu mới
+            Customers updatedCustomer = createCustomerFromInput();
+            updatedCustomer.setCustomerID(customerIdToUpdate);
 
             // Lấy thông tin cũ để giữ lại ngày tạo, tổng tiền
             Customers existingCustomer = customerService.getCustomerById(customerIdToUpdate);
@@ -262,7 +233,7 @@ public class CustomerController implements ActionListener {
                 return;
             }
 
-            // *** Bước 2: Gọi Service để cập nhật ***
+            // Gọi Service để cập nhật
             if (customerService.updateCustomer(updatedCustomer)) {
                 int modelRow = customerView.getTable().convertRowIndexToModel(selectedRow);
                 updateCustomerTable();
@@ -278,7 +249,7 @@ public class CustomerController implements ActionListener {
             } else {
                 customerView.showMessage("Cập nhật khách hàng thất bại!");
             }
-            // *** Bước 3: Bắt và hiển thị lỗi validation hoặc lỗi khác ***
+            //  Bắt và hiển thị lỗi validation hoặc lỗi khác
         } catch (IllegalArgumentException | ParseException ex) {
             customerView.showMessage("Lỗi nhập liệu: " + ex.getMessage());
         } catch (Exception ex) {
@@ -371,9 +342,7 @@ public class CustomerController implements ActionListener {
             }
         }
         customerView.showMessage("Tìm thấy " + (customers != null ? customers.size() : 0) + " khách hàng.");
-        resetInputFieldsState(); // Reset input sau khi tìm kiếm
-        // Clear nút radio tìm kiếm
-        // if(customerView.getGroupSearch() != null) customerView.getGroupSearch().clearSelection();
+        resetInputFieldsState();
         customerView.getRadioNamSearch().setSelected(false);
         customerView.getRadioNuSearch().setSelected(false);
     }
@@ -386,48 +355,31 @@ public class CustomerController implements ActionListener {
         customerView.getTextFieldSearch().setText("");
         customerView.getRadioNamSearch().setSelected(false);
         customerView.getRadioNuSearch().setSelected(false);
-         //if(customerView.getGroupSearch() != null) customerView.getGroupSearch().clearSelection();
 
         // Tải lại toàn bộ dữ liệu
         updateCustomerTable();
-        // Tổng số đã được cập nhật trong actionPerformed
     }
 
-    /**
-     * Hiển thị hộp thoại chọn ngày sinh sử dụng DatePickerUtil.
-     * Cập nhật giá trị vào textFieldDob dựa trên lựa chọn của người dùng.
-     */
     private void showCalendar() {
         // Gọi tiện ích chọn ngày
         Date selectedDate = DatePickerUtil.showDatePickerDialog(
-                customerView, // Component cha (Panel của view)
-                "Chọn ngày sinh", // Tiêu đề hộp thoại
-                customerView.getTextFieldDob().getText(), // Lấy ngày hiện tại từ TextField làm giá trị gợi ý
-                parseDateFormat, // Định dạng dùng để parse chuỗi ngày gợi ý (quan trọng là đã setLenient(false))
-                "dd/MM/yyyy" // Định dạng hiển thị trong JDateChooser
+                customerView,
+                "Chọn ngày sinh",
+                customerView.getTextFieldDob().getText(),
+                parseDateFormat,
+                "dd/MM/yyyy"
         );
 
-        // Xử lý kết quả trả về từ DatePickerUtil
         if (selectedDate != null) {
-            // Nếu người dùng chọn một ngày (không nhấn Cancel và không xóa ngày trong chooser)
-            // Định dạng ngày đã chọn theo chuẩn hiển thị và đặt vào TextField
+
             customerView.getTextFieldDob().setText(displayDateFormat.format(selectedDate));
         } else {
-            // Nếu người dùng nhấn Cancel hoặc xóa ngày trong JDateChooser (getDate() trả về null)
-            // Có thể xóa trống TextField hoặc giữ nguyên giá trị cũ tùy theo yêu cầu.
-            // Ở đây, chúng ta chọn xóa trống nếu người dùng Cancel/xóa ngày.
-            // Nếu muốn giữ nguyên khi Cancel, bạn cần phân biệt giữa Cancel và xóa ngày,
-            // điều này phức tạp hơn với cấu trúc JOptionPane hiện tại.
-            // Giả sử nếu selectedDate là null thì người dùng muốn xóa hoặc hủy.
-            // customerView.getTextFieldDob().setText(""); // Bỏ comment nếu muốn xóa khi Cancel/xóa
-            // Hoặc không làm gì cả để giữ nguyên giá trị cũ nếu Cancel
             System.out.println("Người dùng đã hủy chọn ngày hoặc xóa ngày.");
         }
     } // Đóng phương thức showCalendar
 
 
     public Customers createCustomerFromInput() throws ParseException, IllegalArgumentException {
-        // --- Lấy dữ liệu (dùng trim) ---
         String customerId = customerView.getTextFieldCustomerId().getText().trim();
         String firstName = customerView.getTextFieldFirstName().getText().trim();
         String lastName = customerView.getTextFieldLastName().getText().trim();
@@ -441,7 +393,7 @@ public class CustomerController implements ActionListener {
 
         // --- Thực hiện Validation ---
 
-        // 1. Kiểm tra các trường bắt buộc
+        //  Kiểm tra các trường bắt buộc
         if (customerId.isEmpty()) throw new IllegalArgumentException("Mã khách hàng không được để trống.");
         if (lastName.isEmpty()) throw new IllegalArgumentException("Họ không được để trống.");
         if (firstName.isEmpty()) throw new IllegalArgumentException("Tên không được để trống.");
@@ -449,13 +401,13 @@ public class CustomerController implements ActionListener {
         if (phoneNumber.isEmpty()) throw new IllegalArgumentException("Số điện thoại không được để trống.");
         // Email và Ngày sinh có thể không bắt buộc trống, tùy yêu cầu
 
-        // 2. Validate định dạng Số điện thoại (dùng Regex)
+        //  Validate định dạng Số điện thoại (dùng Regex)
         Matcher phoneMatcher = PHONE_NUMBER_PATTERN.matcher(phoneNumber);
         if (!phoneMatcher.matches()) {
             throw new IllegalArgumentException("Số điện thoại không hợp lệ (cần 10-11 số, bắt đầu bằng 0).");
         }
 
-        // 3. Validate định dạng Email (nếu người dùng có nhập)
+        //  Validate định dạng Email (nếu người dùng có nhập)
         if (!email.isEmpty()) {
             Matcher emailMatcher = EMAIL_PATTERN.matcher(email);
             if (!emailMatcher.matches()) {
@@ -463,14 +415,14 @@ public class CustomerController implements ActionListener {
             }
         }
 
-        // 4. Validate và Parse Ngày sinh
+        //  Validate và Parse Ngày sinh
         Date dateOfBirth = null;
         if (!dobStr.isEmpty()) {
             try {
                 // parseDateFormat đã setLenient(false) nên sẽ báo lỗi nếu ngày không tồn tại
                 dateOfBirth = parseDateFormat.parse(dobStr);
 
-                // 5. Validate logic: Ngày sinh không được là ngày trong tương lai
+                //  Validate logic: Ngày sinh không được là ngày trong tương lai
                 // Tạo ngày hiện tại (chỉ lấy phần ngày, bỏ qua giờ phút giây để so sánh chính xác)
                 Calendar calToday = Calendar.getInstance();
                 calToday.set(Calendar.HOUR_OF_DAY, 0);
@@ -485,22 +437,20 @@ public class CustomerController implements ActionListener {
                 }
 
             } catch (ParseException e) {
-                // Ném lại lỗi ParseException với thông điệp rõ ràng hơn
                 throw new ParseException("Định dạng ngày sinh không hợp lệ (cần dd/MM/yyyy)", e.getErrorOffset());
             }
         }
 
-        // 6. Validate độ dài Note (ví dụ, nếu cần giới hạn)
+        // Validate độ dài Note (ví dụ, nếu cần giới hạn)
 
-        int maxNoteLength = 200; // Ví dụ giới hạn 255 ký tự
+        int maxNoteLength = 200;
         if (note.length() > maxNoteLength) {
             throw new IllegalArgumentException("Ghi chú không được vượt quá " + maxNoteLength + " ký tự.");
         }
 
-        // --- Nếu tất cả validation thành công, tạo đối tượng Customers ---
-        Date creationDate = new Date(); // Xử lý riêng khi update
-        double totalMoney = 0.0;      // Xử lý riêng khi update
+        Date creationDate = new Date();
+        double totalMoney = 0.0;
         return new Customers(firstName, lastName, dateOfBirth, phoneNumber, email, gender, customerId, totalMoney, creationDate, note);
 
-    } // Đóng phương thức createCustomerFromInput
+    }
 }

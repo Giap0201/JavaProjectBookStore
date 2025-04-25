@@ -26,10 +26,7 @@ public class EmployeeController implements ActionListener {
     private final SimpleDateFormat displayDateFormat = new SimpleDateFormat("dd/MM/yyyy");
     private final SimpleDateFormat parseDateFormat = new SimpleDateFormat("dd/MM/yyyy");
 
-    // --- Định nghĩa các biểu thức chính quy (Regex) cho validation ---
-    // Regex cho SĐT Việt Nam (10 hoặc 11 số, bắt đầu bằng 0)
     private static final Pattern PHONE_NUMBER_PATTERN = Pattern.compile("^0\\d{9,10}$");
-    // Regex cho Email (một phiên bản tương đối phổ biến)
     private static final Pattern EMAIL_PATTERN = Pattern.compile(
             "^[a-zA-Z0-9_+&*-]+(?:\\.[a-zA-Z0-9_+&*-]+)*@(?:[a-zA-Z0-9-]+\\.)+[a-zA-Z]{2,7}$"
     );
@@ -71,19 +68,11 @@ public class EmployeeController implements ActionListener {
         }
     }
 
-    /**
-     * Đăng ký một ListSelectionListener cho bảng khách hàng trong View.
-     * Listener này sẽ được kích hoạt khi người dùng chọn hoặc bỏ chọn một hàng.
-     * Nó cập nhật các trường nhập liệu với dữ liệu từ hàng được chọn và quản lý trạng thái các nút.
-     */
 
     public void addTableSelectionListener(){
-        // Lấy SelectionModel của bảng (quản lý việc chọn hàng) và thêm listener
         employeeView.getTable().getSelectionModel().addListSelectionListener(new ListSelectionListener() {
             @Override
             public void valueChanged(ListSelectionEvent e) {
-                // e.getValueIsAdjusting() trả về true khi người dùng đang trong quá trình chọn (ví dụ: giữ chuột kéo)
-                // Chỉ xử lý khi việc lựa chọn đã kết thúc (false) để tránh xử lý nhiều lần không cần thiết.
                 if(e.getValueIsAdjusting()){
                     int selectedRow = employeeView.getTable().getSelectedRow();
                     if(selectedRow != -1){
@@ -99,8 +88,6 @@ public class EmployeeController implements ActionListener {
                         String gender = model.getValueAt(selectedRow, 7).toString();
                         String dateOfBirth = model.getValueAt(selectedRow, 8).toString();
 
-
-                        //Điền dữ liệu
                         employeeView.getTextFieldEmployeeId().setText(employeeID);
                         employeeView.getTextFieldLastName().setText(lastName);
                         employeeView.getTextFieldFirstName().setText(firstName);
@@ -110,15 +97,12 @@ public class EmployeeController implements ActionListener {
                         employeeView.getTextFieldSalary().setText(salary);
                         employeeView.getTextFieldDob().setText(dateOfBirth);
 
-
-                        //Xử lý giới tính
                         if(gender.equalsIgnoreCase("Nam")){
                             employeeView.getRadioPositionNam().setSelected(true);
                         }else if(gender.equalsIgnoreCase("Nữ")){
                             employeeView.getRadioPositionNu().setSelected(true);
                         }
 
-                        // Cập nhật trạng thái nút
                         employeeView.getBtnAdd().setEnabled(false);
                         employeeView.getTextFieldEmployeeId().setEditable(false);
                         employeeView.getBtnDelete().setEnabled(true);
@@ -212,14 +196,13 @@ public class EmployeeController implements ActionListener {
         }
         try{
             DefaultTableModel model =  employeeView.getTableModel();
-            //Laasy ID
             String employeeIdToUpdate = model.getValueAt(selectedRow, 0).toString();
 
-            // Bước 1 lấy validate dữ liệu mới
+            // lấy validate dữ liệu mới
             Employees updateEmployee = createEmployeeFromInput();
             updateEmployee.setEmployeeID(employeeIdToUpdate);
 
-            // Bước 2 gọi service để cập nhật
+            // gọi service để cập nhật
             if (employeeService.updateEmployee(updateEmployee)){
                 // Nếu cập nhật thành công:
                 // Lấy chỉ số hàng trong model (có thể khác chỉ số view nếu có sắp xếp/lọc)
@@ -337,9 +320,7 @@ public class EmployeeController implements ActionListener {
             }
         }
         employeeView.showMessage("Tìm thấy " + (employees != null ? employees.size() : 0) + " nhân viên.");
-        resetInputFieldArea(); // Reset input sau khi tìm kiếm
-        // Clear nút radio tìm kiếm
-        // if(customerView.getGroupSearch() != null) customerView.getGroupSearch().clearSelection();
+        resetInputFieldArea();
     }
 
     private void showCalender(){
@@ -381,13 +362,13 @@ public class EmployeeController implements ActionListener {
         if (firstName.isEmpty()) throw new IllegalArgumentException("Tên không được để trống.");
         if (phoneNumber.isEmpty()) throw new IllegalArgumentException("Số điện thoại không được để trống.");
 
-        // 2. Validate định dạng Số điện thoại (dùng Regex)
+        // Validate định dạng Số điện thoại
         Matcher phoneMatcher = PHONE_NUMBER_PATTERN.matcher(phoneNumber);
         if (!phoneMatcher.matches()) {
             throw new IllegalArgumentException("Số điện thoại không hợp lệ (cần 10-11 số, bắt đầu bằng 0).");
         }
 
-        // 3. Validate định dạng Email (nếu người dùng có nhập)
+        // Validate định dạng Email
         if (!email.isEmpty()) {
             Matcher emailMatcher = EMAIL_PATTERN.matcher(email);
             if (!emailMatcher.matches()) {
@@ -395,15 +376,12 @@ public class EmployeeController implements ActionListener {
             }
         }
 
-        // 4. Validate và Parse Ngày sinh
+        // Validate và Parse Ngày sinh
         Date dateOfBirth = null;
         if (!dobStr.isEmpty()) {
             try {
                 // parseDateFormat đã setLenient(false) nên sẽ báo lỗi nếu ngày không tồn tại
                 dateOfBirth = parseDateFormat.parse(dobStr);
-
-                // 5. Validate logic: Ngày sinh không được là ngày trong tương lai
-                // Tạo ngày hiện tại (chỉ lấy phần ngày, bỏ qua giờ phút giây để so sánh chính xác)
                 Calendar calToday = Calendar.getInstance();
                 calToday.set(Calendar.HOUR_OF_DAY, 0);
                 calToday.set(Calendar.MINUTE, 0);
@@ -417,7 +395,6 @@ public class EmployeeController implements ActionListener {
                 }
 
             } catch (ParseException e) {
-                // Ném lại lỗi ParseException với thông điệp rõ ràng hơn
                 throw new ParseException("Định dạng ngày sinh không hợp lệ (cần dd/MM/yyyy)", e.getErrorOffset());
             }
         }

@@ -17,7 +17,7 @@ public class ImageUtils {
     // --- Hằng số ---
     public static final int DEFAULT_IMAGE_WIDTH = 200; // Chiều rộng ảnh mặc định
     public static final int DEFAULT_IMAGE_HEIGHT = 200; // Chiều cao ảnh mặc định
-    public static final String DEFAULT_ICON_RESOURCE_PATH = "images/icon6.png"; // Đường dẫn tới icon mặc định trong resources
+   // public static final String DEFAULT_ICON_RESOURCE_PATH = "images/icon6.png"; // Đường dẫn tới icon mặc định trong resources
 
     // --- Các phương thức thay đổi kích thước ---
 
@@ -158,7 +158,7 @@ public class ImageUtils {
         if (icon == null) {
             System.err.println("Không thể tải icon mặc định, tạo ảnh giữ chỗ.");
             // Trả về ảnh giữ chỗ nếu không tải được icon mặc định
-            return createErrorPlaceholderIcon(width, height, "Lỗi Icon");
+            return null;
         }
         return icon;
     }
